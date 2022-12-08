@@ -2,7 +2,7 @@ enum AdminURL {
     _ = 'admin',
     index = '',
     bulkRegUser = 'bulkRegUser',
-    AccountManage = 'AccountManage',
+    accountManage = 'AccountManage',
 }
 
 enum ManagerURL {
@@ -24,7 +24,8 @@ enum UserURL {
     selectStyle = 'selectStyle',
     viewQuestions = 'viewQuestions',
     viewQuestion = 'viewQuestion',
-    referAnswer = 'referAnswer'
+    referAnswer = 'referAnswer',
+    viewExam = 'viewExam',
 }
 
 enum GuestURL {

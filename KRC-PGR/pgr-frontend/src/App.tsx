@@ -48,13 +48,17 @@ function App() {
                             <Route path={URL.Guest.login} element={<LoginForm />} />
                             <Route path={URL.Admin._} element={<AdminUniform />}>
                                 <Route path={URL.Admin.index} element={<AdminIndex />} />
+                                {/* <Route path={URL.Admin.bulkRegUser} element={<BulkRegUser />} /> */}
+                                {/* <Route path={URL.Admin.accountManage} element={<AccountManage />} /> */}
                             </Route>
                             <Route path={URL.Manager._} element={<ManagerUniform />}>
                                 <Route path={URL.Manager.index} element={<ManagerIndex />} />
                                 {/* <Route path={URL.Manager.postQuestion} element={<PostQuestion />} /> */}
-                                {/* <Route path={URL.Manager.editQuestion} element={<EditQuestion />} /> */}
-                                {/* <Route path={URL.Manager.} element={< />} />
-                                <Route path={URL.Manager.} element={< />} /> */}
+                                {/* <Route path={URL.Manager.viewMyQuestions} element={<ViewMyQuestions />} /> */}
+                                {/* <Route path={URL.Manager.editQuestion + '/:question_id'} element={<EditQuestion />} /> */}
+                                {/* <Route path={URL.Manager.postExam} element={<PostExam />} /> */}
+                                {/* <Route path={URL.Manager.viewMyExams} element={<ViewMyExams />} /> */}
+                                {/* <Route path={URL.Manager.editExam + '/:exam_id'} element={<EditExam />} /> */}
                             </Route>
                             <Route path={URL.User._} element={<UserUniform />}>
                                 <Route path={URL.User.index} element={<UserIndex />} />
@@ -65,6 +69,7 @@ function App() {
                                 {/* <Route path={URL.User.viewQuestions} element={<ViewQuestions />} /> */}
                                 {/* <Route path={URL.User.viewQuestion + '/:question_id'} element={<ViewQuestion />} /> */}
                                 {/* <Route path={URL.User.referAnswer + '/:question_id'} element={<ReferAnswer />} /> */}
+                                {/* <Route path={URL.User.viewExam + '/:question_id'} element={<ViewExam />} /> */}
                             </Route>
                         </Route>
 

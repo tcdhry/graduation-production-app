@@ -8,7 +8,7 @@ function AdminIndex() {
         <>
             <nav id="index-nav">
                 <IndexLink to={generateURL(URL.Admin._, URL.Admin.bulkRegUser)} value='ユーザ一括登録' icon={<AiOutlineUsergroupAdd />} />
-                <IndexLink to={generateURL(URL.Admin._, URL.Admin.AccountManage)} value='アカウント管理' icon={<MdManageAccounts />} />
+                <IndexLink to={generateURL(URL.Admin._, URL.Admin.accountManage)} value='アカウント管理' icon={<MdManageAccounts />} />
             </nav>
         </>
     );
