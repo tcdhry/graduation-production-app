@@ -25,7 +25,7 @@
         "react-router-dom": "^6.4.4",
         "react-scripts": "5.0.1",
         "redux": "^4.2.0",
-        "scss": "^0.2.4",
+        "sass": "^1.56.1",
         "typescript": "^4.9.3",
         "web-vitals": "^2.1.4"
     },
@@ -53,5 +53,5 @@
             "last 1 safari version"
         ]
     },
-    "proxy": "http://192.168.3.5:8080"
+    "proxy": "http://10.6.110.175:8080"
 }

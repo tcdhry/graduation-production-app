@@ -18,6 +18,9 @@ enum UserURL {
 
 enum GuestURL {
     login = 'login',
+    sessionError = 'sessionError',
+    insufficientAuthorityError = 'insufficientAuthorityError',
+
 }
 
 export class URL {
@@ -50,6 +53,7 @@ enum UserAPI {
 enum GuestAPI {
     login = 'login',
     sessionCheck = 'sessionCheck',
+    logout = 'logout',
 
 }
 

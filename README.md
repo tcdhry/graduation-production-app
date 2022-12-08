@@ -17,6 +17,7 @@ npm install react-ace@10.1.0
 npm install query-string@7.1.2
 npm install react-icons@4.7.1
 npm install @reduxjs/toolkit@1.9.1
+npm install sass@1.56.1
 ```
 他package.json参照
 
