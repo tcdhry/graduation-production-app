@@ -1,4 +1,3 @@
-// import logo from "../../logo.png";
 import logo from "../../logo.svg";
 import { useSelector } from "react-redux";
 import { Link, useLocation } from "react-router-dom";
@@ -20,7 +19,12 @@ function GuestNav() {
 function NavItem(props: { permit: Array<Authority>, authority_id: number, url: string, authority_name: string, innerText: string, current: string }) {
     if (props.permit.includes(props.authority_id)) {
         return (
-            <Link to={props.url} id={props.current === props.authority_name ? 'current' : undefined}>
+            /**
+             * /user配下のページに居る場合、ユーザのリンクに#currentを付与する。
+             * 他権限も同様。
+             * ただしユーザ権限でログインしている場合は/user配下以外にアクセスしないため付与しない。
+             */
+            <Link to={props.url} id={(props.authority_id !== Authority.User && props.current === props.authority_name) ? 'current' : undefined}>
                 <span>{props.innerText}</span>
             </Link>
         );

@@ -51,9 +51,20 @@ function App() {
                             </Route>
                             <Route path={URL.Manager._} element={<ManagerUniform />}>
                                 <Route path={URL.Manager.index} element={<ManagerIndex />} />
+                                {/* <Route path={URL.Manager.postQuestion} element={<PostQuestion />} /> */}
+                                {/* <Route path={URL.Manager.editQuestion} element={<EditQuestion />} /> */}
+                                {/* <Route path={URL.Manager.} element={< />} />
+                                <Route path={URL.Manager.} element={< />} /> */}
                             </Route>
                             <Route path={URL.User._} element={<UserUniform />}>
                                 <Route path={URL.User.index} element={<UserIndex />} />
+                                {/* <Route path={URL.User.profile} element={<Profile />} /> */}
+                                {/* <Route path={URL.User.ranking} element={<Ranking />} /> */}
+                                {/* <Route path={URL.User.ranking + '/:question_id'} element={<SingleQuestionRanking />} /> */}
+                                {/* <Route path={URL.User.selectStyle} element={<SelectStyle />} /> */}
+                                {/* <Route path={URL.User.viewQuestions} element={<ViewQuestions />} /> */}
+                                {/* <Route path={URL.User.viewQuestion + '/:question_id'} element={<ViewQuestion />} /> */}
+                                {/* <Route path={URL.User.referAnswer + '/:question_id'} element={<ReferAnswer />} /> */}
                             </Route>
                         </Route>
 

@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { generateURL, URL } from "../../constants/URL";
-import { Row, Col } from "../util_components/24ColLayout";
+import { Row, Col } from "../global_components/24ColLayout";
 
 function InsufficientAuthorityError() {
     return (

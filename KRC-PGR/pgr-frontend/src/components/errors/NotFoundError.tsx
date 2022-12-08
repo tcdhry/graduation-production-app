@@ -1,4 +1,4 @@
-import { Row, Col } from "../util_components/24ColLayout";
+import { Row, Col } from "../global_components/24ColLayout";
 
 function NotFoundError() {
     return (

@@ -103,6 +103,47 @@ body {
             min-height: calc(100vh - $header-height - $footer-height);
             background-color: var(--main-bg-color);
             color: var(--main-font-color);
+
+            #index-nav {
+                text-align: center;
+
+                a.index-link {
+                    border: solid 1px var(--main-font-color);
+                    border-radius: 10px;
+                    display: inline-block;
+                    color: var(--main-font-color);
+                    padding: 20px;
+                    width: 15em;
+                    height: 15em;
+                    text-decoration: none;
+                    margin: 20px;
+                    box-shadow: 10px 10px 5px rgba(128, 128, 128, 0.5), -10px -10px 5px rgba(128, 128, 128, 0.2);
+                    transition-property: box-shadow;
+                    transition-duration: 2.0s;
+
+                    &:hover {
+                        box-shadow: 10px 10px 5px rgba(128, 128, 128, 0.5), -10px -10px 5px rgba(128, 128, 128, 0.3),
+                            inset 15em 0 rgba(128, 128, 128, 0.15), inset -15em 0 rgba(128, 128, 128, 0.15),
+                            inset 0 15em rgba(128, 128, 128, 0.15), inset 0 -15em rgba(128, 128, 128, 0.15);
+                        transition-property: box-shadow;
+                        transition-duration: 1.5s;
+                    }
+
+                    div {
+                        // width: 13rem;
+
+                        &.link-icon {
+                            text-align: center;
+                            font-size: 8em;
+                        }
+
+                        &.link-text {
+                            text-align: center;
+                        }
+                    }
+
+                }
+            }
         }
 
         footer {

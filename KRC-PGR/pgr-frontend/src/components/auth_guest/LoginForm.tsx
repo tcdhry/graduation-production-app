@@ -8,7 +8,7 @@ import { Authority } from "../../constants/Authority";
 import { receiveResponse, ResponseBase } from "../../constants/ResponseStatus";
 import { API, generateAPI, generateURL, URL } from "../../constants/URL";
 import { loginUserSlice } from "../../redux/userSlice";
-import { Col, Row } from "../util_components/24ColLayout";
+import { Col, Row } from "../global_components/24ColLayout";
 
 function LoginForm() {
     const [errorMessage, setErrorMessage] = useState(<>　</>);

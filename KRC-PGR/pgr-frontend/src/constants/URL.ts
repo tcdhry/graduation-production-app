@@ -1,19 +1,30 @@
 enum AdminURL {
     _ = 'admin',
     index = '',
-
+    bulkRegUser = 'bulkRegUser',
+    AccountManage = 'AccountManage',
 }
 
 enum ManagerURL {
     _ = 'manager',
     index = '',
-
+    postQuestion = 'postQuestion',
+    viewMyQuestions = 'viewMyQuestions',
+    editQuestion = 'editQuestion',
+    postExam = 'postExam',
+    viewMyExams = 'viewMyExams',
+    editExam = 'editExam',
 }
 
 enum UserURL {
     _ = 'user',
     index = '',
-
+    profile = 'profile',
+    ranking = 'ranking',
+    selectStyle = 'selectStyle',
+    viewQuestions = 'viewQuestions',
+    viewQuestion = 'viewQuestion',
+    referAnswer = 'referAnswer'
 }
 
 enum GuestURL {
