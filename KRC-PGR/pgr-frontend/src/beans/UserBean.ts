@@ -1,9 +1,11 @@
+import { AuthorityID, AuthorityJapaneseName } from "../constants/Authority";
+
 export type UserBean = {
     user_id: number,
     user_name: string,
     view_name: null | string,
-    authority_id: number,
-    authority_name: string,
+    authority_id: AuthorityID,
+    authority_name: AuthorityJapaneseName,
     homeroom_class: null | HomeroomClassBean,
     student_number: null | number
 }

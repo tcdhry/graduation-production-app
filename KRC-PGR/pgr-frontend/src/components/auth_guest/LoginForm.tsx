@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { UserBean } from "../../beans/UserBean";
 import { AnyFormEvent } from "../../constants/AnyFormEvent";
-import { Authority } from "../../constants/Authority";
+import { AuthorityID } from "../../constants/Authority";
 import { receiveResponse, ResponseBase } from "../../constants/ResponseStatus";
 import { API, generateAPI, generateURL, URL } from "../../constants/URL";
 import { loginUserSlice } from "../../redux/userSlice";
@@ -34,13 +34,13 @@ function LoginForm() {
                             dispatch(login(res.data.user));
                             
                             switch (res.data.user.authority_id) {
-                                case Authority.Admin:
+                                case AuthorityID.Admin:
                                     navigate(generateURL(URL.Admin._, URL.Admin.index));
                                     break;
-                                case Authority.Manager:
+                                case AuthorityID.Manager:
                                     navigate(generateURL(URL.Manager._, URL.Manager.index));
                                     break;
-                                case Authority.User:
+                                case AuthorityID.User:
                                     navigate(generateURL(URL.User._, URL.User.index));
                                     break;
                             }

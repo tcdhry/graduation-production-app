@@ -4,7 +4,7 @@ import { Link, useLocation } from "react-router-dom";
 import { getUserViewName, UserBean } from "../../beans/UserBean";
 import { generateURL, URL } from "../../constants/URL";
 import { State } from "../../redux/store";
-import { Authority } from "../../constants/Authority";
+import { Authority, AuthorityID, AuthorityJapaneseName, AuthorityName } from "../../constants/Authority";
 import { useEffect, useState } from "react";
 
 
@@ -16,7 +16,7 @@ function GuestNav() {
     );
 }
 
-function NavItem(props: { permit: Array<Authority>, authority_id: number, url: string, authority_name: string, innerText: string, current: string }) {
+function NavItem(props: { permit: Array<AuthorityID>, authority_id: number, url: string, authority_name: AuthorityName, innerText: AuthorityJapaneseName, current: string }) {
     if (props.permit.includes(props.authority_id)) {
         return (
             /**
@@ -24,7 +24,7 @@ function NavItem(props: { permit: Array<Authority>, authority_id: number, url: s
              * 他権限も同様。
              * ただしユーザ権限でログインしている場合は/user配下以外にアクセスしないため付与しない。
              */
-            <Link to={props.url} id={(props.authority_id !== Authority.User && props.current === props.authority_name) ? 'current' : undefined}>
+            <Link to={props.url} id={(props.authority_id !== AuthorityID.User && props.current === props.authority_name) ? 'current' : undefined}>
                 <span>{props.innerText}</span>
             </Link>
         );
@@ -60,27 +60,27 @@ function UserNav(props: { user: UserBean }) {
                 });
             }}><span>ログアウト</span></Link> */}
             <NavItem
-                permit={[Authority.Admin]}
+                permit={[Authority.Admin.id]}
                 authority_id={props.user.authority_id}
                 url={generateURL(URL.Admin._, URL.Admin.index)}
-                authority_name={'admin'}
-                innerText={'管理者'}
+                authority_name={Authority.Admin.name}
+                innerText={Authority.Admin.ja}
                 current={parentNode}
             />
             <NavItem
-                permit={[Authority.Admin, Authority.Manager]}
+                permit={[Authority.Admin.id, Authority.Manager.id]}
                 authority_id={props.user.authority_id}
                 url={generateURL(URL.Manager._, URL.Manager.index)}
-                authority_name={'manager'}
-                innerText={'運営者'}
+                authority_name={Authority.Manager.name}
+                innerText={Authority.Manager.ja}
                 current={parentNode}
             />
             <NavItem
-                permit={[Authority.Admin, Authority.Manager, Authority.User]}
+                permit={[Authority.Admin.id, Authority.Manager.id, Authority.User.id]}
                 authority_id={props.user.authority_id}
                 url={generateURL(URL.User._, URL.User.index)}
-                authority_name={'user'}
-                innerText={'ユーザ'}
+                authority_name={Authority.User.name}
+                innerText={Authority.User.ja}
                 current={parentNode}
             />
         </>
@@ -89,11 +89,11 @@ function UserNav(props: { user: UserBean }) {
 
 function logoURL(authority_id: undefined | number) {
     switch (authority_id) {
-        case Authority.Admin:
+        case AuthorityID.Admin:
             return generateURL(URL.Admin._, URL.Admin.index);
-        case Authority.Manager:
+        case AuthorityID.Manager:
             return generateURL(URL.Manager._, URL.Manager.index);
-        case Authority.User:
+        case AuthorityID.User:
             return generateURL(URL.User._, URL.User.index);
         default:
             return generateURL(URL.Guest.login);
