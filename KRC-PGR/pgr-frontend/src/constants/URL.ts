@@ -9,6 +9,7 @@ enum ManagerURL {
     _ = 'manager',
     index = '',
     postQuestion = 'postQuestion',
+    postQuestionSuccess = 'postQuestionSuccess',
     viewMyQuestions = 'viewMyQuestions',
     editQuestion = 'editQuestion',
     postExam = 'postExam',
@@ -54,7 +55,8 @@ enum AdminAPI {
 
 enum ManagerAPI {
     _ = 'manager',
-
+    postQuestion = 'postQuestion',
+    titleCheck = 'titleCheck'
 }
 
 enum UserAPI {

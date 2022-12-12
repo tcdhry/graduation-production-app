@@ -11,8 +11,8 @@
     --border-color: white;
     --border: solid 1px var(--border-color);
 
-    --prominent-font-color: yellow;
-    --prominent-font-color-prev: red;
+    --attention-font-color: yellow;
+    --warning-font-color: red;
 
     --low-font-color: rgb(128, 128, 128);
     --link-font-color: rgb(29, 150, 255);
@@ -144,6 +144,32 @@ body {
 
                 }
             }
+
+            #question-view {
+                padding: 20px;
+                border: var(--border);
+                border-radius: 20px;
+
+                #question-status {
+                    font-size: 0.5em;
+                    color: var(--low-font-color);
+
+                    span {
+                        display: inline-block;
+                        margin-right: 2em;
+                    }
+                }
+            }
+
+            #question-inputs {
+                ul#check-list {
+                    list-style: inside;
+
+                    li.warning {
+                        color: var(--warning-font-color);
+                    }
+                }
+            }
         }
 
         footer {
@@ -156,6 +182,11 @@ body {
         }
     }
 }
+
+
+/**
+ * global styles
+ */
 
 .row {
     display: flex;
@@ -173,17 +204,17 @@ body {
 }
 
 .error-message {
-    color: var(--prominent-font-color);
+    color: var(--attention-font-color);
     animation: error-anim 1s linear;
 }
 
 @keyframes error-anim {
     0% {
-        color: var(--prominent-font-color-prev);
+        color: var(--warning-font-color);
     }
 
     100% {
-        color: var(--prominent-font-color);
+        color: var(--attention-font-color);
     }
 }
 
@@ -194,6 +225,14 @@ body {
 
     &.visited:visited {
         color: rgb(155, 0, 255);
+    }
+}
+
+.double-quotation {
+    margin: 0 0.5em;
+
+    &:before, &:after {
+        content: '"';
     }
 }
 
@@ -235,4 +274,15 @@ span.check-label, span.radio-label {
     &:hover {
         background: rgb(128, 128, 128);
     }
+}
+
+h2, h3, h4, h5, h6 {
+    border-bottom: var(--border);
+    margin-bottom: 1em;
+}
+
+hr {
+    border: none;
+    border-bottom: var(--border);
+    margin: 1em 0;
 }

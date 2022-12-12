@@ -27,8 +27,10 @@ function PrivatePage(props: { permit: Array<AuthorityID>, outlet: ReactElement }
          * URL直打ちでアクセスした場合、セッションチェックが非同期処理で走る。
          * そのため、上記処理が実行されるタイミングでは、セッションが確立されていてもログインがされていない判定になる。
          * これに対処するため、URL(location.pathname)のだけでなく、user(redux)の変更のタイミングも依存リストに追加する。
+         * 
+         * props.permit, props.outletはリンタに警告されたので追加した。
          */
-    }, [location.pathname, user]);
+    }, [location.pathname, user, props.permit, props.outlet]);
 
     return (
         <>

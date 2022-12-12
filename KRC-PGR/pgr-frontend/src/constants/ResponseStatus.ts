@@ -31,3 +31,13 @@ export function receiveResponse(res: ResponseBase, navigate: NavigateFunction, t
             break;
     }
 }
+
+export function catchError(err: any) {
+    /**
+     * 初期アクセス時には正常だが、その後にサーバがダウンしたときの処理。
+     */
+    console.error(err);
+    alert(
+        'サーバの応答が停止している可能性があります。'
+    );
+}

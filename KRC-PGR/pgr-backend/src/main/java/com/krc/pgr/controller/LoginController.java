@@ -18,16 +18,28 @@ public class LoginController {
 
     @PostMapping("/login")
     public ResponseBase login(@RequestBody Map<String, Object> postParams) {
+        /**
+         * @return LoginResponse extends ResponseBase
+         * 
+         * @param user_id:  String
+         * @param password: String
+         */
         return loginAction.login(postParams);
     }
 
     @GetMapping("/logout")
     public void logout() {
+        /**
+         * @return void
+         */
         loginAction.logout();
     }
 
     @GetMapping("/sessionCheck")
     public ResponseBase sessionCheck() {
+        /**
+         * @return SessionCheckResponse extends ResponseBase
+         */
         return loginAction.sessionCheck();
     }
 }

@@ -23,6 +23,10 @@ export enum LanguageCode {
     Ruby = 5
 }
 
+/**
+ * 実装言語一覧
+ * ここの要素をコメントアウトすれば<select>に表示されなくなる。
+ */
 export const Languages: Array<Language> = [
     new Language(LanguageCode.Java, 'Java'),
     new Language(LanguageCode.CPlusPlus, 'C++'),
@@ -30,3 +34,12 @@ export const Languages: Array<Language> = [
     new Language(LanguageCode.Python, 'Python'),
     new Language(LanguageCode.Ruby, 'Ruby'),
 ]
+
+export function getLanguageName(language_id: LanguageCode) {
+    for (let i = 0; i < Languages.length; i++) {
+        if (Languages[i].language_id === language_id) {
+            return Languages[i].language_name;
+        }
+    }
+    return 'Error: Language not found;';
+}

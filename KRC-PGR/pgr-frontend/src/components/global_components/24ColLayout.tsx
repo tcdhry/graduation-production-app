@@ -8,7 +8,7 @@ export function Row(props: { children: JSX.Element | JSX.Element[] }) {
     );
 }
 
-export function Col(props: { children: ReactNode, width?: number, offset?: number }) {
+export function Col(props: { children: ReactNode | Array<ReactNode>, width?: number, offset?: number }) {
     /**
      * 横24分割中なんぼ使うかをwidthで指定。
      * 参考：bootstrap

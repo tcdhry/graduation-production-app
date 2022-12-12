@@ -13,13 +13,13 @@ public enum Language {
         return this.id;
     }
 
-//    public static Language valueOf(int language) throws IllegalArgumentException {
-//        Language[] values = Language.values();
-//        for (Language l : values) {
-//            if (l.id == language) {
-//                return l;
-//            }
-//        }
-//        throw new IllegalArgumentException();
-//    }
+    public static Language valueOf(int language) throws IllegalArgumentException {
+        Language[] values = Language.values();
+        for (Language l : values) {
+            if (l.id == language) {
+                return l;
+            }
+        }
+        throw new IllegalArgumentException();
+    }
 }

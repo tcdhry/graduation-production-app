@@ -3,8 +3,6 @@ package com.krc.pgr.action;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpSession;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
@@ -20,9 +18,6 @@ import com.krc.pgr.util.SessionManage;
 public class LoginAction {
     @Autowired
     SessionManage session;
-
-    @Autowired
-    HttpSession se;
 
     @Autowired
     JdbcTemplate jdbc;

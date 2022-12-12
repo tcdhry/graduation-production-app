@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { UserBean } from "../../beans/UserBean";
 import { AnyFormEvent } from "../../constants/AnyFormEvent";
 import { AuthorityID } from "../../constants/Authority";
-import { receiveResponse, ResponseBase } from "../../constants/ResponseStatus";
+import { catchError, receiveResponse, ResponseBase } from "../../constants/ResponseStatus";
 import { API, generateAPI, generateURL, URL } from "../../constants/URL";
 import { loginUserSlice } from "../../redux/userSlice";
 import { Col, Row } from "../global_components/24ColLayout";
@@ -51,7 +51,7 @@ function LoginForm() {
                             }, 0);
                         }
                     });
-                });
+                }).catch(catchError);
             }}>
                 <Row>
                     <Col width={4}>

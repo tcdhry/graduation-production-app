@@ -18,7 +18,7 @@ public class SessionAspect {
     @Autowired
     private SessionManage session;
 
-    @Around(value = "execution(* com.krc.pgr.controller.*.*(..))") // within(クラス名)
+    @Around(value = "execution(* com.krc.pgr.controller.*.*(..))")
     public ResponseBase sessionCheck(ProceedingJoinPoint pjp) {
 //        <T extends ResponseBase> T
 //        UserBean user = session.getLoginUser();
