@@ -1,6 +1,5 @@
 package com.krc.pgr.aspect;
 
-
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -8,9 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.krc.pgr.bean.UserBean;
+import com.krc.pgr.constant.Authority;
+import com.krc.pgr.constant.ResponseStatus;
 import com.krc.pgr.response.ResponseBase;
 import com.krc.pgr.util.SessionManage;
-
 
 @Component
 @Aspect
@@ -21,17 +21,41 @@ public class SessionAspect {
     @Around(value = "execution(* com.krc.pgr.controller.*.*(..))")
     public ResponseBase sessionCheck(ProceedingJoinPoint pjp) {
 //        <T extends ResponseBase> T
-//        UserBean user = session.getLoginUser();
-//        if (user == null) {
-//            // セッション切れの場合はnullを返す
-//            return null;
-//        }
+        UserBean user = session.getLoginUser();
+        int authority_id;
+        if (user == null) {
+            // session が切れていたら判定用にゲスト権限を与える。
+            authority_id = Authority.GUEST.getAuthority();
+        } else {
+            authority_id = user.getAuthority_id();
+        }
+
+        if (isPermit(pjp, authority_id) == false) {
+            if (authority_id == Authority.GUEST.getAuthority()) {
+                // ユーザの権限が許可されていないクラスだった場合、セッションエラーのレスポンスを渡す。
+                return new ResponseBase(ResponseStatus.SESSION_ERROR);
+            } else {
+                // ログイン済みの場合、権限不足エラーのレスポンスを返す。
+                return new ResponseBase(ResponseStatus.INSUFFICIENT_AUTHORITY);
+            }
+        }
 
         try {
             return (ResponseBase) pjp.proceed();
         } catch (Throwable t) {
             return new ResponseBase();
         }
+    }
+
+    private boolean isPermit(ProceedingJoinPoint pjp, int authority_id) {
+        Permit permitAnnotation = pjp.getTarget().getClass().getAnnotation(Permit.class);
+        Authority[] permit = permitAnnotation.authority();
+        for (Authority a : permit) {
+            if (a.getAuthority() == authority_id) {
+                return true;
+            }
+        }
+        return false;
     }
 }
 // /**
@@ -60,47 +84,3 @@ public class SessionAspect {
 //     * 
 //     * @formatter:on
 //     */
-//    @Autowired
-//    private HttpSession session;
-//
-//    // ResponseBase+) && @annotation(org.springframework.web.bind.annotation.RestController
-//    @Around(value = "execution(* com.krc.progrun.controller.*.*(..))") // within(クラス名)
-//    public ResponseBase sessionCheck(ProceedingJoinPoint pjp) {
-//        UserBean user = SessionManage.getLoginUser(session);
-//
-//        int authority_id;
-//        if (user == null) {
-//            // session が切れていたら判定用にゲスト権限を与える。
-//            authority_id = Authority.GUEST.getAuthority();
-//        } else {
-//            authority_id = user.getAuthority_id();
-//        }
-//
-//        if (isPermit(pjp, authority_id) == false) {
-//            if (authority_id == Authority.GUEST.getAuthority()) {
-//                // ユーザの権限が許可されていないクラスだった場合、セッションエラーのレスポンスを渡す。
-//                return new ResponseBase(ResponseStatus.SESSION_ERROR);
-//            } else {
-//                // ログイン済みの場合、権限不足エラーのレスポンスを返す。
-//                return new ResponseBase(ResponseStatus.INSUFFICIENT_AUTHORITY);
-//            }
-//        }
-//
-//        try {
-//            return (ResponseBase) pjp.proceed();
-//        } catch (Throwable t) {
-//            return new ResponseBase(t);
-//        }
-//    }
-//
-//    private boolean isPermit(ProceedingJoinPoint pjp, int authority_id) {
-//        Permit permitAnnotation = pjp.getTarget().getClass().getAnnotation(Permit.class);
-//        Authority[] permit = permitAnnotation.authority();
-//        for (Authority a : permit) {
-//            if (a.getAuthority() == authority_id) {
-//                return true;
-//            }
-//        }
-//        return false;
-//    }
-//}

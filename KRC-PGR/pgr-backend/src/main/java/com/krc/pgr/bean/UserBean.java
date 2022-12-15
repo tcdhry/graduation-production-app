@@ -75,6 +75,13 @@ public class UserBean {
         return view_name;
     }
 
+    public void setView_name(String view_name) {
+        /**
+         * view_nameのみ、ユーザの操作で登録情報を変更可能なためsetterを用意する。
+         */
+        this.view_name = view_name;
+    }
+
     public int getAuthority_id() {
         return authority_id;
     }

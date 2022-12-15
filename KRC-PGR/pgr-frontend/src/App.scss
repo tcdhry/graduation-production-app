@@ -16,12 +16,13 @@
 
     --low-font-color: rgb(128, 128, 128);
     --link-font-color: rgb(29, 150, 255);
+    --visited-link-color: rgb(155, 0, 255);
 
     --btn-bg-color: white;
+    --btn-active-color: rgb(200, 200, 200);
     --btn-font-color: black;
     --btn-border-color: rgb(128, 128, 128);
     --btn-border: solid 1px var(--btn-border-color);
-    // --simple-btn-shadow: 
 }
 
 $header-height: 60px;
@@ -49,7 +50,6 @@ body {
                     a {
                         display: inline-block;
                         height: $header-height;
-                        // width: 100%;
 
                         img#logo-img {
                             height: $header-height;
@@ -224,7 +224,7 @@ body {
     &.hover:hover {}
 
     &.visited:visited {
-        color: rgb(155, 0, 255);
+        color: var(--visited-link-color);
     }
 }
 
@@ -244,6 +244,10 @@ body {
     border: var(--btn-border);
     display: inline-block;
     text-align: center;
+
+    &:active {
+        background-color: var(--btn-active-color);
+    }
 }
 
 .btn-full {
@@ -256,7 +260,6 @@ input[type="text"], input[type="password"], input[type="number"], textarea {
     padding: 0.5em;
     border-radius: 10px;
     border: var(--border);
-    // background-color: var(--low-bg-color);
 }
 
 select {
@@ -266,7 +269,6 @@ select {
 
 span.check-label, span.radio-label {
     display: inline-block;
-    // margin-right: 1em;
     padding-left: 2px;
     padding-right: 5px;
     border-radius: 5px;

@@ -3,6 +3,8 @@ package com.krc.pgr.controller;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.krc.pgr.action.ManagerQuestionAction;
+import com.krc.pgr.aspect.Permit;
+import com.krc.pgr.constant.Authority;
 import com.krc.pgr.response.ResponseBase;
 
 import java.util.Map;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @RestController
 @RequestMapping("/manager")
+@Permit(authority = { Authority.MANAGER, Authority.ADMIN })
 public class ManagerController {
     @Autowired
     ManagerQuestionAction managerQuestionAction;

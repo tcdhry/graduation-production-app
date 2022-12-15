@@ -19,7 +19,7 @@ function PostQuestion() {
     const [submit, setSubmit] = useState(false);
     const navigate = useNavigate();
     const [titleStatus, setTitleStatus] = useState(TitleStatus.NotEntered);
-    const [submitError, setSubmitError] = useState(<></>);
+    const [submitError, setSubmitError] = useState<JSX.Element | null>(null);
 
     return (
         <>
@@ -130,7 +130,7 @@ function PostQuestion() {
                     }
                 }}>
                     <QuestionInputs question={question} setQuestion={setQuestion} titleStatus={titleStatus} setTitleStatus={setTitleStatus} />
-                    {submitError === <></> ? <></> : (
+                    {submitError === null ? null : (
                         <>
                             <h3>実行結果</h3>
                             <ul>

@@ -1,10 +1,9 @@
 import { ReactElement, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { useLocation } from "react-router-dom";
+import { Navigate, useLocation } from "react-router-dom";
 import { AuthorityID } from "../../constants/Authority";
+import { generateURL, URL } from "../../constants/URL";
 import { State } from "../../redux/store";
-import InsufficientAuthorityError from "../errors/InsufficientAuthorityError";
-import SessionError from "../errors/SessionError";
 
 function PrivatePage(props: { permit: Array<AuthorityID>, outlet: ReactElement }) {
     const user = useSelector((state: State) => state.loginUser.user);
@@ -17,10 +16,10 @@ function PrivatePage(props: { permit: Array<AuthorityID>, outlet: ReactElement }
             if (props.permit.includes(user.authority_id)) {
                 setChild(<>{props.outlet}</>);
             } else {
-                setChild(<><InsufficientAuthorityError /></>);
+                setChild(<><Navigate to={generateURL(URL.Guest.insufficientAuthorityError)} /></>);
             }
         } else {
-            setChild(<><SessionError /></>);
+            setChild(<><Navigate to={generateURL(URL.Guest.sessionError)} /></>);
         }
         /**
          * `useEffect` 第二引数について。

@@ -9,9 +9,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.krc.pgr.action.LoginAction;
+import com.krc.pgr.aspect.Permit;
+import com.krc.pgr.constant.Authority;
 import com.krc.pgr.response.ResponseBase;
 
 @RestController
+@Permit(authority = { Authority.GUEST, Authority.USER, Authority.MANAGER, Authority.ADMIN })
 public class LoginController {
     @Autowired
     LoginAction loginAction;

@@ -30,7 +30,7 @@ function QuestionTitleInput(props: { setter: Function, defaultTitle: string | un
             </ label>
         } input={
             <>
-                <input type="text"
+                <input type="text" autoComplete="one-time-code"
                     onChange={(event) => {
                         const val = event.target.value;
                         const len = val.length;
@@ -56,6 +56,7 @@ function QuestionTitleInput(props: { setter: Function, defaultTitle: string | un
                         }
                     }}
                     id="question_title"
+                    name="question_title"
                     maxLength={50}
                 />
                 <p className="error-message">
@@ -228,7 +229,7 @@ function QuestionInputs(props: {
             <LabelInput
                 label={<label htmlFor="language_designation">言語指定</label>}
                 input={
-                    <select id="language_designation" onChange={function (event) {
+                    <select id="language_designation" name="language_designation" onChange={function (event) {
                         props.setQuestion({ ...props.question, language_designation: event.target.value === 'null' ? null : Number(event.target.value) });
                     }}>
                         <option value="null">言語指定なし</option>
@@ -240,13 +241,13 @@ function QuestionInputs(props: {
 
             <LabelInput
                 label={<label htmlFor="view_password">問題表示パスワード</label>}
-                input={<input type="password" id="view_password" onChange={function (event) { setViewPassword(event.target.value); }} />}
+                input={<input type="password" id="view_password" name="view_password" autoComplete="one-time-code" onChange={function (event) { setViewPassword(event.target.value); }} />}
                 label_width={label_width}
             />
 
             <LabelInput
                 label={<label htmlFor="view_password_check">問題表示パスワード（確認）</label>}
-                input={<input type="password" id="view_password_check" onChange={function (event) { setViewPasswordCheck(event.target.value); }} />}
+                input={<input type="password" id="view_password_check" name="view_password_check" autoComplete="one-time-code" onChange={function (event) { setViewPasswordCheck(event.target.value); }} />}
                 label_width={label_width}
             />
 
@@ -254,7 +255,7 @@ function QuestionInputs(props: {
                 label={<label htmlFor="private_answer_mode">解答非公開モード</label>}
                 input={
                     <p>
-                        <input type="checkbox" id="private_answer_mode" onChange={function (event) { setPrivateAnswerMode(event.target.checked); }} />
+                        <input type="checkbox" id="private_answer_mode" name="private_answer_mode" onChange={function (event) { setPrivateAnswerMode(event.target.checked); }} />
                         <label htmlFor="private_answer_mode">チェックをすると、他の人が提出した解答を見られなくなります。</label>
                     </p>
                 }
@@ -265,7 +266,7 @@ function QuestionInputs(props: {
                 label={<label htmlFor="release_flag">問題を公開する</label>}
                 input={
                     <p>
-                        <input type="checkbox" id="release_flag" onChange={function (event) { setReleaseFlag(event.target.checked); }} />
+                        <input type="checkbox" id="release_flag" name="release_flag" onChange={function (event) { setReleaseFlag(event.target.checked); }} />
                         <label htmlFor="release_flag">チェックしなければ問題一覧に表示されず、問題IDを知っていても表示できません。</label>
                     </p>
                 }
@@ -343,8 +344,9 @@ function QuestionInputs(props: {
                                 const viewidx = i + 1;
                                 list.push(<li key={keycnt++}><SmoothScrollLink toID={'inputs_' + viewidx}>入出力例{viewidx}</SmoothScrollLink>が全て記述されていません。以降の入出力例は全て無視され、登録されません。記述している場合は1から順に記述してください。</li>);
                                 if (i === 0) {
-                                    list.push(<li key={keycnt++}><SmoothScrollLink toID={'inputs_' + viewidx}>入出力例{viewidx}</SmoothScrollLink>が1件も登録されません。解答者は、提出前の実行確認ができません。</li>);
+                                    list.push(<li key={keycnt++}><SmoothScrollLink toID={'inputs_' + viewidx}>入出力例</SmoothScrollLink>が1件も登録されません。解答者は、提出前の実行確認ができません。</li>);
                                 }
+                                break;
                             }
                         }
                         return list;
@@ -362,7 +364,6 @@ function QuestionInputs(props: {
             </ul>
 
             <hr />
-
 
             <input type="submit" value="登録する" className="btn btn-full" />
         </div>

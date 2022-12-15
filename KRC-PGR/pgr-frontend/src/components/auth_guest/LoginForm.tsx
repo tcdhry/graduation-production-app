@@ -9,9 +9,10 @@ import { catchError, receiveResponse, ResponseBase } from "../../constants/Respo
 import { API, generateAPI, generateURL, URL } from "../../constants/URL";
 import { loginUserSlice } from "../../redux/userSlice";
 import { Col, Row } from "../global_components/24ColLayout";
+import useErrorMessageState from "../global_components/useErrorMessageState";
 
 function LoginForm() {
-    const [errorMessage, setErrorMessage] = useState(<>　</>);
+    const [errorMessage, setErrorMessage] = useErrorMessageState();
     const navigate = useNavigate();
     const { login } = loginUserSlice.actions;
     const dispatch = useDispatch();
@@ -32,7 +33,7 @@ function LoginForm() {
                     receiveResponse(res, navigate, function () {
                         if (res.data.user !== null) {
                             dispatch(login(res.data.user));
-                            
+
                             switch (res.data.user.authority_id) {
                                 case AuthorityID.Admin:
                                     navigate(generateURL(URL.Admin._, URL.Admin.index));
@@ -45,10 +46,7 @@ function LoginForm() {
                                     break;
                             }
                         } else {
-                            setErrorMessage(<>　</>);
-                            setTimeout(() => {
-                                setErrorMessage(<p className="error-message">ログイン失敗</p>);
-                            }, 0);
+                            setErrorMessage('ログイン失敗');
                         }
                     });
                 }).catch(catchError);
@@ -58,7 +56,7 @@ function LoginForm() {
                         <label htmlFor="user_id">ユーザID</label>
                     </Col>
                     <Col width={20}>
-                        <input type="text" id="user_id" />
+                        <input type="text" id="user_id" name="user_id" />
                     </Col>
                 </Row>
                 <Row>
@@ -66,7 +64,7 @@ function LoginForm() {
                         <label htmlFor="password">パスワード</label>
                     </Col>
                     <Col width={20}>
-                        <input type="password" id="password" />
+                        <input type="password" id="password" name="password" />
                     </Col>
                 </Row>
                 <Row>

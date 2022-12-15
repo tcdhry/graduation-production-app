@@ -42,6 +42,8 @@ import GuestUniform from "./components/auth_guest/_GuestUniform";
 import { useEffect, useState } from "react";
 import Loading from "./components/errors/Loading";
 import ServerDownError from "./components/errors/ServerDownError";
+import SessionError from "./components/errors/SessionError";
+import InsufficientAuthorityError from "./components/errors/InsufficientAuthorityError";
 
 function App() {
     const { login } = loginUserSlice.actions;
@@ -118,9 +120,13 @@ function App() {
                                             <Route path={URL.User.referAnswer + '/:question_id'} element={<ReferAnswer />} />{/* TODO */}
                                             <Route path={URL.User.viewExam + '/:exam_id'} element={<ViewExam />} />{/* TODO */}
                                         </Route>
+
+                                        <Route path={URL.Guest.sessionError} element={<SessionError />} />
+                                        <Route path={URL.Guest.insufficientAuthorityError} element={<InsufficientAuthorityError />} />
                                     </Route>
 
                                     <Route path={''} element={<Navigate to={generateURL(URL.Guest.login)} />} />
+
                                     <Route path={'/*'} element={<NotFoundError />} />
                                 </Routes>
                             )

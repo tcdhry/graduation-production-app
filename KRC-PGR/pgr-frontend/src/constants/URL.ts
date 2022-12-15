@@ -61,7 +61,9 @@ enum ManagerAPI {
 
 enum UserAPI {
     _ = 'user',
-
+    changeViewName = 'changeViewName',
+    changePassword = 'changePassword',
+    
 }
 
 enum GuestAPI {
