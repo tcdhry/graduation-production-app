@@ -41,3 +41,18 @@ export function catchError(err: any) {
         'サーバの応答が停止している可能性があります。'
     );
 }
+
+
+
+/** 基本形
+type XXXXXResponse = ResponseBase & {
+    data: {
+
+    }
+}
+axios.get(generateAPI(API.User._, API.User.xxxxx)).then((res: XXXXXResponse) => {
+    receiveResponse(res, navigate, function () {
+        
+    });
+}).catch(catchError);
+ */

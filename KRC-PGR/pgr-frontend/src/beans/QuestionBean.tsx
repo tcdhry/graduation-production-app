@@ -22,7 +22,7 @@ export class QuestionBean {
     public language_designation: number | null = null;
     // public private_answer_mode: boolean = false;
     // public release_flag: boolean = false;
-    public insert_datetime: string = function () {
+    public insert_timestamp: string = function () {
         const today = new Date();
         const yyyy = today.getFullYear();
         const mm = today.getMonth();
@@ -32,7 +32,7 @@ export class QuestionBean {
         const ss = today.getSeconds();
         return `${yyyy}/${mm}/${dd} ${hh}:${min}:${ss}`;
     }();
-    public user_id: number | undefined;
+    public user_id: string | undefined;
     public user_view_name: string | undefined;
 }
 // export class QuestionBean {
@@ -54,34 +54,50 @@ export class QuestionBean {
 //     public user_view_name!: string;
 // }
 
-export class QuestionInputsBean {
-    constructor(user: UserBean) {
-        this.user_id = user.user_id;
-        this.user_view_name = getUserViewName(user);
-    }
-    public question_id: number = 0;
-    public question_title: string = '';
-    public question_text: string = '';
-    public input: string = '';
-    public input_explain: string = '';
-    public output: string = '';
-    public output_explain: string = '';
-    public inputs: [null | string, null | string, null | string] = [null, null, null];
-    public outputs: [null | string, null | string, null | string] = [null, null, null];
-    public io_explain: [null | string, null | string, null | string] = [null, null, null];
-    public language_designation: number | null = null;
-    public private_answer_mode: boolean = false;
-    public release_flag: boolean = false;
-    public insert_datetime: string = function () {
-        const today = new Date();
-        const yyyy = today.getFullYear();
-        const mm = today.getMonth();
-        const dd = today.getDate();
-        const hh = today.getHours();
-        const min = today.getMinutes();
-        const ss = today.getSeconds();
-        return `${yyyy}/${mm}/${dd} ${hh}:${min}:${ss}`;
-    }();
-    public user_id: number | undefined;
-    public user_view_name: string | undefined;
+// export class QuestionInputsBean {
+//     constructor(user: UserBean) {
+//         this.user_id = user.user_id;
+//         this.user_view_name = getUserViewName(user);
+//     }
+//     public question_id: number = 0;
+//     public question_title: string = '';
+//     public question_text: string = '';
+//     public input: string = '';
+//     public input_explain: string = '';
+//     public output: string = '';
+//     public output_explain: string = '';
+//     public inputs: [null | string, null | string, null | string] = [null, null, null];
+//     public outputs: [null | string, null | string, null | string] = [null, null, null];
+//     public io_explain: [null | string, null | string, null | string] = [null, null, null];
+//     public language_designation: number | null = null;
+//     public private_answer_mode: boolean = false;
+//     public release_flag: boolean = false;
+//     public insert_datetime: string = function () {
+//         const today = new Date();
+//         const yyyy = today.getFullYear();
+//         const mm = today.getMonth();
+//         const dd = today.getDate();
+//         const hh = today.getHours();
+//         const min = today.getMinutes();
+//         const ss = today.getSeconds();
+//         return `${yyyy}/${mm}/${dd} ${hh}:${min}:${ss}`;
+//     }();
+//     public user_id: number | undefined;
+//     public user_view_name: string | undefined;
+// }
+
+export type QuestionThumbnail = {
+    question_id: number,
+    question_title: string,
+    language_designation: number | null,
+    private_answer_mode: boolean,
+    release_flag: boolean,
+    answered: boolean,
+    scoring: boolean,
+    password_required: boolean,
+    insert_timestamp: string,
+    user_id: string | undefined,
+    user_view_name: string | undefined,
 }
+
+export type Questions = Array<QuestionThumbnail>;

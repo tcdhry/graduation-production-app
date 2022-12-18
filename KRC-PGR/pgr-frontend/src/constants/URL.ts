@@ -63,7 +63,8 @@ enum UserAPI {
     _ = 'user',
     changeViewName = 'changeViewName',
     changePassword = 'changePassword',
-    
+    questions = 'questions',
+
 }
 
 enum GuestAPI {

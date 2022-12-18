@@ -23,6 +23,13 @@
     --btn-font-color: black;
     --btn-border-color: rgb(128, 128, 128);
     --btn-border: solid 1px var(--btn-border-color);
+
+    --index-hover-color: rgba(128, 128, 128, 0.15);
+    --index-shadow-color: rgba(128, 128, 128, 0.5);
+    --index-shadow-low-color: rgba(128, 128, 128, 0.3);
+
+    --pager-hover-bg-color: white;
+    --pager-hover-font-color: black;
 }
 
 $header-height: 60px;
@@ -51,9 +58,14 @@ body {
                         display: inline-block;
                         height: $header-height;
 
-                        img#logo-img {
+                        svg#logo-img {
                             height: $header-height;
                             width: 100%;
+                            padding: 3%;
+
+                            & * {
+                                fill: white;
+                            }
                         }
                     }
                 }
@@ -117,14 +129,14 @@ body {
                     height: 15em;
                     text-decoration: none;
                     margin: 20px;
-                    box-shadow: 10px 10px 5px rgba(128, 128, 128, 0.5), -10px -10px 5px rgba(128, 128, 128, 0.2);
+                    box-shadow: 10px 10px 5px var(--index-shadow-color), -10px -10px 5px var(--index-shadow-low-color);
                     transition-property: box-shadow;
                     transition-duration: 2.0s;
 
                     &:hover {
-                        box-shadow: 10px 10px 5px rgba(128, 128, 128, 0.5), -10px -10px 5px rgba(128, 128, 128, 0.3),
-                            inset 15em 0 rgba(128, 128, 128, 0.15), inset -15em 0 rgba(128, 128, 128, 0.15),
-                            inset 0 15em rgba(128, 128, 128, 0.15), inset 0 -15em rgba(128, 128, 128, 0.15);
+                        box-shadow: 10px 10px 5px var(--index-shadow-color), -10px -10px 5px var(--index-shadow-low-color),
+                            inset 15em 0 var(--index-hover-color), inset -15em 0 var(--index-hover-color),
+                            inset 0 15em var(--index-hover-color), inset 0 -15em var(--index-hover-color);
                         transition-property: box-shadow;
                         transition-duration: 1.5s;
                     }
@@ -167,6 +179,89 @@ body {
 
                     li.warning {
                         color: var(--warning-font-color);
+                    }
+                }
+            }
+
+            #search-questions-form {
+                margin-bottom: 1em;
+                border: var(--border);
+                border-radius: 10px;
+                padding: 20px;
+                padding-top: 0;
+            }
+
+            #questions-list {
+                .question-card {
+                    border: var(--border);
+                    border-radius: 10px;
+                    margin-bottom: 20px;
+                    padding: 20px;
+
+                    .qt-head {
+                        h3 {
+                            span.qt-title {
+                                display: inline-block;
+                                width: calc(100% - 6.3rem);
+                            }
+
+                            span.qt-timestamp {
+                                display: inline-block;
+                                color: var(--low-font-color);
+                                font-size: 0.5em;
+                                width: 6.3rem;
+                                // text-decoration: none!important;kikanai
+                                // border: var(--border);
+                            }
+                        }
+                    }
+
+                    .qt-poster {
+                        border: var(--border);
+                        display: flex;
+                        border-radius: 10px;
+
+                        p, a {
+                            padding: 10px;
+
+                            &:first-child {
+                                width: calc(22px + 3em);
+                                border-right: var(--border);
+                            }
+
+                            &:last-child {
+                                width: calc(100% - 22px - 3em);
+                            }
+                        }
+                    }
+
+                    .qt-status {
+                        margin-top: 1em;
+                        display: flex;
+
+                        &>div {
+                            width: calc((100% - 3em) / 4);
+                            border: var(--border);
+                            border-radius: 10px;
+                            margin-right: 1em;
+                            height: 5em;
+                            display: table;
+
+                            &:last-child {
+                                margin-right: 0;
+                            }
+
+                            &>div {
+                                display: table-cell;
+                                vertical-align: middle;
+                                text-align: center;
+
+                                span {
+                                    font-size: 2em;
+                                    color: var(--attention-font-color);
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -267,7 +362,7 @@ select {
     border-radius: 10px;
 }
 
-span.check-label, span.radio-label {
+span.label-checkbox, span.label-radio {
     display: inline-block;
     padding-left: 2px;
     padding-right: 5px;
@@ -287,4 +382,50 @@ hr {
     border: none;
     border-bottom: var(--border);
     margin: 1em 0;
+}
+
+.search-status {
+    border: var(--border);
+    border-radius: 10px;
+    padding: 10px 20px;
+    margin: 20px 0;
+}
+
+nav.pager {
+    border: var(--border);
+    border-radius: 10px;
+    padding: 10px;
+    margin: 20px 0;
+    text-align: center;
+
+    a {
+        display: inline-block;
+        // padding: 5px;
+        text-align: center;
+        border: var(--border);
+        border-radius: 10px;
+        padding: 5px 0;
+        width: 2em;
+        margin-right: 5px;
+        color: var(--main-font-color);
+        text-decoration: none;
+        
+        transition-property: background, color;
+        transition-duration: 2s;
+        
+        &:last-child {
+            margin-right: 0;
+        }
+        
+        &.now-page {
+            color: red;
+        }
+
+        &:hover {
+            transition-property: background color;
+            transition-duration: 0.5s;
+            background: var(--pager-hover-bg-color);
+            color: var(--pager-hover-font-color);
+        }
+    }
 }

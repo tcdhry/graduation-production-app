@@ -164,7 +164,7 @@ public class ManagerQuestionAction {
             return new PostQuestionResponse(errorList);
         }
 
-        String view_password_hash = PasswordManage.hash(view_password);
+        String view_password_hash = "".equals(view_password) ? null : PasswordManage.hash(view_password);
         boolean private_answer_mode = params.getPrivate_answer_mode();
         boolean release_flag = params.getRelease_flag();
 

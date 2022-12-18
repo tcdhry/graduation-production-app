@@ -28,7 +28,7 @@ function QuestionView(props: { question: QuestionBean, editorRef: undefined | Re
                         <span>問題ID：{props.question.question_id}</span>
                         <span>投稿者：{props.question.user_view_name}</span>
                         <span>投稿者ID：{props.question.user_id}</span>
-                        <span>published：{props.question.insert_datetime}</span>
+                        <span>投稿日時：{props.question.insert_timestamp}</span>
                     </p>
                 </Col>
             </Row>

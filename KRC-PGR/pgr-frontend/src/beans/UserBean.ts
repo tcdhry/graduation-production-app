@@ -1,7 +1,7 @@
 import { AuthorityID, AuthorityJapaneseName } from "../constants/Authority";
 
 export type UserBean = {
-    user_id: number,
+    user_id: string,
     user_name: string,
     view_name: null | string,
     authority_id: AuthorityID,

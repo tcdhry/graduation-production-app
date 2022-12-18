@@ -1,4 +1,6 @@
-import logo from "../../logo.svg";
+// import logo from "../../logo.svg";
+// import logo from "../../nijuwamitsuya.svg";
+import Logo from "../../nijuwamitsuya";
 import { useSelector } from "react-redux";
 import { Link, useLocation } from "react-router-dom";
 import { getUserViewName, UserBean } from "../../beans/UserBean";
@@ -102,6 +104,7 @@ function logoURL(authority_id: undefined | number) {
 
 function Header() {
     const user = useSelector((state: State) => state.loginUser.user);
+    const [jumpURL, setJumpURL] = useState('');
 
     return (
         <>
@@ -109,7 +112,8 @@ function Header() {
                 <div id="header-left">
                     <h1>
                         <Link to={logoURL(user?.authority_id)}>
-                            <img src={logo} alt="logo" id="logo-img" />
+                            {/* <img src={logo} alt="logo" id="logo-img" /> */}
+                            <Logo />
                         </Link>
                     </h1>
                 </div>
