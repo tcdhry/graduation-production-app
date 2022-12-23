@@ -43,7 +43,8 @@ public class SessionAspect {
         try {
             return (ResponseBase) pjp.proceed();
         } catch (Throwable t) {
-            return new ResponseBase();
+            t.printStackTrace();
+            return new ResponseBase(t.getMessage());
         }
     }
 

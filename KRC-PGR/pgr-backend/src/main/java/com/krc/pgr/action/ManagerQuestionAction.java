@@ -1,5 +1,7 @@
 package com.krc.pgr.action;
 
+import java.io.UnsupportedEncodingException;
+import java.security.NoSuchAlgorithmException;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -48,7 +50,7 @@ public class ManagerQuestionAction {
         return list.size() == 0;
     }
 
-    public PostQuestionResponse postQuestion(Map<String, Object> postParams) throws Exception {
+    public PostQuestionResponse postQuestion(Map<String, Object> postParams) throws NoSuchAlgorithmException, UnsupportedEncodingException {
         /**
          * errorList もしくは generatedId のどちらかを返す。
          */
@@ -117,6 +119,19 @@ public class ManagerQuestionAction {
             }
             if ("".equals(io_explain[i])) {
                 io_explain[i] = null;
+            }
+
+            /**
+             * 末尾が改行だった場合、排除する。
+             * 改行でない場合に付け足す方向性だと、その付け足しで文字数あふれする場合が考えられ、その分の処理が面倒なため。
+             * 実行時に統一して末尾の改行を付与する。
+             */
+            if (inputs[i].charAt(inputs[i].length() - 1) == '\n') {
+                inputs[i] = inputs[i].substring(0, inputs[i].length() - 1);
+            }
+
+            if (outputs[i].charAt(outputs[i].length() - 1) == '\n') {
+                outputs[i] = outputs[i].substring(0, outputs[i].length() - 1);
             }
 
             if (nullFlag == true) {

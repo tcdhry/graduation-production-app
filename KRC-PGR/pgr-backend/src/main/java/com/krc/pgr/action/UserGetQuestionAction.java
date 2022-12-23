@@ -1,5 +1,8 @@
 package com.krc.pgr.action;
 
+import java.io.UnsupportedEncodingException;
+import java.security.NoSuchAlgorithmException;
+import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -11,16 +14,20 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Component;
 
+import com.krc.pgr.bean.Question;
+import com.krc.pgr.bean.QuestionThumbnail;
 import com.krc.pgr.constant.SearchQuestionsStatus;
 import com.krc.pgr.constant.TF;
 import com.krc.pgr.params.SearchQuestionsParams;
+import com.krc.pgr.response.QuestionResponse;
+import com.krc.pgr.response.QuestionWithPasswordResponse;
 import com.krc.pgr.response.QuestionsResponse;
-import com.krc.pgr.response.ResponseBase;
 import com.krc.pgr.util.LimitQuery;
+import com.krc.pgr.util.PasswordManage;
 import com.krc.pgr.util.SessionManage;
 
 @Component
-public class UserQuestionAction {
+public class UserGetQuestionAction {
     @Autowired
     SessionManage session;
 
@@ -30,7 +37,7 @@ public class UserQuestionAction {
     @Autowired
     NamedParameterJdbcTemplate npjdbc;
 
-    public ResponseBase questions(Map<String, Object> getParams) {
+    public QuestionsResponse questions(Map<String, Object> getParams) {
         SearchQuestionsParams params;
         try {
             params = new SearchQuestionsParams(getParams);
@@ -103,5 +110,56 @@ public class UserQuestionAction {
             return new QuestionsResponse(SearchQuestionsStatus.OVER_PAGE);
         }
         return new QuestionsResponse(list);
+    }
+
+    public QuestionResponse question(String question_id_str) throws SQLException {
+        int question_id;
+        try {
+            /**
+             * question_idは整数値しか存在しないため、整数変換でエラーが起きたらnot foundで返す。
+             */
+            question_id = Integer.parseInt(question_id_str);
+        } catch (Exception e) {
+            // question not found
+            return new QuestionResponse();
+        }
+
+        String sql = "select * from f_questions(?) where release_flag = true and question_id = ?;";
+        List<Map<String, Object>> list = jdbc.queryForList(sql, session.getLoginUser().getUser_id(), question_id);
+
+        if (list.size() == 0) {
+            // question not found
+            return new QuestionResponse();
+        }
+
+        boolean password_required = (boolean) list.get(0).get("password_required");
+        if (session.isViewingQuestion(question_id) || password_required == false) {
+            session.setViewingQuestion_id(question_id);
+            return new QuestionResponse(new Question(list.get(0)));
+        } else {
+            return new QuestionResponse(new QuestionThumbnail(list.get(0)));
+        }
+    }
+
+    public QuestionWithPasswordResponse questionWithPassword(String question_id_str, Map<String, Object> postParams) throws NoSuchAlgorithmException, UnsupportedEncodingException, SQLException {
+        int question_id;
+        try {
+            question_id = Integer.parseInt(question_id_str);
+        } catch (Exception e) {
+            return new QuestionWithPasswordResponse();
+        }
+
+        String view_password = (String) postParams.get("view_password");
+        String view_password_hash = PasswordManage.hash(view_password);
+
+        String sql = "select * from f_questions(?) where release_flag = true and question_id = ? and view_password_hash = ?;";
+
+        List<Map<String, Object>> list = jdbc.queryForList(sql, session.getLoginUser().getUser_id(), question_id, view_password_hash);
+        if (list.size() == 0) {
+            return new QuestionWithPasswordResponse();
+        }
+
+        session.setViewingQuestion_id(question_id);
+        return new QuestionWithPasswordResponse(new Question(list.get(0)));
     }
 }

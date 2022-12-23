@@ -384,7 +384,7 @@ hr {
     margin: 1em 0;
 }
 
-.search-status {
+#search-status {
     border: var(--border);
     border-radius: 10px;
     padding: 10px 20px;
@@ -409,14 +409,14 @@ nav.pager {
         margin-right: 5px;
         color: var(--main-font-color);
         text-decoration: none;
-        
+
         transition-property: background, color;
         transition-duration: 2s;
-        
+
         &:last-child {
             margin-right: 0;
         }
-        
+
         &.now-page {
             color: red;
         }

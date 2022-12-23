@@ -49,12 +49,12 @@ function ViewQuestions() {
     const [searchStatus, setSearchStatus] = useState(SearchStatus.LOADING);
     const [hitCount, setHitCount] = useState(0);
     const [maxPage, setMaxPage] = useState(0);
-    // メソッドに参照渡しするためにobjectにする
-    const errorFlag = { flag: false };
-
+    
     useEffect(() => {
         const queryParams = queryString.parse(location.search);
         const newParams = { ...defaultParams };
+        // メソッドに参照渡しするためにobjectにする
+        const errorFlag = { flag: false };
         /**
          * queryParams.xxx: string | null | [string | null]
          * ------------------------------------------------------------
@@ -162,7 +162,8 @@ function ViewQuestions() {
                     setSearchStatus(res.data.searchStatus);
                     setQuestions(res.data.questions);
                     setHitCount(res.data.hitCount);
-                    setMaxPage(res.data.maxPage)
+                    setMaxPage(res.data.maxPage);
+                    document.getElementById('search-status')!.scrollIntoView({ behavior: 'smooth' });
                 });
             }).catch(catchError);
         }

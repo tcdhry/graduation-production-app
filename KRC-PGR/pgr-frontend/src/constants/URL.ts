@@ -64,7 +64,10 @@ enum UserAPI {
     changeViewName = 'changeViewName',
     changePassword = 'changePassword',
     questions = 'questions',
-
+    question = 'question',
+    questionWithPassword = 'questionWithPassword',
+    execConfirm = 'execConfirm',
+    answerConfirm = 'answerConfirm',
 }
 
 enum GuestAPI {

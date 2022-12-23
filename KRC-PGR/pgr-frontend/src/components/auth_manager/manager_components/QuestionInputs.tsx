@@ -171,7 +171,7 @@ function QuestionInputs(props: {
                 <Col>
                     <p>
                         入出力例は提出前の実行確認に利用されます。最大3件登録できます。<br />
-                        <span className="double-quotation">入力例</span> <span className="double-quotation">出力例</span> の末尾は改行で終えてください。改行で終えなかった場合には、自動で改行が挿入されます。<br />
+                        {/* <span className="double-quotation">入力例</span> <span className="double-quotation">出力例</span> の末尾は改行で終えてください。改行で終えなかった場合には、自動で改行が挿入されます。<br /> */}
                         同じ番号の<span className="double-quotation">入力例</span> <span className="double-quotation">出力例</span> <span className="double-quotation">入出力例の補足</span> を全て記述しなかった場合、以降の入出力例は無視されます。
                     </p>
                 </Col>
@@ -314,17 +314,17 @@ function QuestionInputs(props: {
                             if (props.question.inputs[i] === null) {
                                 list.push(<li key={keycnt++}><SmoothScrollLink toID={'inputs_' + viewidx}>入力例{viewidx}</SmoothScrollLink>が記述されていません。</li>);
                             } else {
-                                if (!(props.question.inputs[i] as string).endsWith('\n')) {
-                                    list.push(<li key={keycnt++}><SmoothScrollLink toID={'inputs_' + viewidx}>入力例{viewidx}</SmoothScrollLink>の末尾を改行で終えてください。改行を含めず登録した場合、自動で改行が挿入されます。</li>);
-                                }
+                                // if (!(props.question.inputs[i] as string).endsWith('\n')) {
+                                //     list.push(<li key={keycnt++}><SmoothScrollLink toID={'inputs_' + viewidx}>入力例{viewidx}</SmoothScrollLink>の末尾を改行で終えてください。改行を含めず登録した場合、自動で改行が挿入されます。</li>);
+                                // }
                             }
 
                             if (props.question.outputs[i] === null) {
                                 list.push(<li key={keycnt++}><SmoothScrollLink toID={'outputs_' + viewidx}>出力例{viewidx}</SmoothScrollLink>が記述されていません。</li>);
                             } else {
-                                if (!(props.question.outputs[i] as string).endsWith('\n')) {
-                                    list.push(<li key={keycnt++}><SmoothScrollLink toID={'outputs_' + viewidx}>出力例{viewidx}</SmoothScrollLink>の末尾を改行で終えてください。改行を含めず登録した場合、自動で改行が挿入されます。</li>);
-                                }
+                                // if (!(props.question.outputs[i] as string).endsWith('\n')) {
+                                //     list.push(<li key={keycnt++}><SmoothScrollLink toID={'outputs_' + viewidx}>出力例{viewidx}</SmoothScrollLink>の末尾を改行で終えてください。改行を含めず登録した場合、自動で改行が挿入されます。</li>);
+                                // }
                             }
 
                             if (props.question.io_explain[i] === null) {

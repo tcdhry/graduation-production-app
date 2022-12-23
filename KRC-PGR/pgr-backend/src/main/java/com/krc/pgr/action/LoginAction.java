@@ -1,5 +1,7 @@
 package com.krc.pgr.action;
 
+import java.io.UnsupportedEncodingException;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Map;
 
@@ -37,7 +39,7 @@ public class LoginAction {
         String password_hash;
         try {
             password_hash = PasswordManage.hash(postParams.get("password").toString());
-        } catch (Exception e) {
+        } catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
             return new LoginResponse();
         }
 
@@ -56,7 +58,7 @@ public class LoginAction {
     }
 
     public void logout() {
-        session.removeLoginUser();
+        session.logout();
     }
 
     public SessionCheckResponse sessionCheck() {

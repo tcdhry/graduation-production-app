@@ -9,7 +9,7 @@ export class QuestionBean {
         this.user_id = user.user_id;
         this.user_view_name = getUserViewName(user);
     }
-    public question_id: number = 0;
+    public question_id: string = '0';
     public question_title: string = '';
     public question_text: string = '';
     public input: string = '';
@@ -20,8 +20,8 @@ export class QuestionBean {
     public outputs: [null | string, null | string, null | string] = [null, null, null];
     public io_explain: [null | string, null | string, null | string] = [null, null, null];
     public language_designation: number | null = null;
-    // public private_answer_mode: boolean = false;
-    // public release_flag: boolean = false;
+    public private_answer_mode: boolean = false;
+    public release_flag: boolean = false;
     public insert_timestamp: string = function () {
         const today = new Date();
         const yyyy = today.getFullYear();

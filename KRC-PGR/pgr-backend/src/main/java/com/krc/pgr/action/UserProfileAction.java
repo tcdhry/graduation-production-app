@@ -1,5 +1,7 @@
 package com.krc.pgr.action;
 
+import java.io.UnsupportedEncodingException;
+import java.security.NoSuchAlgorithmException;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +45,7 @@ public class UserProfileAction {
         return new ChangeViewNameResponse();
     }
 
-    public ChangePasswordResponse changePassword(Map<String, Object> putParams) throws Exception {
+    public ChangePasswordResponse changePassword(Map<String, Object> putParams) throws NoSuchAlgorithmException, UnsupportedEncodingException {
         String password = putParams.get("password").toString();
         String password_check = putParams.get("password_check").toString();
 

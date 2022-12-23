@@ -3,7 +3,7 @@ import { QuestionThumbnail } from "../../beans/QuestionBean";
 import { getLanguageName } from "../../constants/Language";
 import { generateURL } from "../../constants/URL";
 
-function QuestionThumbnailCard(props: { question: QuestionThumbnail, toURL: string }) {
+function QuestionThumbnailCard(props: { question: QuestionThumbnail, toURL: string, questionsURL: string }) {
     return (
         <>
             <section className="question-card">
@@ -20,7 +20,7 @@ function QuestionThumbnailCard(props: { question: QuestionThumbnail, toURL: stri
                 </Link>
                 <div className="qt-poster">
                     <p>投稿者</p>
-                    <Link to={'?poster_id=' + props.question.user_id} className="text-link">
+                    <Link to={props.questionsURL + '?poster_id=' + props.question.user_id} className="text-link">
                         {props.question.user_view_name}
                     </Link>
                 </div>

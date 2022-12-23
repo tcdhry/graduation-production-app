@@ -3,15 +3,21 @@ package com.krc.pgr.controller;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.krc.pgr.action.UserProfileAction;
-import com.krc.pgr.action.UserQuestionAction;
+import com.krc.pgr.action.UserExecQuestionAction;
+import com.krc.pgr.action.UserGetQuestionAction;
 import com.krc.pgr.aspect.Permit;
 import com.krc.pgr.constant.Authority;
 import com.krc.pgr.response.ResponseBase;
 
+import java.io.UnsupportedEncodingException;
+import java.security.NoSuchAlgorithmException;
+import java.sql.SQLException;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,7 +31,10 @@ public class UserController {
     UserProfileAction userProfileAction;
 
     @Autowired
-    UserQuestionAction userQuestionAction;
+    UserGetQuestionAction userGetQuestionAction;
+
+    @Autowired
+    UserExecQuestionAction userExecQuestionAction;
 
     @PutMapping("/changeViewName")
     public ResponseBase changeViewName(@RequestBody Map<String, Object> putParams) {
@@ -61,6 +70,47 @@ public class UserController {
          *         password: String : tf | t | f
          *         sort: String : new | old
          */
-        return userQuestionAction.questions(getParams);
+        return userGetQuestionAction.questions(getParams);
+    }
+
+    @GetMapping("/question/{question_id}")
+    public ResponseBase qeustion(@PathVariable String question_id) throws SQLException {
+        /**
+         * @return QuestionResponse extends ResponseBase
+         * 
+         * @params @PathVariable question_id: String
+         */
+        return userGetQuestionAction.question(question_id);
+    }
+
+    @PostMapping("/questionWithPassword/{question_id}")
+    public ResponseBase questionWithPassword(@PathVariable String question_id, @RequestBody Map<String, Object> postParams) throws NoSuchAlgorithmException, UnsupportedEncodingException, SQLException {
+        /**
+         * @return QuestionResponse extends ResponseBase
+         * 
+         * @param @PathVariable question_id: String
+         * @param @RequestBody  postParams: Map<String, Object>
+         *                      ."view_password": String
+         */
+        return userGetQuestionAction.questionWithPassword(question_id, postParams);
+    }
+
+    @PostMapping("/execConfirm/{question_id}")
+    public ResponseBase execConfirm(@PathVariable String question_id, @RequestBody Map<String, Object> postParams) throws SQLException {
+        /**
+         * @return ExecConfirmResponse extends ResponseBase
+         * 
+         * @param @PathVariable question_id: String
+         * @param @RequestBody  postParams: Map<String, Object>
+         *                      ."source_code": String
+         *                      ."select_language": Integer
+         */
+        return userExecQuestionAction.execConfirm(question_id, postParams);
+    }
+
+    @PostMapping("/answerConfirm/{question_id}")
+    public ResponseBase answerConfirm(@PathVariable String question_id, @RequestBody Map<String, Object> postParams) throws SQLException {
+
+        return userExecQuestionAction.execConfirm(question_id, postParams);
     }
 }

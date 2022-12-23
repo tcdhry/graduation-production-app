@@ -5,7 +5,7 @@ import queryString from "query-string";
 function SearchStatusView(props: { searchStatus: SearchStatus, hitCount: number, maxPage: number, nowPage: number }) {
     const params = queryString.parse(useLocation().search);
     return (
-        <div className="search-status">
+        <div id="search-status">
             {
                 function () {
                     switch (props.searchStatus) {
