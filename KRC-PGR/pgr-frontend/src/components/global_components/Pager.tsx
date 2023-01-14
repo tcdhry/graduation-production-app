@@ -1,7 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 import { SearchStatus } from "../../constants/SearchStatus";
 import queryString from "query-string";
-import { useEffect } from "react";
 
 function Pager(props: { searchStatus: SearchStatus, hitCount: number, maxPage: number, nowPage: number }) {
     const params = queryString.parse(useLocation().search);

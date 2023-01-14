@@ -13,26 +13,26 @@ public class ResponseBase {
      * を返す。
      * @formatter:on
      */
-    private int status = 0;
+    private ResponseStatus status = ResponseStatus.SUCCESS;
     private String errorMessage = null;
 
     public ResponseBase() {
     }
 
     public ResponseBase(ResponseStatus responseStatus) {
-        this.status = responseStatus.getResponseStatus();
+        this.status = responseStatus;
     }
 
     public ResponseBase(String errorMessage) {
-        this.status = ResponseStatus.RUN_TIME_ERROR.getResponseStatus();
+        this.status = ResponseStatus.RUN_TIME_ERROR;
         this.errorMessage = errorMessage;
     }
 
     public int getStatus() {
-        return status;
+        return status.getResponseStatus();
     }
 
-    public void setStatus(int status) {
+    public void setStatus(ResponseStatus status) {
         this.status = status;
     }
 

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { QuestionBean } from "../../../beans/QuestionBean";
 import { Languages } from "../../../constants/Language";
 import LabelInput from "../../global_components/LabelInput";
@@ -18,9 +18,9 @@ export enum TitleStatus {
     WhitespaceOnly = 4, // 使用不可のタイトル（空白文字のみ）
 }
 
-function QuestionTitleInput(props: { setter: Function, defaultTitle: string | undefined, titleStatus: TitleStatus, setTitleStatus: React.Dispatch<React.SetStateAction<TitleStatus>> }) {
+function QuestionTitleInput(props: { setter: Function, defaultValue: string, defaultTitle: string | undefined, titleStatus: TitleStatus, setTitleStatus: React.Dispatch<React.SetStateAction<TitleStatus>> }) {
     const [length, setLength] = useState(0);
-    const navigate = useNavigate()
+    const navigate = useNavigate();
 
     return (
         <LabelInput label={
@@ -58,6 +58,7 @@ function QuestionTitleInput(props: { setter: Function, defaultTitle: string | un
                     id="question_title"
                     name="question_title"
                     maxLength={50}
+                    defaultValue={props.defaultValue}
                 />
                 <p className="error-message">
                     {function () {
@@ -80,7 +81,7 @@ function QuestionTitleInput(props: { setter: Function, defaultTitle: string | un
     );
 }
 
-function LimitedTextArea(props: { labelName: string, required?: boolean, markdown?: boolean, id: string, maxLength: number, setter: (val: string) => void }) {
+function LimitedTextArea(props: { labelName: string, required?: boolean, markdown?: boolean, id: string, maxLength: number, setter: (val: string) => void, defaultValue: string | null }) {
     const [length, setLength] = useState(0);
 
     return (
@@ -97,7 +98,7 @@ function LimitedTextArea(props: { labelName: string, required?: boolean, markdow
                 <LargeTextArea id={props.id} onChange={(event) => {
                     setLength(event.target.value.length);
                     props.setter(event.target.value);
-                }} maxLength={props.maxLength} />
+                }} maxLength={props.maxLength} defaultValue={props.defaultValue} />
             </>
         } label_width={label_width} />
     );
@@ -124,6 +125,7 @@ function QuestionInputs(props: {
                 defaultTitle={props.defaultTitle}
                 titleStatus={props.titleStatus}
                 setTitleStatus={props.setTitleStatus}
+                defaultValue={props.question.question_title}
             />
 
             <LimitedTextArea
@@ -133,6 +135,7 @@ function QuestionInputs(props: {
                 required={true}
                 markdown={true}
                 setter={function (val: string) { props.setQuestion({ ...props.question, question_text: val }); }}
+                defaultValue={props.question.question_text}
             />
 
             <LimitedTextArea
@@ -140,6 +143,7 @@ function QuestionInputs(props: {
                 id={'input'}
                 maxLength={1000}
                 setter={function (val: string) { props.setQuestion({ ...props.question, input: val }); }}
+                defaultValue={props.question.input}
             />
 
             <LimitedTextArea
@@ -148,6 +152,7 @@ function QuestionInputs(props: {
                 maxLength={1000}
                 markdown={true}
                 setter={function (val: string) { props.setQuestion({ ...props.question, input_explain: val }); }}
+                defaultValue={props.question.input_explain}
             />
 
             <LimitedTextArea
@@ -155,6 +160,7 @@ function QuestionInputs(props: {
                 id={'output'}
                 maxLength={1000}
                 setter={function (val: string) { props.setQuestion({ ...props.question, output: val }); }}
+                defaultValue={props.question.output}
             />
 
             <LimitedTextArea
@@ -163,6 +169,7 @@ function QuestionInputs(props: {
                 maxLength={1000}
                 markdown={true}
                 setter={function (val: string) { props.setQuestion({ ...props.question, output_explain: val }); }}
+                defaultValue={props.question.output_explain}
             />
 
             <hr />
@@ -172,7 +179,8 @@ function QuestionInputs(props: {
                     <p>
                         入出力例は提出前の実行確認に利用されます。最大3件登録できます。<br />
                         {/* <span className="double-quotation">入力例</span> <span className="double-quotation">出力例</span> の末尾は改行で終えてください。改行で終えなかった場合には、自動で改行が挿入されます。<br /> */}
-                        同じ番号の<span className="double-quotation">入力例</span> <span className="double-quotation">出力例</span> <span className="double-quotation">入出力例の補足</span> を全て記述しなかった場合、以降の入出力例は無視されます。
+                        同じ番号の<span className="double-quotation">入力例</span><span className="double-quotation">出力例</span><span className="double-quotation">入出力例の補足</span> を全て記述しなかった場合、以降の入出力例は無視されます。<br />
+                        <span className="double-quotation">入力例</span><span className="double-quotation">出力例</span>の末尾は必ず改行で終えてください。
                     </p>
                 </Col>
             </Row>
@@ -192,6 +200,7 @@ function QuestionInputs(props: {
                                         newInputs[i - 1] = val === '' ? null : val;
                                         props.setQuestion({ ...props.question, inputs: newInputs });
                                     }}
+                                    defaultValue={props.question.inputs[i - 1]}
                                 />
 
                                 <LimitedTextArea
@@ -203,6 +212,7 @@ function QuestionInputs(props: {
                                         newOutputs[i - 1] = val === '' ? null : val;
                                         props.setQuestion({ ...props.question, outputs: newOutputs });
                                     }}
+                                    defaultValue={props.question.outputs[i - 1]}
                                 />
 
                                 <LimitedTextArea
@@ -215,6 +225,7 @@ function QuestionInputs(props: {
                                         newIo_explain[i - 1] = val === '' ? null : val;
                                         props.setQuestion({ ...props.question, io_explain: newIo_explain });
                                     }}
+                                    defaultValue={props.question.io_explain[i - 1]}
                                 />
                             </div>
                         );
@@ -231,7 +242,7 @@ function QuestionInputs(props: {
                 input={
                     <select id="language_designation" name="language_designation" onChange={function (event) {
                         props.setQuestion({ ...props.question, language_designation: event.target.value === 'null' ? null : Number(event.target.value) });
-                    }}>
+                    }} defaultValue={new String(props.question.language_designation) as string}>
                         <option value="null">言語指定なし</option>
                         {Languages.map((lang) => { return <option key={lang.language_id} value={lang.language_id}>{lang.language_name}</option> })}
                     </select>
@@ -251,11 +262,17 @@ function QuestionInputs(props: {
                 label_width={label_width}
             />
 
+            <Row>
+                <Col>
+                    <p className="error-message">【注意】問題を編集する場合、パスワードを再入力してください。</p>
+                </Col>
+            </Row>
+
             <LabelInput
                 label={<label htmlFor="private_answer_mode">解答非公開モード</label>}
                 input={
                     <p>
-                        <input type="checkbox" id="private_answer_mode" name="private_answer_mode" onChange={function (event) { setPrivateAnswerMode(event.target.checked); }} />
+                        <input type="checkbox" id="private_answer_mode" name="private_answer_mode" onChange={function (event) { setPrivateAnswerMode(event.target.checked); }} defaultChecked={props.question.private_answer_mode} />
                         <label htmlFor="private_answer_mode">チェックをすると、他の人が提出した解答を見られなくなります。</label>
                     </p>
                 }
@@ -266,7 +283,7 @@ function QuestionInputs(props: {
                 label={<label htmlFor="release_flag">問題を公開する</label>}
                 input={
                     <p>
-                        <input type="checkbox" id="release_flag" name="release_flag" onChange={function (event) { setReleaseFlag(event.target.checked); }} />
+                        <input type="checkbox" id="release_flag" name="release_flag" onChange={function (event) { setReleaseFlag(event.target.checked); }} defaultChecked={props.question.release_flag} />
                         <label htmlFor="release_flag">チェックしなければ問題一覧に表示されず、問題IDを知っていても表示できません。</label>
                     </p>
                 }
@@ -281,22 +298,22 @@ function QuestionInputs(props: {
                     function () {
                         switch (props.titleStatus) {
                             case TitleStatus.NotEntered:
-                                return <li className="warning"><SmoothScrollLink toID="question_title">タイトル</SmoothScrollLink>を記述してください。</li>;
+                                return <li className="warning">【必須】<SmoothScrollLink toID="question_title">タイトル</SmoothScrollLink>を記述してください。</li>;
                             case TitleStatus.ExistTitle:
-                                return <li className="warning"><SmoothScrollLink toID="question_title">タイトル</SmoothScrollLink>が既に使用されています。変更してください。</li>;
+                                return <li className="warning">【必須】<SmoothScrollLink toID="question_title">タイトル</SmoothScrollLink>が既に使用されています。変更してください。</li>;
                             case TitleStatus.WhitespaceOnly:
-                                return <li className="warning"><SmoothScrollLink toID="question_title">タイトル</SmoothScrollLink>を空白文字のみで構成することはできません。</li>;
+                                return <li className="warning">【必須】<SmoothScrollLink toID="question_title">タイトル</SmoothScrollLink>を空白文字のみで構成することはできません。</li>;
                         }
                     }()
                 }
-                {props.question.question_text === '' ? <li className="warning"><SmoothScrollLink toID="question_text">問題文</SmoothScrollLink>を記述してください。</li> : null}
+                {props.question.question_text === '' ? <li className="warning">【必須】<SmoothScrollLink toID="question_text">問題文</SmoothScrollLink>を記述してください。</li> : null}
                 {props.question.input === '' ? <li><SmoothScrollLink toID="input">入力形式</SmoothScrollLink>が記述されていません。入力が無い場合、入力値による分岐が無く、正解出力パターンが1つのみの問題になります。</li> : null}
                 {props.question.input_explain === '' ? (
                     <li><SmoothScrollLink toID="input_explain">入力形式の説明</SmoothScrollLink>が記述されていません。
                         {props.question.input === '' ? <>入力が無い問題の場合は、入力が無い旨を説明することが推奨されます。</> : <><SmoothScrollLink toID="input">入力形式</SmoothScrollLink>に対する説明を記述してください。</>}
                     </li>
                 ) : null}
-                {props.question.output === '' ? <li><SmoothScrollLink toID="output">出力形式</SmoothScrollLink>が記述されていません。正解出力の判定ができません。</li> : null}
+                {props.question.output === '' ? <li><SmoothScrollLink toID="output">出力形式</SmoothScrollLink>が記述されていません。</li> : null}
                 {props.question.output_explain === '' ? (
                     <li>
                         <SmoothScrollLink toID="output_explain">出力形式の説明</SmoothScrollLink>が記述されていません。
@@ -314,17 +331,17 @@ function QuestionInputs(props: {
                             if (props.question.inputs[i] === null) {
                                 list.push(<li key={keycnt++}><SmoothScrollLink toID={'inputs_' + viewidx}>入力例{viewidx}</SmoothScrollLink>が記述されていません。</li>);
                             } else {
-                                // if (!(props.question.inputs[i] as string).endsWith('\n')) {
-                                //     list.push(<li key={keycnt++}><SmoothScrollLink toID={'inputs_' + viewidx}>入力例{viewidx}</SmoothScrollLink>の末尾を改行で終えてください。改行を含めず登録した場合、自動で改行が挿入されます。</li>);
-                                // }
+                                if (!(props.question.inputs[i] as string).endsWith('\n')) {
+                                    list.push(<li key={keycnt++}><SmoothScrollLink toID={'inputs_' + viewidx}>入力例{viewidx}</SmoothScrollLink>の末尾を改行で終えてください。改行を含めず登録した場合、最後の行は正常に入力されません。</li>);
+                                }
                             }
 
                             if (props.question.outputs[i] === null) {
                                 list.push(<li key={keycnt++}><SmoothScrollLink toID={'outputs_' + viewidx}>出力例{viewidx}</SmoothScrollLink>が記述されていません。</li>);
                             } else {
-                                // if (!(props.question.outputs[i] as string).endsWith('\n')) {
-                                //     list.push(<li key={keycnt++}><SmoothScrollLink toID={'outputs_' + viewidx}>出力例{viewidx}</SmoothScrollLink>の末尾を改行で終えてください。改行を含めず登録した場合、自動で改行が挿入されます。</li>);
-                                // }
+                                if (!(props.question.outputs[i] as string).endsWith('\n')) {
+                                    list.push(<li key={keycnt++}><SmoothScrollLink toID={'outputs_' + viewidx}>出力例{viewidx}</SmoothScrollLink>の末尾を改行で終えてください。改行を含めず登録した場合、生後判定が正常にできません。</li>);
+                                }
                             }
 
                             if (props.question.io_explain[i] === null) {
@@ -342,7 +359,7 @@ function QuestionInputs(props: {
                         for (let i = 0; i < 3; i++) {
                             if (props.question.inputs[i] === null && props.question.outputs[i] === null && props.question.io_explain[i] === null) {
                                 const viewidx = i + 1;
-                                list.push(<li key={keycnt++}><SmoothScrollLink toID={'inputs_' + viewidx}>入出力例{viewidx}</SmoothScrollLink>が全て記述されていません。以降の入出力例は全て無視され、登録されません。記述している場合は1から順に記述してください。</li>);
+                                list.push(<li key={keycnt++} className="warning"><SmoothScrollLink toID={'inputs_' + viewidx}>入出力例{viewidx}</SmoothScrollLink>が全て記述されていません。以降の入出力例は全て無視され、登録されません。記述している場合は1から順に記述してください。</li>);
                                 if (i === 0) {
                                     list.push(<li key={keycnt++}><SmoothScrollLink toID={'inputs_' + viewidx}>入出力例</SmoothScrollLink>が1件も登録されません。解答者は、提出前の実行確認ができません。</li>);
                                 }

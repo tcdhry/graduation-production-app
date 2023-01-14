@@ -6,13 +6,18 @@ public class ExecStatus {
     private ExecStatusCode execStatusCode;
     private String output;
 
-    ExecStatus(ExecStatusCode execStatusCode, String output) {
+    public ExecStatus(ExecStatusCode execStatusCode, String output) {
         this.execStatusCode = execStatusCode;
         this.output = output;
     }
 
-    public ExecStatusCode getExecStatusCode() {
-        return execStatusCode;
+    public ExecStatus(ExecStatusCode execStatusCode) {
+        this.execStatusCode = execStatusCode;
+        this.output = null;
+    }
+
+    public int getExecStatusCode() {
+        return execStatusCode.getId();
     }
 
     public String getOutput() {

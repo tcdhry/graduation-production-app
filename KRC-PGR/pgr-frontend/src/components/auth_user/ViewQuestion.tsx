@@ -1,10 +1,10 @@
 import axios from "axios";
-import { useEffect, useRef, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { QuestionBean, QuestionThumbnail } from "../../beans/QuestionBean";
 import { AnyFormEvent } from "../../constants/AnyFormEvent";
 import { catchError, receiveResponse, ResponseBase } from "../../constants/ResponseStatus";
-import { API, generateAPI } from "../../constants/URL";
+import { API, generateAPI, generateURL, URL } from "../../constants/URL";
 import Loading from "../errors/Loading";
 import { Col, Row } from "../global_components/24ColLayout";
 import LabelInput from "../global_components/LabelInput";
@@ -12,6 +12,8 @@ import QuestionsListView from "../global_components/QuestionsListView";
 import QuestionView, { ExecConfirmButtonName } from "../global_components/QuestionView";
 import useErrorMessageState from "../global_components/useErrorMessageState";
 import AceEditor from "react-ace";
+import { AnswerConfirmStatus, ExecConfirmStatus, ExecStatus } from "../../beans/ExecStatus";
+import { ExecStatuses, ExecStatusCode } from "../../constants/ExecStatus";
 
 
 const label_width = 5;
@@ -31,7 +33,7 @@ function InputViewPasswordForm(props: { thumbnail: QuestionThumbnail, setQuestio
             </Row>
             <Row>
                 <Col>
-                    <QuestionsListView questions={[props.thumbnail]} />
+                    <QuestionsListView questions={[props.thumbnail]} toURL={generateURL(URL.User._, URL.User.viewQuestion)} />
                 </Col>
             </Row>
             <form onSubmit={function (event: AnyFormEvent) {
@@ -80,6 +82,168 @@ function InputViewPasswordForm(props: { thumbnail: QuestionThumbnail, setQuestio
     );
 }
 
+
+function QuestionConfirmForm(props: { question: QuestionBean }) {
+    const editorRef = useRef<AceEditor>(null);
+    const navigate = useNavigate();
+    const params = useParams();
+    const [execList, setExecList] = useState<Array<ExecStatus>>([]);
+    const [answerConfirmMessage, setAnswerConfirmMessage] = useErrorMessageState();
+    const [submitting, setSubmitting] = useState(false);
+
+
+    return (
+        <>
+            <form onSubmit={function (event: AnyFormEvent) {
+                event.preventDefault();
+
+                // https://github.com/securingsincity/react-ace/issues/685
+                const source_code = (editorRef.current! as AceEditor).editor.getValue();
+                // 言語指定が無ければ選択言語を取得、言語指定があればその言語IDを取得。
+                const select_language = props.question.language_designation === null ? Number(event.target.language_designation.value) : props.question.language_designation;
+
+
+                switch (event.nativeEvent.submitter.name) {
+                    case ExecConfirmButtonName:
+                        // 提出前実行確認
+                        if (source_code === '') {
+                            alert('プログラムが入力されていません。');
+                            return;
+                        }
+                        if (isNaN(select_language)) {
+                            alert('言語が選択されていません。');
+                            return;
+                        }
+                        setSubmitting(true);
+                        type ExecConfirmResponse = ResponseBase & {
+                            data: {
+                                execConfirmStatus: ExecConfirmStatus,
+                                execList: Array<ExecStatus>
+                            }
+                        };
+                        axios.post(generateAPI(API.User._, API.User.execConfirm) + '/' + params.question_id, { source_code: source_code, select_language: select_language })
+                            .then((res: ExecConfirmResponse) => {
+                                receiveResponse(res, navigate, function () {
+                                    if (res.data.execConfirmStatus === ExecConfirmStatus.SUCCESS) {
+                                        setExecList(res.data.execList);
+                                        window.setTimeout(() => {
+                                            document.getElementById('exec-confirm-result')?.scrollIntoView({ behavior: 'smooth' });
+                                        }, 1);
+                                    } else {
+                                        alert('エラー');
+                                    }
+                                });
+                            }).catch(catchError).finally(() => { setSubmitting(false); });
+                        break;
+                    case AnswerConfirmButtonName:
+                        // 解答確定提出
+                        if (submitting === true) {
+                            return;
+                        }
+                        setAnswerConfirmMessage('　');
+                        setSubmitting(false);
+
+                        if (source_code === '') {
+                            alert('プログラムが入力されていません。');
+                            return;
+                        }
+                        if (!window.confirm('解答を確定して提出しますか？')) {
+                            return;
+                        }
+
+                        setAnswerConfirmMessage('提出中');
+                        setSubmitting(true);
+                        type AnswerConfirmResponse = ResponseBase & {
+                            data: {
+                                answerConfirmStatus: AnswerConfirmStatus,
+                            }
+                        }
+                        axios.post(generateAPI(API.User._, API.User.answerConfirm) + '/' + params.question_id, { source_code: source_code, select_language: select_language })
+                            .then((res: AnswerConfirmResponse) => {
+                                receiveResponse(res, navigate, function () {
+                                    console.log(res);
+                                });
+                            }).catch(catchError).finally(() => { setSubmitting(false); });
+                        break;
+                }
+            }} >
+                <QuestionView question={props.question} editorRef={editorRef} />
+
+                {
+                    execList.length === 0 ? (
+                        <></>
+                    ) : (
+                        <div id="exec-confirm-result">
+                            <h3>実行確認結果</h3>
+                            {
+                                function () {
+                                    const list: Array<JSX.Element> = [];
+                                    let i = 0;
+                                    execList.forEach((exec) => {
+                                        list.push(
+                                            <Fragment key={i}>
+                                                <div className={'exec-result-' + (exec.execStatusCode === ExecStatusCode.Accepted ? 'accepted' : 'wrong')}>
+                                                    <table>
+                                                        <tbody>
+                                                            <tr>
+                                                                <th>
+                                                                    入出力例{i + 1}
+                                                                </th>
+                                                                <td>
+                                                                    <span className="exec-status">
+                                                                        {ExecStatuses[exec.execStatusCode].statusName}
+                                                                        <span className="exec-status-description">
+                                                                            {ExecStatuses[exec.execStatusCode].description}
+                                                                        </span>
+                                                                    </span>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <th>入力値</th>
+                                                                <td className="io-block">
+                                                                    {props.question.inputs[i]}
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <th>出力値</th>
+                                                                <td className="io-block">
+                                                                    {exec.output}
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <th>正答出力値</th>
+                                                                <td className="io-block">
+                                                                    {props.question.outputs[i]}
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                                <hr />
+                                            </Fragment>
+                                        );
+                                        i++;
+                                    });
+                                    return list;
+                                }()
+                            }
+                        </div>
+                    )
+                }
+
+                <Row>
+                    <Col>
+                        <input type="submit" value="提出" className="btn btn-full" name={AnswerConfirmButtonName} />
+                        <br />
+                        {answerConfirmMessage}
+                    </Col>
+                </Row>
+            </form>
+        </>
+    );
+}
+
+
 const AnswerConfirmButtonName = 'answer-confirm-button';
 
 function ViewQuestion() {
@@ -87,7 +251,6 @@ function ViewQuestion() {
     const navigate = useNavigate();
     const [question, setQuestion] = useState<QuestionBean | undefined | null>(undefined);
     const [thumbnail, setThumbnail] = useState<QuestionThumbnail | undefined | null>(undefined);
-    const editorRef = useRef(null);
 
     useEffect(() => {
         type QuestionResponse = ResponseBase & {
@@ -131,58 +294,7 @@ function ViewQuestion() {
 
     if (question !== null) {
         return (
-            <form onSubmit={function (event: AnyFormEvent & { nativeEvent: { submitter: React.DetailedHTMLProps<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement> } }) {
-                event.preventDefault();
-
-                // https://github.com/securingsincity/react-ace/issues/685
-                const source_code = (editorRef.current! as AceEditor).editor.getValue();
-                // 言語指定が無ければ選択言語を取得、言語指定があればその言語IDを取得。
-                const select_language = question.language_designation === null ? Number(event.target.language_designation.value) : question.language_designation;
-
-                switch (event.nativeEvent.submitter.name) {
-                    case ExecConfirmButtonName:
-                        // 提出前実行確認
-                        type ExecConfirmResponse = ResponseBase & {
-                            data: {
-
-                            }
-                        }
-                        axios.post(generateAPI(API.User._, API.User.execConfirm) + '/' + params.question_id, { source_code: source_code, select_language: select_language }).then((res: ExecConfirmResponse) => {
-                            receiveResponse(res, navigate, function () {
-                                console.log(res)
-                            });
-                        }).catch(catchError);
-                        break;
-                    case AnswerConfirmButtonName:
-                        // 解答確定提出
-
-                        break;
-                }
-
-                // type SubmissionCodeResponse = ResponseBase & {
-                //     data: {
-                //         execList: Array<ExecStatus>
-                //     }
-                // };
-                // axios.post(
-                //     generateAPIPath(API.user, API.submissionCode),
-                //     { question_id: question.question_id, source_code: source_code, language: select_language }
-                // ).then((res: SubmissionCodeResponse) => {
-                //     console.log('receive')
-                //     receiveResponse(res, navigate, function () {
-                //         console.log(res);
-                //         setExecList(res.data.execList);
-                //     });
-                // });
-                // }
-            }} >
-                <QuestionView question={question} editorRef={editorRef} />
-                <Row>
-                    <Col>
-                        <input type="submit" value="提出" className="btn btn-full" name={AnswerConfirmButtonName} />
-                    </Col>
-                </Row>
-            </ form>
+            <QuestionConfirmForm question={question} />
         );
     }
 

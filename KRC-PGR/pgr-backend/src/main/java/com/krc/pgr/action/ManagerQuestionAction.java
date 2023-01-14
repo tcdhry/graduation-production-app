@@ -3,23 +3,38 @@ package com.krc.pgr.action;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import org.postgresql.jdbc.PgArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import com.krc.pgr.bean.PostQuestionError;
+import com.krc.pgr.bean.Question;
 import com.krc.pgr.constant.Language;
+import com.krc.pgr.constant.SearchQuestionsStatus;
+import com.krc.pgr.constant.TF;
 import com.krc.pgr.params.PostQuestionParams;
+import com.krc.pgr.params.SearchQuestionsParams;
 import com.krc.pgr.response.PostQuestionResponse;
+import com.krc.pgr.response.QuestionIOResponse;
+import com.krc.pgr.response.QuestionResponse;
+import com.krc.pgr.response.QuestionsResponse;
 import com.krc.pgr.response.TitleCheckResponse;
+import com.krc.pgr.util.Converter;
+import com.krc.pgr.util.LimitQuery;
 import com.krc.pgr.util.PasswordManage;
 import com.krc.pgr.util.SessionManage;
 
@@ -30,6 +45,9 @@ public class ManagerQuestionAction {
 
     @Autowired
     JdbcTemplate jdbc;
+
+    @Autowired
+    NamedParameterJdbcTemplate npjdbc;
 
     public TitleCheckResponse titleCheck(Map<String, Object> postParams) {
         /**
@@ -121,18 +139,20 @@ public class ManagerQuestionAction {
                 io_explain[i] = null;
             }
 
-            /**
-             * 末尾が改行だった場合、排除する。
-             * 改行でない場合に付け足す方向性だと、その付け足しで文字数あふれする場合が考えられ、その分の処理が面倒なため。
-             * 実行時に統一して末尾の改行を付与する。
-             */
-            if (inputs[i].charAt(inputs[i].length() - 1) == '\n') {
-                inputs[i] = inputs[i].substring(0, inputs[i].length() - 1);
-            }
-
-            if (outputs[i].charAt(outputs[i].length() - 1) == '\n') {
-                outputs[i] = outputs[i].substring(0, outputs[i].length() - 1);
-            }
+//            入力が無い問題で意図しない挙動になる恐れがあるのでコメントアウト。
+//            最後に改行を入れる必要がある注意書きはするが、入れ忘れは拾わない。
+//            /**
+//             * 末尾が改行だった場合、排除する。
+//             * 改行でない場合に付け足す方向性だと、その付け足しで文字数あふれする場合が考えられ、その分の処理が面倒なため。
+//             * 実行時に統一して末尾の改行を付与する。
+//             */
+//            if (inputs[i].charAt(inputs[i].length() - 1) == '\n') {
+//                inputs[i] = inputs[i].substring(0, inputs[i].length() - 1);
+//            }
+//
+//            if (outputs[i].charAt(outputs[i].length() - 1) == '\n') {
+//                outputs[i] = outputs[i].substring(0, outputs[i].length() - 1);
+//            }
 
             if (nullFlag == true) {
                 inputs[i] = null;
@@ -204,5 +224,125 @@ public class ManagerQuestionAction {
 
         int generatedId = (int) keyHolder.getKeys().get(primaryKeyName);
         return generatedId;
+    }
+
+    public QuestionsResponse myQuestions(Map<String, Object> getParams) {
+        SearchQuestionsParams params;
+        try {
+            params = new SearchQuestionsParams(getParams);
+        } catch (Exception e) {
+            // 入力値処理中エラー
+            return new QuestionsResponse(SearchQuestionsStatus.INPUT_VALUE_ERROR);
+        }
+        String sqlSelect = "select *, count(*) over()::int as hit_count from f_question_thumbnails(:user_id)";
+        String sqlWhere = " where user_id = :user_id";
+
+        MapSqlParameterSource sqlParams = new MapSqlParameterSource();
+        sqlParams.addValue("user_id", session.getLoginUser().getUser_id());
+
+        if (params.getTitle() != null) {
+            sqlWhere += " and question_title like :title";
+            sqlParams.addValue("title", "%" + params.getTitle() + "%");
+        }
+
+        // 自分の問題一覧のため投稿者の指定は無視
+//        if (params.getPoster_id() != null) {
+//            try {
+//                sqlParams.addValue("poster_id", Integer.parseInt(params.getPoster_id()));
+//            } catch (Exception e) {
+//                return new QuestionsResponse(SearchQuestionsStatus.NOT_HIT);
+//            }
+//            sqlWhere += " and user_id = :poster_id";
+//        }
+
+        if (params.getLanguage() != null) {
+            if (params.getLanguage().size() == 0) {
+                return new QuestionsResponse(SearchQuestionsStatus.NOT_HIT);
+            }
+
+            sqlWhere += " and coalesce(language_designation, -1) in (:language)";
+            Set<Integer> langs = new HashSet<>();
+            for (Integer i : params.getLanguage()) {
+                langs.add(i);
+            }
+            sqlParams.addValue("language", langs);
+        }
+
+        if (params.getScoring() != TF.TF) {
+            if (params.getScoring() == TF.NULL) {
+                return new QuestionsResponse(SearchQuestionsStatus.NOT_HIT);
+            }
+            sqlWhere += " and scoring = :scoring";
+            sqlParams.addValue("scoring", params.getScoring() == TF.T);
+        }
+
+        if (params.getAnswered() != TF.TF) {
+            if (params.getAnswered() == TF.NULL) {
+                return new QuestionsResponse(SearchQuestionsStatus.NOT_HIT);
+            }
+            sqlWhere += " and answered = :answered";
+            sqlParams.addValue("answered", params.getAnswered() == TF.T);
+        }
+
+        if (params.getPassword() != TF.TF) {
+            if (params.getPassword() == TF.NULL) {
+                return new QuestionsResponse(SearchQuestionsStatus.NOT_HIT);
+            }
+            sqlWhere += " and password_required = :password";
+            sqlParams.addValue("password", params.getPassword() == TF.T);
+        }
+
+        String sqlOrder = " order by question_id " + (params.getSort() == null ? "desc" : "asc");
+        String sql = sqlSelect + sqlWhere + sqlOrder + LimitQuery.limitString(params.getPage());
+        List<Map<String, Object>> list = npjdbc.queryForList(sql, sqlParams);
+
+        if (list.size() == 0 && params.getPage() != 1) {
+            return new QuestionsResponse(SearchQuestionsStatus.OVER_PAGE);
+        }
+        return new QuestionsResponse(list);
+    }
+
+    public QuestionResponse editQuestion(String question_id_str) throws SQLException {
+        int question_id;
+        try {
+            question_id = Integer.parseInt(question_id_str);
+        } catch (Exception e) {
+            return new QuestionResponse();
+        }
+
+        String sql = "select * from f_questions(?) where question_id = ? and user_id = ?";
+        int user_id = session.getLoginUser().getUser_id();
+        List<Map<String, Object>> list = jdbc.queryForList(sql, user_id, question_id, user_id);
+
+        if (list.size() == 0) {
+            // not found || not poster session
+            return new QuestionResponse();
+        }
+
+        Map<String, Object> question = list.get(0);
+        return new QuestionResponse(new Question(question));
+    }
+
+    public QuestionIOResponse getQuestionIO(String question_id_str) throws SQLException {
+        int question_id;
+        try {
+            question_id = Integer.parseInt(question_id_str);
+        } catch (Exception e) {
+            return new QuestionIOResponse();
+        }
+
+        String sql = "select input_judge, output_judge from f_questions(?) where user_id = ? and question_id = ?;";
+        int user_id = session.getLoginUser().getUser_id();
+        List<Map<String, Object>> list = jdbc.queryForList(sql, user_id, user_id, question_id);
+
+        if (list.size() == 0) {
+            return new QuestionIOResponse();
+        }
+
+        Map<String, Object> question = list.get(0);
+        String[] input_judge = question.get("input_judge") == null ? null : Converter.castPgArray(question.get("input_judge"));
+        String[] output_judge = question.get("output_judge") == null ? null : Converter.castPgArray(question.get("output_judge"));
+
+        return new QuestionIOResponse(input_judge, output_judge);
     }
 }

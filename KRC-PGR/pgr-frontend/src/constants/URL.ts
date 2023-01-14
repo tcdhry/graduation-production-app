@@ -3,6 +3,7 @@ enum AdminURL {
     index = '',
     bulkRegUser = 'bulkRegUser',
     accountManage = 'AccountManage',
+    styleManage = 'styleManage',
 }
 
 enum ManagerURL {
@@ -12,6 +13,7 @@ enum ManagerURL {
     postQuestionSuccess = 'postQuestionSuccess',
     viewMyQuestions = 'viewMyQuestions',
     editQuestion = 'editQuestion',
+    editQuestionIO = 'editQuestionIO',
     postExam = 'postExam',
     viewMyExams = 'viewMyExams',
     editExam = 'editExam',
@@ -50,13 +52,18 @@ export function generateURL(...args: Array<AdminURL | ManagerURL | UserURL | Gue
 
 enum AdminAPI {
     _ = 'admin',
-
+    getStyles = 'getStyles',
+    updateStyle = 'updateStyle',
 }
 
 enum ManagerAPI {
     _ = 'manager',
     postQuestion = 'postQuestion',
-    titleCheck = 'titleCheck'
+    titleCheck = 'titleCheck',
+    viewMyQuestions = 'viewMyQuestions',
+    editQuestion = 'editQuestion',
+    editQuestionIO = 'editQuestionIO',
+
 }
 
 enum UserAPI {
@@ -68,13 +75,14 @@ enum UserAPI {
     questionWithPassword = 'questionWithPassword',
     execConfirm = 'execConfirm',
     answerConfirm = 'answerConfirm',
+    selectStyle = 'selectStyle',
 }
 
 enum GuestAPI {
     login = 'login',
     sessionCheck = 'sessionCheck',
     logout = 'logout',
-
+    getStyle = 'getStyle',
 }
 
 export class API {

@@ -1,33 +1,26 @@
 :root {
+    --border: solid 1px var(--border-color);
+    --btn-border: solid 1px var(--btn-border-color);
+
     --header-bg-color: black;
     --header-font-color: white;
-
     --main-bg-color: black;
     --main-font-color: white;
-
     --footer-bg-color: black;
     --footer-font-color: white;
-
     --border-color: white;
-    --border: solid 1px var(--border-color);
-
     --attention-font-color: yellow;
     --warning-font-color: red;
-
     --low-font-color: rgb(128, 128, 128);
     --link-font-color: rgb(29, 150, 255);
     --visited-link-color: rgb(155, 0, 255);
-
     --btn-bg-color: white;
     --btn-active-color: rgb(200, 200, 200);
     --btn-font-color: black;
     --btn-border-color: rgb(128, 128, 128);
-    --btn-border: solid 1px var(--btn-border-color);
-
     --index-hover-color: rgba(128, 128, 128, 0.15);
     --index-shadow-color: rgba(128, 128, 128, 0.5);
     --index-shadow-low-color: rgba(128, 128, 128, 0.3);
-
     --pager-hover-bg-color: white;
     --pager-hover-font-color: black;
 }
@@ -64,7 +57,7 @@ body {
                             padding: 3%;
 
                             & * {
-                                fill: white;
+                                fill: var(--header-font-color);
                             }
                         }
                     }
@@ -90,6 +83,7 @@ body {
                     display: inline-block;
                     text-align: center;
                     border: var(--border);
+                    border-color: var(--header-font-color);
                     border-radius: 10px;
                     margin-right: 10px;
                     text-decoration: none;
@@ -171,6 +165,7 @@ body {
                         margin-right: 2em;
                     }
                 }
+
             }
 
             #question-inputs {
@@ -265,6 +260,34 @@ body {
                     }
                 }
             }
+
+            #style-manage {
+                table#styles-table {
+                    border: var(--border);
+                    // -ms-writing-mode: tb-lr;
+                    writing-mode: vertical-lr;
+                    border-collapse: collapse;
+
+                    th, td {
+                        // -ms-writing-mode: lr-tb;
+                        border-bottom: var(--border);
+                        border-right: var(--border);
+                        writing-mode: horizontal-tb;
+                        padding: 0.2em;
+                        text-align: left;
+
+                        input[type="text"] {
+                            &:first-child {
+                                width: 2em;
+                            }
+
+                            &:last-child {
+                                width: calc(100% - 2em);
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         footer {
@@ -280,8 +303,8 @@ body {
 
 
 /**
- * global styles
- */
+* global styles
+*/
 
 .row {
     display: flex;
@@ -428,4 +451,64 @@ nav.pager {
             color: var(--pager-hover-font-color);
         }
     }
+}
+
+.io-block {
+    padding: 10px;
+    border-left: 5px gray solid;
+    background: rgba(128, 128, 128, 0.5);
+    white-space: pre-wrap;
+}
+
+
+#exec-confirm-result {
+    margin-top: 1em;
+    border: var(--border);
+    border-radius: 20px;
+    padding: 20px;
+
+    div {
+        padding: 20px;
+
+        &.exec-result-accepted {
+            background: rgba(0, 200, 0, 0.2);
+        }
+
+        &.exec-result-wrong {
+            background: rgba(200, 0, 0, 0.2);
+        }
+
+        table {
+            width: 100%;
+
+            tr {
+                th {
+                    width: 6em;
+                    text-align: left;
+                }
+
+                td {
+                    span.exec-status {
+                        span.exec-status-description {
+                            position: absolute;
+                            background: white;
+                            color: black;
+                            padding: 5px;
+                            font-size: 0.5em;
+                            display: none;
+                            border-radius: 5px;
+                            margin-left: 5px;
+                        }
+
+                        &:hover {
+                            span.exec-status-description {
+                                display: inline-block;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
 }

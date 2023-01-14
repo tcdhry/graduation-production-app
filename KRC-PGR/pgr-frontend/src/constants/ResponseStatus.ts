@@ -1,5 +1,6 @@
 import { NavigateFunction } from "react-router-dom"
 import { generateURL, URL } from "./URL"
+import { AxiosResponse } from "axios";
 
 export enum Status {
     Success = 0,
@@ -8,20 +9,21 @@ export enum Status {
     InsufficientAuthority = 3
 };
 
-export type ResponseBase = {
+export type ResponseBase = AxiosResponse & {
     data: {
         status: number,
         errorMessage: string
     }
-}
+};
 
 export function receiveResponse(res: ResponseBase, navigate: NavigateFunction, then: Function) {
+    logResponse(res);
     switch (res.data.status) {
         case Status.SessionError:
             navigate(generateURL(URL.Guest.sessionError));
             break;
         case Status.RunTimeError:
-            alert('サーバでの処理中にエラーが発生しました。');
+            alert('処理中にエラーが発生しました。');
             break;
         case Status.InsufficientAuthority:
             navigate(generateURL(URL.Guest.insufficientAuthorityError));
@@ -42,7 +44,10 @@ export function catchError(err: any) {
     );
 }
 
-
+export function logResponse(res: ResponseBase) {
+    const now = new Date();
+    console.log([now.toLocaleTimeString() + '.' + now.getMilliseconds().toString().substring(0, 2), res.request.responseURL.replace(/http:\/\/[\d.:]+/g, ''), res]);
+}
 
 /** 基本形
 type XXXXXResponse = ResponseBase & {

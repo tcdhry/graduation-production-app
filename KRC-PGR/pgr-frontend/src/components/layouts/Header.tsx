@@ -104,7 +104,6 @@ function logoURL(authority_id: undefined | number) {
 
 function Header() {
     const user = useSelector((state: State) => state.loginUser.user);
-    const [jumpURL, setJumpURL] = useState('');
 
     return (
         <>

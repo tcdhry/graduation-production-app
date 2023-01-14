@@ -3,12 +3,14 @@ package com.krc.pgr.controller;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.krc.pgr.action.UserProfileAction;
+import com.krc.pgr.action.UserStyleAction;
 import com.krc.pgr.action.UserExecQuestionAction;
 import com.krc.pgr.action.UserGetQuestionAction;
 import com.krc.pgr.aspect.Permit;
 import com.krc.pgr.constant.Authority;
 import com.krc.pgr.response.ResponseBase;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
@@ -35,6 +37,9 @@ public class UserController {
 
     @Autowired
     UserExecQuestionAction userExecQuestionAction;
+
+    @Autowired
+    UserStyleAction userStyleAction;
 
     @PutMapping("/changeViewName")
     public ResponseBase changeViewName(@RequestBody Map<String, Object> putParams) {
@@ -96,7 +101,7 @@ public class UserController {
     }
 
     @PostMapping("/execConfirm/{question_id}")
-    public ResponseBase execConfirm(@PathVariable String question_id, @RequestBody Map<String, Object> postParams) throws SQLException {
+    public ResponseBase execConfirm(@PathVariable String question_id, @RequestBody Map<String, Object> postParams) throws SQLException, IOException {
         /**
          * @return ExecConfirmResponse extends ResponseBase
          * 
@@ -109,8 +114,13 @@ public class UserController {
     }
 
     @PostMapping("/answerConfirm/{question_id}")
-    public ResponseBase answerConfirm(@PathVariable String question_id, @RequestBody Map<String, Object> postParams) throws SQLException {
+    public ResponseBase answerConfirm(@PathVariable String question_id, @RequestBody Map<String, Object> postParams) throws SQLException, IOException {
 
         return userExecQuestionAction.execConfirm(question_id, postParams);
+    }
+
+    @GetMapping("/getStyles")
+    public ResponseBase getStyles() {
+        return userStyleAction.getStyles();
     }
 }

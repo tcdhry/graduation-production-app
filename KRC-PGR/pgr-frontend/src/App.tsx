@@ -4,52 +4,62 @@ import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { API, generateAPI, generateURL, URL } from "./constants/URL";
 
 import LoginForm from "./components/auth_guest/LoginForm";
-import NotFoundError from "./components/errors/NotFoundError";
 import Header from "./components/layouts/Header";
 import Footer from "./components/layouts/Footer";
 
 import axios from "axios";
 import { useDispatch } from "react-redux";
-import { ResponseBase } from "./constants/ResponseStatus";
+import { ResponseBase, logResponse } from "./constants/ResponseStatus";
 import { loginUserSlice } from "./redux/userSlice";
 import { UserBean } from "./beans/UserBean";
+import useCookieWrap from "./components/global_components/useCookieWrap";
+import { lazy, Suspense, useEffect, useState } from "react";
 
-import AdminUniform from "./components/auth_admin/_AdminUniform";
-import AdminIndex from "./components/auth_admin/_AdminIndex";
-import ManagerIndex from "./components/auth_manager/_ManagerIndex";
-import ManagerUniform from "./components/auth_manager/_ManagerUniform";
-import UserIndex from "./components/auth_user/_UserIndex";
-import UserUniform from "./components/auth_user/_UserUniform";
-
-import AccountManage from "./components/auth_admin/AccountManage";
-import BulkRegUser from "./components/auth_admin/BulkRegUser";
-import EditExam from "./components/auth_manager/EditExam";
-import EditQuestion from "./components/auth_manager/EditQuestion";
-import PostExam from "./components/auth_manager/PostExam";
-import PostQuestion from "./components/auth_manager/PostQuestion";
-import PostQuestionSuccess from "./components/auth_manager/PostQuestionSuccess";
-import ViewMyExams from "./components/auth_manager/ViewMyExams";
-import ViewMyQuestions from "./components/auth_manager/ViewMyQuestions";
-import Profile from "./components/auth_user/Profile";
-import Ranking from "./components/auth_user/Ranking";
-import ReferAnswer from "./components/auth_user/ReferAnswer";
-import SelectStyle from "./components/auth_user/SelectStyle";
-import SingleQuestionRanking from "./components/auth_user/SingleQuestionRanking";
-import ViewExam from "./components/auth_user/ViewExam";
-import ViewQuestion from "./components/auth_user/ViewQuestion";
-import ViewQuestions from "./components/auth_user/ViewQuestions";
-import GuestUniform from "./components/auth_guest/_GuestUniform";
-import { useEffect, useState } from "react";
+import NotFoundError from "./components/errors/NotFoundError";
 import Loading from "./components/errors/Loading";
 import ServerDownError from "./components/errors/ServerDownError";
 import SessionError from "./components/errors/SessionError";
 import InsufficientAuthorityError from "./components/errors/InsufficientAuthorityError";
+import Develop from "./Develop";
+
+const AdminUniform = lazy(() => import('./components/auth_admin/_AdminUniform'));
+const AdminIndex = lazy(() => import("./components/auth_admin/_AdminIndex"));
+const AccountManage = lazy(() => import("./components/auth_admin/AccountManage"));
+const StyleManage = lazy(() => import("./components/auth_admin/StyleManage"));
+const BulkRegUser = lazy(() => import("./components/auth_admin/BulkRegUser"));
+
+const ManagerIndex = lazy(() => import("./components/auth_manager/_ManagerIndex"));
+const ManagerUniform = lazy(() => import("./components/auth_manager/_ManagerUniform"));
+const EditExam = lazy(() => import("./components/auth_manager/EditExam"));
+const EditQuestion = lazy(() => import("./components/auth_manager/EditQuestion"));
+const PostExam = lazy(() => import("./components/auth_manager/PostExam"));
+const PostQuestion = lazy(() => import("./components/auth_manager/PostQuestion"));
+const PostQuestionSuccess = lazy(() => import("./components/auth_manager/PostQuestionSuccess"));
+const ViewMyExams = lazy(() => import("./components/auth_manager/ViewMyExams"));
+const ViewMyQuestions = lazy(() => import("./components/auth_manager/ViewMyQuestions"));
+const EditQuestionIO = lazy(() => import("./components/auth_manager/EditQuestionIO"));
+
+const UserIndex = lazy(() => import("./components/auth_user/_UserIndex"));
+const UserUniform = lazy(() => import("./components/auth_user/_UserUniform"));
+const Profile = lazy(() => import("./components/auth_user/Profile"));
+const Ranking = lazy(() => import("./components/auth_user/Ranking"));
+const ReferAnswer = lazy(() => import("./components/auth_user/ReferAnswer"));
+const SelectStyle = lazy(() => import("./components/auth_user/SelectStyle"));
+const SingleQuestionRanking = lazy(() => import("./components/auth_user/SingleQuestionRanking"));
+const ViewExam = lazy(() => import("./components/auth_user/ViewExam"));
+const ViewQuestion = lazy(() => import("./components/auth_user/ViewQuestion"));
+const ViewQuestions = lazy(() => import("./components/auth_user/ViewQuestions"));
+
+const GuestUniform = lazy(() => import("./components/auth_guest/_GuestUniform"));
+
+
 
 function App() {
     const { login } = loginUserSlice.actions;
     const dispatch = useDispatch();
     const [initialLoading, setInitialLoading] = useState(true);
     const [serverDown, setServerDown] = useState(false);
+    const [selectedStyle, setStyle] = useCookieWrap();
 
     /**
      * reload時の処理
@@ -61,6 +71,7 @@ function App() {
     };
     useEffect(() => {
         axios.get(generateAPI(API.Guest.sessionCheck)).then((res: SessionCheckResponse) => {
+            logResponse(res);
             if (res.data.user !== null) {
                 dispatch(login(res.data.user));
             }
@@ -73,9 +84,35 @@ function App() {
         // ↓再レンダリングのたびに実行されるのを防ぐ？らしい。無くても想定通りの挙動だが、リンターが警告を吐くので一応入れておく。
     }, [dispatch, login]);
 
+    useEffect(() => {
+        if (selectedStyle === undefined) {
+            return;
+        }
+        type SelectStyleResponse = ResponseBase & {
+            data: {
+                style: {
+                    [key: string]: string
+                }
+            }
+        };
+        axios.get(generateAPI(API.Guest.getStyle) + '/' + selectedStyle).then((res: SelectStyleResponse) => {
+            if (res.data.style === null) {
+                return;
+            }
+
+            let style = '';
+            Object.keys(res.data.style).slice(1).forEach((key) => {
+                style += `${key.replaceAll('_', '-')}:${res.data.style[key]};`;
+            });
+
+            const styleDoc = document.getElementById('style')!;
+            styleDoc.innerHTML = `:root{${style}}`;
+        });
+    }, [selectedStyle]);
 
     return (
         <>
+            <style id="style"></style>
             <BrowserRouter>
                 <Header />
                 <main>
@@ -88,38 +125,69 @@ function App() {
                             ) : (
                                 <Routes>
                                     <Route path={URL.Head}>
-                                        <Route element={<GuestUniform />}>
-                                            <Route path={URL.Guest.login} element={<LoginForm />} />
-                                        </Route>
 
-                                        <Route path={URL.Admin._} element={<AdminUniform />}>
-                                            <Route path={URL.Admin.index} element={<AdminIndex />} />
-                                            <Route path={URL.Admin.bulkRegUser} element={<BulkRegUser />} />{/* TODO */}
-                                            <Route path={URL.Admin.accountManage} element={<AccountManage />} />{/* TODO */}
-                                        </Route>
+                                        <Route path={URL.Admin._ + '/*'} element={
+                                            <Suspense fallback={<Loading />}>
+                                                <Routes>
+                                                    <Route element={<AdminUniform />}>
+                                                        <Route path={URL.Admin.index} element={<AdminIndex />} />
+                                                        <Route path={URL.Admin.bulkRegUser} element={<BulkRegUser />} />{/* TODO */}
+                                                        <Route path={URL.Admin.accountManage} element={<AccountManage />} />{/* TODO */}
+                                                        <Route path={URL.Admin.styleManage} element={<StyleManage />} />{/* TODO */}
+                                                        <Route path={'/*'} element={<NotFoundError />} />
+                                                    </Route>
+                                                </Routes>
+                                            </Suspense>
+                                        } />
 
-                                        <Route path={URL.Manager._} element={<ManagerUniform />}>
-                                            <Route path={URL.Manager.index} element={<ManagerIndex />} />
-                                            <Route path={URL.Manager.postQuestion} element={<PostQuestion />} />{/* TODO */}
-                                            <Route path={URL.Manager.postQuestionSuccess + '/:question_id'} element={<PostQuestionSuccess />} />{/* TODO */}
-                                            <Route path={URL.Manager.viewMyQuestions} element={<ViewMyQuestions />} />{/* TODO */}
-                                            <Route path={URL.Manager.editQuestion + '/:question_id'} element={<EditQuestion />} />{/* TODO */}
-                                            <Route path={URL.Manager.postExam} element={<PostExam />} />{/* TODO */}
-                                            <Route path={URL.Manager.viewMyExams} element={<ViewMyExams />} />{/* TODO */}
-                                            <Route path={URL.Manager.editExam + '/:exam_id'} element={<EditExam />} />{/* TODO */}
-                                        </Route>
+                                        <Route path={URL.Manager._ + '/*'} element={
+                                            <Suspense fallback={<Loading />}>
+                                                <Routes>
+                                                    <Route element={<ManagerUniform />}>
+                                                        <Route path={URL.Manager.index} element={<ManagerIndex />} />
+                                                        <Route path={URL.Manager.postQuestion} element={<PostQuestion />} />{/* TODO */}
+                                                        <Route path={URL.Manager.postQuestionSuccess + '/:question_id'} element={<PostQuestionSuccess />} />{/* TODO */}
+                                                        <Route path={URL.Manager.editQuestionIO + '/:question_id'} element={<EditQuestionIO />} />{/* TODO */}
+                                                        <Route path={URL.Manager.viewMyQuestions} element={<ViewMyQuestions />} />{/* TODO */}
+                                                        <Route path={URL.Manager.editQuestion + '/:question_id'} element={<EditQuestion />} />{/* TODO */}
+                                                        <Route path={URL.Manager.postExam} element={<PostExam />} />{/* TODO */}
+                                                        <Route path={URL.Manager.viewMyExams} element={<ViewMyExams />} />{/* TODO */}
+                                                        <Route path={URL.Manager.editExam + '/:exam_id'} element={<EditExam />} />{/* TODO */}
+                                                        <Route path={'/*'} element={<NotFoundError />} />
+                                                    </Route>
+                                                </Routes>
+                                            </Suspense>
+                                        } />
 
-                                        <Route path={URL.User._} element={<UserUniform />}>
-                                            <Route path={URL.User.index} element={<UserIndex />} />
-                                            <Route path={URL.User.profile} element={<Profile />} />{/* TODO */}
-                                            <Route path={URL.User.ranking} element={<Ranking />} />{/* TODO */}
-                                            <Route path={URL.User.ranking + '/:question_id'} element={<SingleQuestionRanking />} />{/* TODO */}
-                                            <Route path={URL.User.selectStyle} element={<SelectStyle />} />{/* TODO */}
-                                            <Route path={URL.User.viewQuestions} element={<ViewQuestions />} />{/* TODO */}
-                                            <Route path={URL.User.viewQuestion + '/:question_id'} element={<ViewQuestion />} />{/* TODO */}
-                                            <Route path={URL.User.referAnswer + '/:question_id'} element={<ReferAnswer />} />{/* TODO */}
-                                            <Route path={URL.User.viewExam + '/:exam_id'} element={<ViewExam />} />{/* TODO */}
-                                        </Route>
+                                        <Route path={URL.User._ + '/*'} element={
+                                            <Suspense fallback={<Loading />}>
+                                                <Routes>
+                                                    <Route element={<UserUniform />}>
+                                                        <Route path={URL.User.index} element={<UserIndex />} />
+                                                        <Route path={URL.User.profile} element={<Profile />} />{/* TODO */}
+                                                        <Route path={URL.User.ranking} element={<Ranking />} />{/* TODO */}
+                                                        <Route path={URL.User.ranking + '/:question_id'} element={<SingleQuestionRanking />} />{/* TODO */}
+                                                        <Route path={URL.User.selectStyle} element={<SelectStyle />} />{/* TODO */}
+                                                        <Route path={URL.User.viewQuestions} element={<ViewQuestions />} />{/* TODO */}
+                                                        <Route path={URL.User.viewQuestion + '/:question_id'} element={<ViewQuestion />} />{/* TODO */}
+                                                        <Route path={URL.User.referAnswer + '/:question_id'} element={<ReferAnswer />} />{/* TODO */}
+                                                        <Route path={URL.User.viewExam + '/:exam_id'} element={<ViewExam />} />{/* TODO */}
+                                                        <Route path={'/*'} element={<NotFoundError />} />
+                                                    </Route>
+                                                </Routes>
+                                            </Suspense>
+                                        } />
+
+
+                                        <Route path={'*'} element={
+                                            <Suspense fallback={<Loading />}>
+                                                <Routes>
+                                                    <Route element={<GuestUniform />}>
+                                                        <Route path={URL.Guest.login} element={<LoginForm />} />
+                                                    </Route>
+                                                </Routes>
+                                            </Suspense>
+                                        } />
 
                                         <Route path={URL.Guest.sessionError} element={<SessionError />} />
                                         <Route path={URL.Guest.insufficientAuthorityError} element={<InsufficientAuthorityError />} />
@@ -127,6 +195,7 @@ function App() {
 
                                     <Route path={''} element={<Navigate to={generateURL(URL.Guest.login)} />} />
 
+                                    <Route path={'develop'} element={<Develop />} />
                                     <Route path={'/*'} element={<NotFoundError />} />
                                 </Routes>
                             )

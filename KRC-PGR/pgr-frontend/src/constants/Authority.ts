@@ -33,3 +33,17 @@ export class Authority {
         ja: AuthorityJapaneseName.User,
     }
 }
+
+export function searchAuthority(id: number) {
+    if (id === Authority.Admin.id) {
+        return Authority.Admin;
+    }
+    if (id === Authority.Manager.id) {
+        return Authority.Manager;
+    }
+    if (id === Authority.User.id) {
+        return Authority.User;
+    }
+
+    return undefined;
+}

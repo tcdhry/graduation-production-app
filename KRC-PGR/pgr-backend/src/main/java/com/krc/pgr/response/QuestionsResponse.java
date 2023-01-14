@@ -9,13 +9,13 @@ import com.krc.pgr.constant.SearchQuestionsStatus;
 import com.krc.pgr.util.LimitQuery;
 
 public class QuestionsResponse extends ResponseBase {
-    private int searchStatus;
+    private SearchQuestionsStatus searchStatus;
     private List<QuestionThumbnail> questions = new ArrayList<>();
     private int hitCount;
     private int maxPage;
 
     public QuestionsResponse(List<Map<String, Object>> list) {
-        this.searchStatus = SearchQuestionsStatus.SUCCESS.getStatus();
+        this.searchStatus = SearchQuestionsStatus.SUCCESS;
         if (list.size() != 0) {
             this.hitCount = (int) list.get(0).get("hit_count");
             this.maxPage = LimitQuery.calcMaxPage(this.hitCount);
@@ -26,11 +26,11 @@ public class QuestionsResponse extends ResponseBase {
     }
 
     public QuestionsResponse(SearchQuestionsStatus status) {
-        this.searchStatus = status.getStatus();
+        this.searchStatus = status;
     }
 
     public int getSearchStatus() {
-        return searchStatus;
+        return searchStatus.getStatus();
     }
 
     public List<QuestionThumbnail> getQuestions() {

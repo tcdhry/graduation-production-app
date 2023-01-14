@@ -1,7 +1,7 @@
 package com.krc.pgr.constant;
 
 public enum Authority {
-    GUEST(-1), USER(0), MANAGER(1), ADMIN(2);
+    GUEST(-1), USER(2), MANAGER(1), ADMIN(0);
 
     private int authority_id;
 

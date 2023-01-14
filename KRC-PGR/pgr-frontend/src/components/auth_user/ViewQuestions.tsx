@@ -3,32 +3,15 @@ import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Questions } from "../../beans/QuestionBean";
 import { catchError, receiveResponse, ResponseBase } from "../../constants/ResponseStatus";
-import { API, generateAPI } from "../../constants/URL";
+import { API, generateAPI, generateURL, URL } from "../../constants/URL";
 import Pager from "../global_components/Pager";
 import queryString from "query-string";
 import { Languages } from "../../constants/Language";
 import QuestionsListView from "../global_components/QuestionsListView";
 import SearchQuestionsForm from "../global_components/SearchQuestionsForm";
 import { SearchStatus } from "../../constants/SearchStatus";
-import { SearchQuestionsParams, TF } from "../../beans/SearchQuestionsParams";
+import { SearchQuestionsParams, switchTF, TF } from "../../beans/SearchQuestionsParams";
 import SearchStatusView from "../global_components/SearchStatusView";
-
-function switchTF(tfString: string, errorFlag: { flag: boolean }): TF {
-    switch (tfString) {
-        case 'tf':
-            return { t: true, f: true };
-        case 't':
-            return { t: true, f: false };
-        case 'f':
-            return { t: false, f: true };
-        case '':
-            return { t: false, f: false };
-        default:
-            // input value Error
-            errorFlag.flag = true;
-            return { t: true, f: true };
-    }
-}
 
 const defaultParams: SearchQuestionsParams = {
     title: '',
@@ -49,7 +32,7 @@ function ViewQuestions() {
     const [searchStatus, setSearchStatus] = useState(SearchStatus.LOADING);
     const [hitCount, setHitCount] = useState(0);
     const [maxPage, setMaxPage] = useState(0);
-    
+
     useEffect(() => {
         const queryParams = queryString.parse(location.search);
         const newParams = { ...defaultParams };
@@ -177,7 +160,7 @@ function ViewQuestions() {
                 <SearchQuestionsForm />
                 <SearchStatusView searchStatus={searchStatus} hitCount={hitCount} maxPage={maxPage} nowPage={params.page} />
                 <Pager searchStatus={searchStatus} hitCount={hitCount} maxPage={maxPage} nowPage={params.page} />
-                <QuestionsListView questions={questions} />
+                <QuestionsListView questions={questions} toURL={generateURL(URL.User._, URL.User.viewQuestion)} />
                 <Pager searchStatus={searchStatus} hitCount={hitCount} maxPage={maxPage} nowPage={params.page} />
             </div>
         </>

@@ -22,6 +22,7 @@ export class QuestionBean {
     public language_designation: number | null = null;
     public private_answer_mode: boolean = false;
     public release_flag: boolean = false;
+    public scoring: boolean = false;
     public insert_timestamp: string = function () {
         const today = new Date();
         const yyyy = today.getFullYear();

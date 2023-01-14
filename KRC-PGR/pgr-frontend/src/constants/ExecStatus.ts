@@ -1,4 +1,4 @@
-export class ExecStatus {
+class ExecStatus {
     private _statusCode: number;
     private _statusName: string;
     private _description: string;
@@ -31,6 +31,9 @@ export enum ExecStatusCode {
     WrongAnswer = 7
 }
 
+/**
+ * id === 要素番号
+ */
 export const ExecStatuses: Array<ExecStatus> = [
     new ExecStatus(ExecStatusCode.Accepted, 'Accepted', '正答です。運営が用意したテストを全てパスし、正しいプログラムであると判定されました。'),
     new ExecStatus(ExecStatusCode.CompilationError, 'Compilation Error', '提出されたプログラムのコンパイルに失敗しました。'),

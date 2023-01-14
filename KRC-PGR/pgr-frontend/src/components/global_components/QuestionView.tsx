@@ -8,7 +8,7 @@ import AceEditor from "react-ace";
 
 export const ExecConfirmButtonName = 'exec-confirm-button';
 
-function QuestionView(props: { question: QuestionBean, editorRef: undefined | React.LegacyRef<AceEditor> }) {
+function QuestionView(props: { question: QuestionBean, editorRef: undefined | React.RefObject<AceEditor> }) {
     const [selectLang, setSelectLang] = useState<LanguageCode | null>(props.question.language_designation);
     useEffect(() => {
         /**
@@ -150,11 +150,17 @@ function QuestionView(props: { question: QuestionBean, editorRef: undefined | Re
                 </Col>
             </Row>
 
-            <Row>
-                <Col>
-                    <input type="submit" value="実行確認" className="btn btn-full" name={ExecConfirmButtonName} />
-                </Col>
-            </Row>
+            {
+                props.question.inputs[0] === null && props.question.outputs[0] === null && props.question.io_explain[0] === null ? (
+                    <></>
+                ) : (
+                    <Row>
+                        <Col>
+                            <input type="submit" value="実行確認" className="btn btn-full" name={ExecConfirmButtonName} />
+                        </Col>
+                    </Row>
+                )
+            }
         </div>
     );
 }

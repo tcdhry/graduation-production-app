@@ -1,7 +1,6 @@
 import axios from "axios";
 import { useState } from "react";
 import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { QuestionBean } from "../../beans/QuestionBean";
 import { UserBean } from "../../beans/UserBean";
@@ -15,7 +14,7 @@ import QuestionInputs, { TitleStatus } from "./manager_components/QuestionInputs
 
 function PostQuestion() {
     const user = useSelector((state: State) => state.loginUser.user as UserBean);
-    const [question, setQuestion] = useState(new QuestionBean(user));
+    const [question, setQuestion] = useState<QuestionBean>(new QuestionBean(user));
     const [submit, setSubmit] = useState(false);
     const navigate = useNavigate();
     const [titleStatus, setTitleStatus] = useState(TitleStatus.NotEntered);
@@ -118,7 +117,7 @@ function PostQuestion() {
                                     let alertMessage = '';
                                     const listitem: Array<JSX.Element> = [];
                                     console.log(errors === null, errors)
-                                    errors.forEach((error) => {
+                                    errors.forEach((error: { errorMessage: string; errorTarget: string; }) => {
                                         alertMessage += '・' + error.errorMessage + '\n';
                                         listitem.push(<SmoothScrollLink toID={error.errorTarget}>{error.errorMessage}</SmoothScrollLink>);
                                     });
