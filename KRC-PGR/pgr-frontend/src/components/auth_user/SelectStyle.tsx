@@ -1,13 +1,9 @@
-import axios from "axios";
-import { useCookies } from "react-cookie";
-import { useNavigate } from "react-router-dom";
 import { AnyFormEvent } from "../../constants/AnyFormEvent";
-import { catchError, receiveResponse, ResponseBase } from "../../constants/ResponseStatus";
 import { Styles } from "../../constants/Styles";
 import useCookieWrap from "../global_components/useCookieWrap";
 
 function SelectStyle() {
-    const [selectedStyle, setStyle] = useCookieWrap();
+    const setStyle = useCookieWrap()[1];
 
     return (
         <>

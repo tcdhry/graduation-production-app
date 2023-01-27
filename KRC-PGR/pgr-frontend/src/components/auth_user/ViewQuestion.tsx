@@ -91,7 +91,6 @@ function QuestionConfirmForm(props: { question: QuestionBean }) {
     const [answerConfirmMessage, setAnswerConfirmMessage] = useErrorMessageState();
     const [submitting, setSubmitting] = useState(false);
 
-
     return (
         <>
             <form onSubmit={function (event: AnyFormEvent) {
@@ -161,12 +160,17 @@ function QuestionConfirmForm(props: { question: QuestionBean }) {
                         axios.post(generateAPI(API.User._, API.User.answerConfirm) + '/' + params.question_id, { source_code: source_code, select_language: select_language })
                             .then((res: AnswerConfirmResponse) => {
                                 receiveResponse(res, navigate, function () {
-                                    console.log(res);
+                                    if (res.data.answerConfirmStatus === AnswerConfirmStatus.SUCCESS) {
+                                        navigate(generateURL(URL.User._, URL.User.viewAnswer) + '/' + props.question.question_id);
+                                    } else {
+                                        alert('提出中にエラーが発生しました。');
+                                        setAnswerConfirmMessage('　');
+                                    }
                                 });
                             }).catch(catchError).finally(() => { setSubmitting(false); });
                         break;
                 }
-            }} >
+            }}>
                 <QuestionView question={props.question} editorRef={editorRef} />
 
                 {
@@ -214,6 +218,12 @@ function QuestionConfirmForm(props: { question: QuestionBean }) {
                                                                 <th>正答出力値</th>
                                                                 <td className="io-block">
                                                                     {props.question.outputs[i]}
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <th>実行時間</th>
+                                                                <td>
+                                                                    {exec.execTime}ms
                                                                 </td>
                                                             </tr>
                                                         </tbody>

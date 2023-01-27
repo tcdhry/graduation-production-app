@@ -5,6 +5,8 @@ import { getLanguageName, LanguageCode, Languages } from "../../constants/Langua
 import { Col, Row } from "./24ColLayout";
 import CodeEditor from "./CodeEditor";
 import AceEditor from "react-ace";
+import { Link } from "react-router-dom";
+import { generateURL, URL } from "../../constants/URL";
 
 export const ExecConfirmButtonName = 'exec-confirm-button';
 
@@ -30,10 +32,18 @@ function QuestionView(props: { question: QuestionBean, editorRef: undefined | Re
                         <span>問題ID：{props.question.question_id}</span>
                         <span>投稿者：{props.question.user_view_name}</span>
                         <span>投稿者ID：{props.question.user_id}</span>
-                        <span>投稿日時：{props.question.insert_timestamp}</span>
+                        <span>投稿日時：{props.question.insert_datetime}</span>
                     </p>
                 </Col>
             </Row>
+
+            {props.question.answered === true ? (
+                <Row>
+                    <Col>
+                        <Link to={generateURL(URL.User._, URL.User.viewAnswer) + '/' + props.question.question_id} className="text-link">提出済みの解答を確認</Link>
+                    </Col>
+                </Row>
+            ) : (<></>)}
 
             <Row>
                 <Col>

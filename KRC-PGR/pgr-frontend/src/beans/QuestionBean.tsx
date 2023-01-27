@@ -23,7 +23,7 @@ export class QuestionBean {
     public private_answer_mode: boolean = false;
     public release_flag: boolean = false;
     public scoring: boolean = false;
-    public insert_timestamp: string = function () {
+    public insert_datetime: string = function () {
         const today = new Date();
         const yyyy = today.getFullYear();
         const mm = today.getMonth();
@@ -35,6 +35,7 @@ export class QuestionBean {
     }();
     public user_id: string | undefined;
     public user_view_name: string | undefined;
+    public answered: boolean = false;
 }
 // export class QuestionBean {
 //     public question_id!: number;

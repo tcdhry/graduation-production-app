@@ -258,6 +258,31 @@ body {
                             }
                         }
                     }
+
+                    .my-question-links {
+                        margin-top: 1em;
+                        display: flex;
+
+                        &>div {
+                            display: table;
+                            width: calc((100% - 3em) / 4);
+                            border: var(--border);
+                            border-radius: 10px;
+                            margin-right: 1em;
+                            height: 5em;
+
+                            &:last-child {
+                                margin-right: 0;
+                            }
+
+                            a {
+                                display: table-cell;
+                                vertical-align: middle;
+                                text-align: center;
+                            }
+
+                        }
+                    }
                 }
             }
 
@@ -460,6 +485,13 @@ nav.pager {
     white-space: pre-wrap;
 }
 
+.exec-result-accepted {
+    background: rgba(0, 200, 0, 0.2);
+}
+
+.exec-result-wrong {
+    background: rgba(200, 0, 0, 0.2);
+}
 
 #exec-confirm-result {
     margin-top: 1em;
@@ -470,14 +502,6 @@ nav.pager {
     div {
         padding: 20px;
 
-        &.exec-result-accepted {
-            background: rgba(0, 200, 0, 0.2);
-        }
-
-        &.exec-result-wrong {
-            background: rgba(200, 0, 0, 0.2);
-        }
-
         table {
             width: 100%;
 
@@ -486,29 +510,57 @@ nav.pager {
                     width: 6em;
                     text-align: left;
                 }
-
-                td {
-                    span.exec-status {
-                        span.exec-status-description {
-                            position: absolute;
-                            background: white;
-                            color: black;
-                            padding: 5px;
-                            font-size: 0.5em;
-                            display: none;
-                            border-radius: 5px;
-                            margin-left: 5px;
-                        }
-
-                        &:hover {
-                            span.exec-status-description {
-                                display: inline-block;
-                            }
-                        }
-                    }
-                }
             }
         }
     }
+}
 
+#view-answer {
+    table {
+        th {
+            &:first-child {
+                width: 4em;
+            }
+
+            &:nth-child(2) {
+                width: 5em;
+            }
+        }
+    }
+}
+
+span.exec-status {
+    span.exec-status-description {
+        position: absolute;
+        background: white;
+        color: black;
+        padding: 5px;
+        font-size: 0.5em;
+        display: none;
+        border-radius: 5px;
+        margin-left: 5px;
+    }
+
+    &:hover {
+        span.exec-status-description {
+            display: inline-block;
+        }
+    }
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+
+    td, th {
+        border: var(--border);
+        padding: 5px;
+    }
+}
+
+table.exec-statues-color-view {
+    td {
+        height: 1em;
+        width: 1em;
+    }
 }

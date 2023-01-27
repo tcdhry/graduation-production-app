@@ -2,7 +2,8 @@ import { ExecStatusCode } from "../constants/ExecStatus";
 
 export type ExecStatus = {
     execStatusCode: ExecStatusCode
-    output: string
+    output: string,
+    execTime: number
 };
 
 export enum ExecConfirmStatus {

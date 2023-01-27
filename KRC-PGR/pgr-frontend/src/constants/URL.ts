@@ -4,6 +4,7 @@ enum AdminURL {
     bulkRegUser = 'bulkRegUser',
     accountManage = 'AccountManage',
     styleManage = 'styleManage',
+    classManage = 'classManage',
 }
 
 enum ManagerURL {
@@ -14,6 +15,7 @@ enum ManagerURL {
     viewMyQuestions = 'viewMyQuestions',
     editQuestion = 'editQuestion',
     editQuestionIO = 'editQuestionIO',
+    viewAnswers = 'viewAnswers',
     postExam = 'postExam',
     viewMyExams = 'viewMyExams',
     editExam = 'editExam',
@@ -29,13 +31,14 @@ enum UserURL {
     viewQuestion = 'viewQuestion',
     referAnswer = 'referAnswer',
     viewExam = 'viewExam',
+    viewAnswer = 'viewAnswer',
 }
 
 enum GuestURL {
     login = 'login',
     sessionError = 'sessionError',
     insufficientAuthorityError = 'insufficientAuthorityError',
-
+    
 }
 
 export class URL {
@@ -54,6 +57,9 @@ enum AdminAPI {
     _ = 'admin',
     getStyles = 'getStyles',
     updateStyle = 'updateStyle',
+    getClasses = 'getClasses',
+    bulkRegUser = 'bulkRegUser',
+    
 }
 
 enum ManagerAPI {
@@ -63,7 +69,7 @@ enum ManagerAPI {
     viewMyQuestions = 'viewMyQuestions',
     editQuestion = 'editQuestion',
     editQuestionIO = 'editQuestionIO',
-
+    viewAnswers = 'viewAnswers',
 }
 
 enum UserAPI {
@@ -76,6 +82,7 @@ enum UserAPI {
     execConfirm = 'execConfirm',
     answerConfirm = 'answerConfirm',
     selectStyle = 'selectStyle',
+    viewAnswer = 'viewAnswer',
 }
 
 enum GuestAPI {
@@ -92,6 +99,8 @@ export class API {
     public static Guest = GuestAPI;
 };
 
-export function generateAPI(...args: Array<AdminAPI | ManagerAPI | UserAPI | GuestAPI>) {
+type APItypes = AdminAPI | ManagerAPI | UserAPI | GuestAPI;
+
+export function generateAPI(...args: Array<APItypes>) {
     return `/${args.join('/')}`;
 }

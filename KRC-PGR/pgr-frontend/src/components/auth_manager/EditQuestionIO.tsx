@@ -50,7 +50,7 @@ function EditQuestionIO() {
                 setIO({ input_judge: res.data.input_judge, output_judge: res.data.output_judge });
             });
         }).catch(catchError);
-    }, []);
+    }, [navigate, question_id]);
 
     if (IO === undefined) {
         return (
@@ -73,18 +73,22 @@ function EditQuestionIO() {
             <form onSubmit={
                 function (event: AnyFormEvent) {
                     event.preventDefault();
+                    const input_judge = [];
+                    const output_judge = [];
 
-
-
+                    for (let i = 1; i <= 10; i++) {
+                        input_judge.push(event.target.querySelector('#input_judge_' + i).value);
+                        output_judge.push(event.target.querySelector('#output_judge_' + i).value);
+                    }
 
                     type EditQuestionResponse = ResponseBase & {
                         data: {
-                            status: boolean
+                            errorFlag: boolean
                         }
                     };
-                    axios.post(generateAPI(API.Manager._, API.Manager.editQuestionIO) + '/' + question_id, { input_judge: null, output_judge: null }).then((res: EditQuestionResponse) => {
+                    axios.post(generateAPI(API.Manager._, API.Manager.editQuestionIO) + '/' + question_id, { input_judge: input_judge, output_judge: output_judge }).then((res: EditQuestionResponse) => {
                         receiveResponse(res, navigate, function () {
-                            console.log(res);
+                            alert(res.data.errorFlag === false ? '更新完了' : '更新失敗');
                         });
                     }).catch(catchError);
                 }}>
@@ -119,7 +123,21 @@ function EditQuestionIO() {
                     }
                     return list;
                 }()}
-                <input type="submit" value="決定" />
+
+                <button type="button" className="btn btn-full" onClick={function () {
+                    Array.from(document.getElementsByTagName('textarea')).forEach((textarea) => {
+                        if (textarea.value !== '' && !textarea.value.endsWith('\n')) {
+                            if (textarea.value.length >= 1000) {
+                                alert('文字数上限がオーバーします。');
+                            } else {
+                                textarea.value += '\n';
+                            }
+                        }
+                    });
+
+                }}>改行で終えていないテキストエリアに改行を挿入する *未入力項目は無視</button>
+                <br /><br /><hr /><br />
+                <input type="submit" value="更新" className="btn btn-full" />
             </form>
         </>
     );

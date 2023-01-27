@@ -1,8 +1,9 @@
 import { Link } from "react-router-dom";
 import { QuestionThumbnail } from "../../beans/QuestionBean";
 import { getLanguageName } from "../../constants/Language";
+import { generateURL, URL } from "../../constants/URL";
 
-function QuestionThumbnailCard(props: { question: QuestionThumbnail, toURL: string, questionsURL: string }) {
+function QuestionThumbnailCard(props: { question: QuestionThumbnail, toURL: string, questionsURL: string, myQuestion?: boolean }) {
     return (
         <>
             <section className="question-card">
@@ -61,9 +62,33 @@ function QuestionThumbnailCard(props: { question: QuestionThumbnail, toURL: stri
                         </div>
                     </div>
                 </div>
+                {
+                    props.myQuestion === true ? (<MyQuestionLinks question={props.question} />) : (<></>)
+                }
             </section>
         </>
     );
 }
 
 export default QuestionThumbnailCard;
+
+function MyQuestionLinks(props: { question: QuestionThumbnail }) {
+    return (
+        <>
+            <div className="my-question-links">
+                <div>
+                    <Link to={generateURL(URL.Manager._, URL.Manager.editQuestion) + '/' + props.question.question_id} className="text-link">問題編集</Link>
+                </div>
+                <div>
+                    <Link to={generateURL(URL.Manager._, URL.Manager.editQuestionIO) + '/' + props.question.question_id} className="text-link">採点用データ編集</Link>
+                </div>
+                <div>
+                    <Link to={generateURL(URL.Manager._, URL.Manager.viewAnswers) + '/' + props.question.question_id} className="text-link">提出された解答</Link>
+                </div>
+                <div>
+                    <Link to={'#'} className="text-link">tmp</Link>
+                </div>
+            </div>
+        </>
+    );
+}

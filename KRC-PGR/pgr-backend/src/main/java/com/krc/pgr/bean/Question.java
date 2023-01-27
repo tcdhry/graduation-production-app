@@ -26,9 +26,10 @@ public class Question {
     private boolean private_answer_mode;
     private boolean release_flag;
     private boolean scoring;
-    private String insert_timestamp;
+    private String insert_datetime;
     private String user_id;
     private String user_view_name;
+    private boolean answered;
 
     public Question(Map<String, Object> map) throws SQLException {
         this.question_id = Integer.toString((int) map.get("question_id"));
@@ -38,16 +39,17 @@ public class Question {
         this.input_explain = (String) map.get("input_explain");
         this.output = (String) map.get("output");
         this.output_explain = (String) map.get("output_explain");
-        this.inputs = Converter.castPgArray(map.get("inputs"));
-        this.outputs = Converter.castPgArray(map.get("outputs"));
-        this.io_explain = Converter.castPgArray(map.get("io_explain"));
+        this.inputs = Converter.castPgArray_str(map.get("inputs"));
+        this.outputs = Converter.castPgArray_str(map.get("outputs"));
+        this.io_explain = Converter.castPgArray_str(map.get("io_explain"));
         this.language_designation = (Integer) map.get("language_designation");
         this.private_answer_mode = (boolean) map.get("private_answer_mode");
         this.release_flag = (boolean) map.get("release_flag");
         this.scoring = (boolean) map.get("scoring");
-        this.insert_timestamp = (String) map.get("insert_timestamp");
+        this.insert_datetime = (String) map.get("insert_datetime");
         this.user_id = Integer.toString((int) map.get("user_id"));
         this.user_view_name = (String) map.get("user_view_name");
+        this.answered = (boolean) map.get("answered");
     }
 
     public String getQuestion_id() {
@@ -106,8 +108,8 @@ public class Question {
         return scoring;
     }
 
-    public String getInsert_timestamp() {
-        return insert_timestamp;
+    public String getInsert_datetime() {
+        return insert_datetime;
     }
 
     public String getUser_id() {
@@ -116,5 +118,9 @@ public class Question {
 
     public String getUser_view_name() {
         return user_view_name;
+    }
+
+    public boolean getAnswered() {
+        return answered;
     }
 }

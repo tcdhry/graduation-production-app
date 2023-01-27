@@ -2,13 +2,23 @@ package com.krc.pgr.runtime;
 
 import java.io.IOException;
 
+import com.krc.pgr.constant.SourceFileName;
+
 public class JavaRuntime extends RuntimeManage {
-    private static String sourceFileName = "Main.java";
+    private static String sourceFileName = SourceFileName.Java.getFileName();
     private static String execFileName = "Main";
     final static private String ENCODING = "Shift_JIS";
 
-    public JavaRuntime(int question_id, int user_id, String sourceCode, boolean execConfirm) throws IOException {
+    private JavaRuntime(int question_id, int user_id, String sourceCode, boolean execConfirm) throws IOException {
         super(question_id, user_id, sourceFileName, sourceCode, ENCODING, execConfirm);
+    }
+
+    public static JavaRuntime execConfirm(int question_id, int user_id, String sourceCode) throws IOException {
+        return new JavaRuntime(question_id, user_id, sourceCode, true);
+    }
+
+    public static JavaRuntime answerConfirm(int question_id, int user_id, String sourceCode) throws IOException {
+        return new JavaRuntime(question_id, user_id, sourceCode, false);
     }
 
     protected String generateCompileCommand() {

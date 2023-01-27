@@ -22,18 +22,35 @@ public class LanguageRuntimeMap {
     @Autowired
     SessionManage session;
 
-    public RuntimeManage getRuntimeInstance(Language language, int question_id, String sourceCode, boolean execConfirm) throws IOException {
+    public RuntimeManage getExecConfirmRuntimeInstance(Language language, int question_id, String sourceCode) throws IOException {
         switch (language) {
         case CPlusPlus:
-            return new CPlusPlusRuntime(question_id, session.getLoginUser().getUser_id(), sourceCode, execConfirm);
+            return CPlusPlusRuntime.execConfirm(question_id, session.getLoginUser().getUser_id(), sourceCode);
         case CSharp:
-            return new CSharpRuntime(question_id, session.getLoginUser().getUser_id(), sourceCode, execConfirm);
+            return CSharpRuntime.execConfirm(question_id, session.getLoginUser().getUser_id(), sourceCode);
         case Java:
-            return new JavaRuntime(question_id, session.getLoginUser().getUser_id(), sourceCode, execConfirm);
+            return JavaRuntime.execConfirm(question_id, session.getLoginUser().getUser_id(), sourceCode);
         case Python:
-            return new PythonRuntime(question_id, session.getLoginUser().getUser_id(), sourceCode, execConfirm);
+            return PythonRuntime.execConfirm(question_id, session.getLoginUser().getUser_id(), sourceCode);
         case Ruby:
-            return new RubyRuntime(question_id, session.getLoginUser().getUser_id(), sourceCode, execConfirm);
+            return RubyRuntime.execConfirm(question_id, session.getLoginUser().getUser_id(), sourceCode);
+        default:
+            throw new IllegalArgumentException();
+        }
+    }
+
+    public RuntimeManage getAnswerConfirmRuntimeInstance(Language language, int question_id, String sourceCode) throws IOException {
+        switch (language) {
+        case CPlusPlus:
+            return CPlusPlusRuntime.answerConfirm(question_id, session.getLoginUser().getUser_id(), sourceCode);
+        case CSharp:
+            return CSharpRuntime.answerConfirm(question_id, session.getLoginUser().getUser_id(), sourceCode);
+        case Java:
+            return JavaRuntime.answerConfirm(question_id, session.getLoginUser().getUser_id(), sourceCode);
+        case Python:
+            return PythonRuntime.answerConfirm(question_id, session.getLoginUser().getUser_id(), sourceCode);
+        case Ruby:
+            return RubyRuntime.answerConfirm(question_id, session.getLoginUser().getUser_id(), sourceCode);
         default:
             throw new IllegalArgumentException();
         }

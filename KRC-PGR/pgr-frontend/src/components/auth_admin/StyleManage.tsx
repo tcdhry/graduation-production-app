@@ -34,7 +34,7 @@ function StyleManage() {
                 setStyles(res.data.styles);
             });
         }).catch(catchError);
-    }, []);
+    }, [navigate]);
 
     return (
         <div id="style-manage">

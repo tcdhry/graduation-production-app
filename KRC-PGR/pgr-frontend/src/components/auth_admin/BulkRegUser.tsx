@@ -1,7 +1,12 @@
 import { AnyFormEvent } from "../../constants/AnyFormEvent";
 import * as xlsx from "xlsx";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { searchAuthority } from "../../constants/Authority";
+import axios from "axios";
+import { API, generateAPI } from "../../constants/URL";
+import { catchError, receiveResponse, ResponseBase } from "../../constants/ResponseStatus";
+import { useNavigate } from "react-router-dom";
+import { ClassBean } from "../../beans/ClassBean";
 
 function getVal(val: any) {
     return val === undefined ? undefined : val.v;
@@ -24,15 +29,7 @@ function readExcelFile(event: React.ChangeEvent<HTMLInputElement>, setUsers: Rea
 
         const list = [];
 
-        for (let i = 2; true/* 内部でbreak判定 */; i++) {
-            if (ws[`A${i}`] === undefined) {
-                /**
-                 * A列(ユーザID)が未入力の時点で以降を無視。
-                 * 未入力はundefinedで判定可能。
-                 */
-                break;
-            }
-
+        for (let i = 2; ws[`A${i}`] !== undefined; i++) {
             const row = {
                 user_id: ws[`A${i}`].v,
                 user_name: getVal(ws[`B${i}`]),
@@ -53,6 +50,28 @@ function readExcelFile(event: React.ChangeEvent<HTMLInputElement>, setUsers: Rea
     reader.readAsBinaryString(file);
 }
 
+// function outputTemplateExcelFile() {
+//     // const data = [['ユーザID', 'ユーザ名', '表示名', 'パスワード', '権限ID', 'クラスID', '出席番号']];
+//     // const headers = ['A1', 'B1', 'C1', 'D1', 'E1', 'F1', 'G1'];
+
+//     // const wb = new WorkBook();
+//     // const sheet = wb.addSheet('Sheet1');
+
+//     // for (let i = 0; i < data.length; i++) {
+//     //     for (let j = 0; j < data[i].length; j++) {
+//     //         sheet.set(headers[j], i, data[i][j]);
+//     //     }
+//     // }
+
+//     // wb.download('new-file.xlsx');
+
+//     // // const ws = xlsx.utils.json_to_sheet(data);
+//     // // const wb = xlsx.utils.book_new();
+
+//     // // xlsx.utils.book_append_sheet(wb, ws, 'Sheet1');
+//     // // xlsx.writeFile(wb, 'template.xlsx');
+// }
+
 type RowData = {
     user_id: string,
     user_name: string,
@@ -65,42 +84,90 @@ type RowData = {
 
 function BulkRegUser() {
     const [users, setUsers] = useState<Array<RowData>>([]);
+    const [classes, setClasses] = useState<Array<ClassBean>>([]);
+
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        type GetClassesResponse = ResponseBase & {
+            data: {
+                classes: Array<ClassBean>
+            }
+        };
+        axios.get(generateAPI(API.Admin._, API.Admin.getClasses)).then((res: GetClassesResponse) => {
+            receiveResponse(res, navigate, function () {
+                setClasses(res.data.classes);
+            });
+        }).catch(catchError);
+    }, [navigate]);
 
     return (
         <>
+            <h2>ユーザ一括登録</h2>
+            <input type="file" accept=".xls, .xlsx" name="excel_file" onChange={(event) => { readExcelFile(event, setUsers); }} />
+            {/* <button className="btn btn-full" onClick={outputTemplateExcelFile}>Excelテンプレートファイルをダウンロードする。</button> */}
+
             <form onSubmit={function (event: AnyFormEvent) {
                 event.preventDefault();
+                const tr_list = event.target.getElementsByTagName('tr');
+                const newUsers: Array<RowData> = [];
+
+                function includesClasses(class_id: string) {
+                    classes.forEach((cls) => {
+                        if (String(cls.class_id) === class_id) {
+                            return true;
+                        }
+                    });
+                    return false;
+                }
+
+                [...tr_list].slice(1).forEach((tr: HTMLTableRowElement) => {
+                    const user_id = (tr.querySelector('.user_id')! as HTMLInputElement).value;
+                    const user_name = (tr.querySelector('.user_name')! as HTMLInputElement).value;
+                    const view_name = (tr.querySelector('.view_name')! as HTMLInputElement).value;
+                    const password = (tr.querySelector('.password')! as HTMLInputElement).value;
+                    const authority_id = (tr.querySelector('.authority_id')! as HTMLInputElement).value;
+                    const class_id = (tr.querySelector('.class_id')! as HTMLInputElement).value;
+                    const student_number = (tr.querySelector('.student_number')! as HTMLInputElement).value;
+                    // console.log(user_id, user_name, view_name, password, authority_id, class_id, student_number);
+
+                    if (!['0', '1', '2'].includes(authority_id)) {
+                        // authority_id error
+                    }
+
+                    if (!includesClasses(class_id)) {
+                        // class_id error
+                    }
+
+                    newUsers.push({
+                        user_id: user_id,
+                        user_name: user_name,
+                        view_name: view_name,
+                        password: password,
+                        authority_id: authority_id,
+                        class_id: class_id,
+                        student_number: student_number
+                    });
+                });
+
+
+
+                type BulkRegUserResponse = ResponseBase & {
+                    data: {
+
+                    }
+                };
+                axios.post(generateAPI(API.Admin._, API.Admin.bulkRegUser), { newUsers: newUsers }).then((res: BulkRegUserResponse) => {
+                    receiveResponse(res, navigate, function () {
+
+                    });
+                }).catch(catchError);
             }}>
-                <h2>ユーザ一括登録</h2>
-                <input type="file" accept=".xls, .xlsx" name="excel_file" onChange={(event) => { readExcelFile(event, setUsers); }} />
 
                 <table>
                     <thead>
                         <tr>
-                            <th>
-                                ユーザID
-                            </th>
-                            <th>
-                                ユーザ名
-                            </th>
-                            <th>
-                                表示名
-                            </th>
-                            <th>
-                                パスワード
-                            </th>
-                            <th>
-                                権限ID
-                            </th>
-                            <th>
-                                権限名
-                            </th>
-                            <th>
-                                クラスID
-                            </th>
-                            <th>
-                                出席番号
-                            </th>
+                            <th>ユーザID</th><th>ユーザ名</th><th>表示名</th><th>パスワード</th><th>権限ID</th><th>権限名</th><th>クラスID</th><th>出席番号</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -112,19 +179,19 @@ function BulkRegUser() {
                                     list.push(
                                         <tr key={i++}>
                                             <td>
-                                                <input type="text" defaultValue={row.user_id} />
+                                                <input type="text" defaultValue={row.user_id} className="user_id" />
                                             </td>
                                             <td>
-                                                <input type="text" defaultValue={row.user_name} />
+                                                <input type="text" defaultValue={row.user_name} className="user_name" />
                                             </td>
                                             <td>
-                                                <input type="text" defaultValue={row.view_name} />
+                                                <input type="text" defaultValue={row.view_name} className="view_name" />
                                             </td>
                                             <td>
-                                                <input type="text" defaultValue={row.password} />
+                                                <input type="text" defaultValue={row.password} className="password" />
                                             </td>
                                             <td>
-                                                <input type="text" defaultValue={row.authority_id} />
+                                                <input type="text" defaultValue={row.authority_id} className="authority_id" />
                                             </td>
                                             <td>
                                                 {function () {
@@ -143,10 +210,10 @@ function BulkRegUser() {
                                                 }()}
                                             </td>
                                             <td>
-                                                <input type="text" defaultValue={row.class_id} />
+                                                <input type="text" defaultValue={row.class_id} className="class_id" />
                                             </td>
                                             <td>
-                                                <input type="text" defaultValue={row.student_number} />
+                                                <input type="text" defaultValue={row.student_number} className="student_number" />
                                             </td>
                                         </tr>
                                     );
@@ -156,6 +223,8 @@ function BulkRegUser() {
                         }
                     </tbody>
                 </table>
+
+                <input type="submit" value="登録する" className="btn btn-full" />
             </form>
         </>
     );

@@ -14,6 +14,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Component;
 
 import com.krc.pgr.bean.ExecStatus;
+import com.krc.pgr.bean.ExecStatusHideOutput;
 import com.krc.pgr.constant.AnswerConfirmStatus;
 import com.krc.pgr.constant.ExecConfirmStatus;
 import com.krc.pgr.constant.ExecStatusCode;
@@ -89,11 +90,11 @@ public class UserExecQuestionAction {
             return new ExecConfirmResponse(ExecConfirmStatus.LANGUAGE_ERROR);
         }
 
-        String[] inputs = Converter.castPgArray(question.get("inputs"));
-        String[] outputs = Converter.castPgArray(question.get("outputs"));
-        String[] io_explain = Converter.castPgArray(question.get("io_explain"));
+        String[] inputs = Converter.castPgArray_str(question.get("inputs"));
+        String[] outputs = Converter.castPgArray_str(question.get("outputs"));
+        String[] io_explain = Converter.castPgArray_str(question.get("io_explain"));
 
-        RuntimeManage runtime = languageRuntimeMap.getRuntimeInstance(select_language, question_id, source_code, true);
+        RuntimeManage runtime = languageRuntimeMap.getExecConfirmRuntimeInstance(select_language, question_id, source_code);
         List<ExecStatus> execList = new ArrayList<>();
 
         for (int i = 0; i < 3; i++) {
@@ -110,7 +111,7 @@ public class UserExecQuestionAction {
         return new ExecConfirmResponse(execList);
     }
 
-    public AnswerConfirmResponse answerConfirm(String question_id_str, Map<String, Object> postParams) throws IOException {
+    public AnswerConfirmResponse answerConfirm(String question_id_str, Map<String, Object> postParams) throws IOException, SQLException {
         int question_id;
         try {
             question_id = Integer.parseInt(question_id_str);
@@ -134,7 +135,7 @@ public class UserExecQuestionAction {
             return new AnswerConfirmResponse(AnswerConfirmStatus.LANGUAGE_ERROR);
         }
 
-        String sql = "select scoring, input_judge, output_judge, language_designation from t_questions where release_flag = true and question_id = ?;";
+        String sql = "select (input_judge is not null and output_judge is not null) as scoring, input_judge, output_judge, language_designation from t_questions where release_flag = true and question_id = ?;";
         List<Map<String, Object>> list = jdbc.queryForList(sql, question_id);
 
         if (list.size() == 0) {
@@ -150,13 +151,72 @@ public class UserExecQuestionAction {
             return new AnswerConfirmResponse(AnswerConfirmStatus.LANGUAGE_ERROR);
         }
 
+        int rows_count = source_code.split("\n").length;
+        int chars_count = source_code.length();
+
+        // このタイミングでファイルが保存される。
+        RuntimeManage runtime = languageRuntimeMap.getAnswerConfirmRuntimeInstance(select_language, question_id, source_code);
+
+        /**
+         * insert into t_answers(id_col, col_1, col_2) values(new_id, val_1, val_2)
+         * on conflict(id_col)
+         * do update set col_1 = excluded.col_1, col_2 = excluded.col_2;
+         * 
+         * insert時にid_col列が重複していれば、updateに切り替える。
+         * excluded.col_1はinsertのvaluesで入力された値を自動で入力される。
+         * conflictに指定した列を自動で絞り込むためwhere句は必要ない。
+         */
+//        sql = "insert into t_answers(question_id, user_id, select_language, rows_count, chars_count, insert_timestamp) values(?, ?, ?, ?, ?, current_timestamp) on conflict(question_id, user_id) do update set select_language = excluded.select_language, rows_count = excluded.rows_count, chars_count = excluded.chars_count, insert_timestamp = excluded.insert_timestamp;";
+
+        int user_id = session.getLoginUser().getUser_id();
+
+        /**
+         * ↓紐づけられたt_executionsのデータも外部キー制約によって自動で削除させる。
+         */
+        sql = "delete from t_answers where question_id = ? and user_id = ?";
+        jdbc.update(sql, question_id, user_id);
+
+        sql = "insert into t_answers(question_id, user_id, select_language, rows_count, chars_count, insert_timestamp) values(?, ?, ?, ?, ?, current_timestamp);";
+        jdbc.update(sql, question_id, user_id, select_language.getId(), rows_count, chars_count);
+
         if ((boolean) question.get("scoring") == false) {
-            // 採点が無い問題であれば、コードを保存し、レスポンスを返す。
-            FileManage.createFile("\\pgr-codes\\submits\\q1\\u2009011\\", source_code);
-            sql = "";
+            return new AnswerConfirmResponse(AnswerConfirmStatus.SUCCESS);
         }
 
-        return null;
-    }
+        String[] input_judge = Converter.castPgArray_str(question.get("input_judge"));
+        String[] output_judge = Converter.castPgArray_str(question.get("output_judge"));
 
+//        List<ExecStatus> execList = new ArrayList<>();
+
+        sql = "insert into t_executions(exec_number, question_id, user_id, exec_time, exec_status_id) values";
+        final String sqlValuesPlaceHolder = "(?, ?, ?, ?, ?)";
+        ArrayList<String> sqlValues = new ArrayList<>();
+        ArrayList<Object> sqlParams = new ArrayList<>();
+
+        for (int i = 0; i < 10; i++) {
+            if (input_judge[i] == null && output_judge[i] == null) {
+                break;
+            }
+
+            ExecStatus execStatus = runtime.compileAndExec(input_judge[i], output_judge[i]);
+            runtime.writeOutputToFile(i, execStatus.getOutput());
+//            execList.add(execStatus);
+
+            sqlValues.add(sqlValuesPlaceHolder);
+            sqlParams.add(i);
+            sqlParams.add(question_id);
+            sqlParams.add(user_id);
+            sqlParams.add(execStatus.getExecTime());
+            sqlParams.add(execStatus.getExecStatusCode());
+
+            if (execStatus.getExecStatusCode() == ExecStatusCode.COMPILATION_ERROR.getId()) {
+                break;
+            }
+        }
+
+        sql = sql + String.join(",", sqlValues) + ";";
+        jdbc.update(sql, sqlParams.toArray());
+
+        return new AnswerConfirmResponse();
+    }
 }

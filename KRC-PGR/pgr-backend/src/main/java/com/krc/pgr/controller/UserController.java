@@ -4,6 +4,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.krc.pgr.action.UserProfileAction;
 import com.krc.pgr.action.UserStyleAction;
+import com.krc.pgr.action.UserViewAnswerAction;
 import com.krc.pgr.action.UserExecQuestionAction;
 import com.krc.pgr.action.UserGetQuestionAction;
 import com.krc.pgr.aspect.Permit;
@@ -37,6 +38,9 @@ public class UserController {
 
     @Autowired
     UserExecQuestionAction userExecQuestionAction;
+
+    @Autowired
+    UserViewAnswerAction userViewAnswerAction;
 
     @Autowired
     UserStyleAction userStyleAction;
@@ -115,8 +119,12 @@ public class UserController {
 
     @PostMapping("/answerConfirm/{question_id}")
     public ResponseBase answerConfirm(@PathVariable String question_id, @RequestBody Map<String, Object> postParams) throws SQLException, IOException {
+        return userExecQuestionAction.answerConfirm(question_id, postParams);
+    }
 
-        return userExecQuestionAction.execConfirm(question_id, postParams);
+    @GetMapping("/viewAnswer/{question_id}")
+    public ResponseBase viewAnswer(@PathVariable String question_id) throws IllegalArgumentException, IOException {
+        return userViewAnswerAction.viewAnswer(question_id);
     }
 
     @GetMapping("/getStyles")

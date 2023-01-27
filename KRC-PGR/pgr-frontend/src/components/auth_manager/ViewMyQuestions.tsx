@@ -158,7 +158,7 @@ function ViewMyQuestions() {
             <SearchQuestionsForm />
             <SearchStatusView searchStatus={searchStatus} hitCount={hitCount} maxPage={maxPage} nowPage={params.page} />
             <Pager searchStatus={searchStatus} hitCount={hitCount} maxPage={maxPage} nowPage={params.page} />
-            <QuestionsListView questions={questions} toURL={generateURL(URL.Manager._, URL.Manager.editQuestion)} />
+            <QuestionsListView questions={questions} toURL={generateURL(URL.Manager._, URL.Manager.editQuestion)} myQuestions={true} />
             <Pager searchStatus={searchStatus} hitCount={hitCount} maxPage={maxPage} nowPage={params.page} />
         </>
     );

@@ -69,7 +69,7 @@ print("XXXXXX")`,
 puts "XXXXXX"`,
 }
 
-function CodeEditor(props: { language: LanguageCode | null, editorRef?: undefined | React.RefObject<AceEditor> }) {
+function CodeEditor(props: { language: LanguageCode | null, editorRef?: undefined | React.RefObject<AceEditor>, defaultValue?: string }) {
     useEffect(() => {
         props.editorRef?.current?.editor.setValue(defaultValue[props.language!]);
         // valueを書き換えると値が全選択された状態になるため、カーソル位置を移動する処理を追加する。
@@ -92,6 +92,7 @@ function CodeEditor(props: { language: LanguageCode | null, editorRef?: undefine
                 width="100%"
                 height="80vh"
                 ref={props.editorRef}
+                defaultValue={props.defaultValue}
             />
         </>
     );

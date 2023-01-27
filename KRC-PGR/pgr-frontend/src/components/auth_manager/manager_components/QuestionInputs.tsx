@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { QuestionBean } from "../../../beans/QuestionBean";
 import { Languages } from "../../../constants/Language";
 import LabelInput from "../../global_components/LabelInput";
@@ -242,7 +242,7 @@ function QuestionInputs(props: {
                 input={
                     <select id="language_designation" name="language_designation" onChange={function (event) {
                         props.setQuestion({ ...props.question, language_designation: event.target.value === 'null' ? null : Number(event.target.value) });
-                    }} defaultValue={new String(props.question.language_designation) as string}>
+                    }} defaultValue={String(props.question.language_designation) as string}>
                         <option value="null">言語指定なし</option>
                         {Languages.map((lang) => { return <option key={lang.language_id} value={lang.language_id}>{lang.language_name}</option> })}
                     </select>

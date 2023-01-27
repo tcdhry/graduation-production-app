@@ -1,6 +1,8 @@
 package com.krc.pgr.util;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 
@@ -17,11 +19,11 @@ public class FileManage {
         return "q" + question_id + "\\u" + user_id + "\\";
     }
 
-    public static String generateTestFilePath(int question_id, int user_id) {
+    public static String generateTestFolderDirectory(int question_id, int user_id) {
         return TOP_DIRECTORY + TESTS_DIRECTORY + generateSourceFolderDirectory(question_id, user_id);
     }
 
-    public static String generateSubmitFilePath(int question_id, int user_id) {
+    public static String generateSubmitFolderDirectory(int question_id, int user_id) {
         return TOP_DIRECTORY + SUBMITS_DIRECTORY + generateSourceFolderDirectory(question_id, user_id);
     }
 
@@ -43,5 +45,19 @@ public class FileManage {
         FileWriter fw = new FileWriter(path);
         fw.write(content);
         fw.close();
+    }
+
+    public static void deleteFile(String path) {
+        File file = new File(path);
+        file.delete();
+    }
+
+    public static String readFile(String path) throws IOException {
+        File file = new File(path);
+        FileInputStream fis = new FileInputStream(file);
+        byte[] data = new byte[(int) file.length()];
+        fis.read(data);
+        fis.close();
+        return new String(data, "UTF-8");
     }
 }
