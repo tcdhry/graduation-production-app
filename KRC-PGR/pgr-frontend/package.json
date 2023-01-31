@@ -14,6 +14,7 @@
         "@types/react-redux": "^7.1.24",
         "@types/react-router-dom": "^5.3.3",
         "axios": "^1.2.0",
+        "jszip": "^3.10.1",
         "query-string": "^7.1.2",
         "react": "^18.2.0",
         "react-ace": "^10.1.0",
@@ -54,5 +55,5 @@
             "last 1 safari version"
         ]
     },
-    "proxy": "http://10.6.115.165:8080"
+    "proxy": "http://192.168.56.1:8080"
 }

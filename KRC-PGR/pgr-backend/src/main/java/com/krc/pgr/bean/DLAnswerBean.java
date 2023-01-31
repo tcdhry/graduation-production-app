@@ -1,11 +1,15 @@
 package com.krc.pgr.bean;
 
-import java.sql.SQLException;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
-import com.krc.pgr.util.Converter;
+import com.krc.pgr.constant.Language;
+import com.krc.pgr.constant.SourceFileName;
+import com.krc.pgr.util.FileManage;
 
-public class AnswerBean {
+public class DLAnswerBean {
     private int user_id;
     private String user_name;
     private Integer student_number;
@@ -15,16 +19,11 @@ public class AnswerBean {
     private String department_name;
     private Integer faculty_id;
     private String faculty_name;
-    private Integer select_language;
-    private int rows_count;
-    private int chars_count;
-    private String insert_timestamp;
-    private int exec_count;
-    private int accepted_count;
-    private Integer[] exec_statuses;
-    private Integer[] exec_times;
+    private String file_name;
+    private String source_code;
+    private List<DLOutputBean> outputs;
 
-    public AnswerBean(Map<String, Object> map) throws SQLException {
+    public DLAnswerBean(Map<String, Object> map, int question_id) throws IOException {
         this.user_id = (int) map.get("user_id");
         this.user_name = (String) map.get("user_name");
         this.student_number = (Integer) map.get("student_number");
@@ -34,14 +33,26 @@ public class AnswerBean {
         this.department_name = (String) map.get("department_name");
         this.faculty_id = (Integer) map.get("faculty_id");
         this.faculty_name = (String) map.get("faculty_name");
-        this.select_language = (Integer) map.get("select_language");
-        this.rows_count = (int) map.get("rows_count");
-        this.chars_count = (int) map.get("chars_count");
-        this.insert_timestamp = (String) map.get("insert_timestamp");
-        this.exec_count = (int) map.get("exec_count");
-        this.accepted_count = (int) map.get("accepted_count");
-        this.exec_statuses = Converter.castPgArray_int(map.get("exec_statuses"));
-        this.exec_times = Converter.castPgArray_int(map.get("exec_times"));
+
+        String dir = FileManage.generateSubmitFolderDirectory(question_id, (int) map.get("user_id"));
+        String fn;
+        if (map.get("select_language") == null) {
+            fn = "source_code.txt";
+        } else {
+            fn = SourceFileName.search(Language.valueOf((Integer) map.get("select_language"))).getFileName();
+        }
+        this.file_name = fn;
+        String path = dir + fn;
+        this.source_code = FileManage.readFile(path);
+
+        List<DLOutputBean> outputs = new ArrayList<>();
+        int exec_count = (int) map.get("exec_count");
+        for (int i = 0; i < exec_count; i++) {
+            String outputPath = dir + "output" + i + ".txt";
+            String output = FileManage.readFile(outputPath);
+            outputs.add(new DLOutputBean(output));
+        }
+        this.outputs = outputs;
     }
 
     public int getUser_id() {
@@ -80,35 +91,15 @@ public class AnswerBean {
         return faculty_name;
     }
 
-    public Integer getSelect_language() {
-        return select_language;
+    public String getFile_name() {
+        return file_name;
     }
 
-    public int getRows_count() {
-        return rows_count;
+    public String getSource_code() {
+        return source_code;
     }
 
-    public int getChars_count() {
-        return chars_count;
-    }
-
-    public String getInsert_timestamp() {
-        return insert_timestamp;
-    }
-
-    public int getExec_count() {
-        return exec_count;
-    }
-
-    public int getAccepted_count() {
-        return accepted_count;
-    }
-
-    public Integer[] getExec_statuses() {
-        return exec_statuses;
-    }
-
-    public Integer[] getExec_times() {
-        return exec_times;
+    public List<DLOutputBean> getOutputs() {
+        return outputs;
     }
 }

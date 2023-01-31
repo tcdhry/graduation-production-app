@@ -15,10 +15,10 @@ function LabelInput(props: { label: JSX.Element, input: JSX.Element, label_width
 
 export default LabelInput;
 
-export function LabelCheckbox(props: { value: string, id: string, name: string, labelText: string, defaultChecked: boolean }) {
+export function LabelCheckbox(props: { value: string, id: string, name: string, labelText: string, defaultChecked: boolean, onChange?: React.ChangeEventHandler<HTMLInputElement> }) {
     return (
         <span className="label-checkbox">
-            <input type="checkbox" value={props.value} id={props.id} name={props.name} defaultChecked={props.defaultChecked} />
+            <input type="checkbox" value={props.value} id={props.id} name={props.name} defaultChecked={props.defaultChecked} onChange={props.onChange} />
             <label htmlFor={props.id}>{props.labelText}</label>
         </span>
     );

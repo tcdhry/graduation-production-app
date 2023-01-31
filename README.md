@@ -20,6 +20,7 @@ npm install @reduxjs/toolkit@1.9.1
 npm install sass@1.56.1
 npm install xlsx@0.18.5
 npm install react-xlsx@0.4.10
+npm install jszip@3.10.1
 ```
 他package.json参照
 

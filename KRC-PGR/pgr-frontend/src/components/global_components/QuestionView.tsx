@@ -37,13 +37,17 @@ function QuestionView(props: { question: QuestionBean, editorRef: undefined | Re
                 </Col>
             </Row>
 
-            {props.question.answered === true ? (
-                <Row>
-                    <Col>
+            <Row>
+                <Col>
+                    {props.question.answered === true ? (
                         <Link to={generateURL(URL.User._, URL.User.viewAnswer) + '/' + props.question.question_id} className="text-link">提出済みの解答を確認</Link>
-                    </Col>
-                </Row>
-            ) : (<></>)}
+                    ) : (<></>)}
+                    <br />
+                    {props.question.private_answer_mode === true ? (<></>) : (
+                        <Link to={generateURL(URL.User._, URL.User.ranking) + '/' + props.question.question_id} className="text-link">他の人の解答を参考にする</Link>
+                    )}
+                </Col>
+            </Row>
 
             <Row>
                 <Col>

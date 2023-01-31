@@ -8,6 +8,7 @@ import com.krc.pgr.aspect.Permit;
 import com.krc.pgr.constant.Authority;
 import com.krc.pgr.response.ResponseBase;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
@@ -155,5 +156,27 @@ public class ManagerController {
          * @param question_id: String
          */
         return managerAnswerAction.viewAnswers(question_id);
+    }
+
+    @PostMapping("/downloadAnswers/{question_id}")
+    public ResponseBase downloadAnswers(@PathVariable String question_id, @RequestBody Map<String, Object> postParams) throws IOException {
+        /**
+         * @return DownloadAnswersResponse extends ResponseBase
+         * 
+         * @param question_id: String
+         * @params dl_users: List<Integer>
+         */
+        return managerAnswerAction.downloadAnswers(question_id, postParams);
+    }
+
+    @GetMapping("/viewAnswer/{question_id}/{user_id}")
+    public ResponseBase viewAnswer(@PathVariable String question_id, @PathVariable String user_id) throws IOException, SQLException {
+        /**
+         * @return ViewAnswerResponse extends Response
+         * 
+         * @param question_id: String
+         * @param user_id:     String
+         */
+        return managerAnswerAction.viewAnswer(question_id, user_id);
     }
 }

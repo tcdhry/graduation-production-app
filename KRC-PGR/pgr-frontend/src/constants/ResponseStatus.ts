@@ -9,10 +9,14 @@ export enum Status {
     InsufficientAuthority = 3
 };
 
-export type ResponseBase = AxiosResponse & {
+export type ResponseBase = {
     data: {
         status: number,
         errorMessage: string
+    }
+} & {
+    request?: {
+        responseURL?: string
     }
 };
 
@@ -46,7 +50,7 @@ export function catchError(err: any) {
 
 export function logResponse(res: ResponseBase) {
     const now = new Date();
-    console.log([now.toLocaleTimeString() + '.' + now.getMilliseconds().toString().substring(0, 2), res.request.responseURL.replace(/http:\/\/[\d.:]+/g, ''), res]);
+    console.log([now.toLocaleTimeString() + '.' + now.getMilliseconds().toString().substring(0, 2), res.request!.responseURL!.replace(/http:\/\/[\d.:]+/g, ''), res]);
 }
 
 /** 基本形

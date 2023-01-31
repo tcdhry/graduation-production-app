@@ -86,7 +86,7 @@ function MyQuestionLinks(props: { question: QuestionThumbnail }) {
                     <Link to={generateURL(URL.Manager._, URL.Manager.viewAnswers) + '/' + props.question.question_id} className="text-link">提出された解答</Link>
                 </div>
                 <div>
-                    <Link to={'#'} className="text-link">tmp</Link>
+                    <Link to={generateURL(URL.User._, URL.User.viewQuestion) + '/' + props.question.question_id} className="text-link">ユーザとして解答する</Link>
                 </div>
             </div>
         </>

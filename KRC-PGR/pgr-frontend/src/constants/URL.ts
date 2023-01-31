@@ -38,7 +38,7 @@ enum GuestURL {
     login = 'login',
     sessionError = 'sessionError',
     insufficientAuthorityError = 'insufficientAuthorityError',
-    
+
 }
 
 export class URL {
@@ -59,7 +59,7 @@ enum AdminAPI {
     updateStyle = 'updateStyle',
     getClasses = 'getClasses',
     bulkRegUser = 'bulkRegUser',
-    
+
 }
 
 enum ManagerAPI {
@@ -70,6 +70,8 @@ enum ManagerAPI {
     editQuestion = 'editQuestion',
     editQuestionIO = 'editQuestionIO',
     viewAnswers = 'viewAnswers',
+    downloadAnswers = 'downloadAnswers',
+    viewAnswer = 'viewAnswer',
 }
 
 enum UserAPI {
@@ -83,6 +85,7 @@ enum UserAPI {
     answerConfirm = 'answerConfirm',
     selectStyle = 'selectStyle',
     viewAnswer = 'viewAnswer',
+    ranking = 'ranking',
 }
 
 enum GuestAPI {

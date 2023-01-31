@@ -3,6 +3,7 @@ package com.krc.pgr.controller;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.krc.pgr.action.UserProfileAction;
+import com.krc.pgr.action.UserRankingAction;
 import com.krc.pgr.action.UserStyleAction;
 import com.krc.pgr.action.UserViewAnswerAction;
 import com.krc.pgr.action.UserExecQuestionAction;
@@ -41,6 +42,9 @@ public class UserController {
 
     @Autowired
     UserViewAnswerAction userViewAnswerAction;
+
+    @Autowired
+    UserRankingAction userRankingAction;
 
     @Autowired
     UserStyleAction userStyleAction;
@@ -119,16 +123,39 @@ public class UserController {
 
     @PostMapping("/answerConfirm/{question_id}")
     public ResponseBase answerConfirm(@PathVariable String question_id, @RequestBody Map<String, Object> postParams) throws SQLException, IOException {
+        /**
+         * @return AnswerConfirmResponse extends ResponseBase
+         * 
+         * @param @PathVariable question_id: String
+         * @param @RequestBody  postParams: Map<String, Object>
+         *                      ."source_code": String
+         *                      ."select_language": Integer
+         */
         return userExecQuestionAction.answerConfirm(question_id, postParams);
     }
 
     @GetMapping("/viewAnswer/{question_id}")
     public ResponseBase viewAnswer(@PathVariable String question_id) throws IllegalArgumentException, IOException {
+        /**
+         * @return ViewAnswerResponse extends ResponseBase
+         * 
+         * @param @PathVariable question_id: String
+         */
         return userViewAnswerAction.viewAnswer(question_id);
     }
 
     @GetMapping("/getStyles")
     public ResponseBase getStyles() {
         return userStyleAction.getStyles();
+    }
+
+    @GetMapping("/ranking/{question_id}")
+    public ResponseBase ranking(@PathVariable String question_id) {
+        /**
+         * @return RankingResponse extends ResponseBase
+         * 
+         * @param @PathVariable question_id: String
+         */
+        return userRankingAction.ranking(question_id);
     }
 }
