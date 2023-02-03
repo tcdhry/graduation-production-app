@@ -61,14 +61,14 @@ function SingleQuestionRanking() {
                 問題番号：{question_id}<br />
                 タイトル：{title}<br />
             </p>
-            {notFound === true ? (<p>この問題は存在しないか、公開されていないため、解答を見ることができません。</p>) : <></>}
+            {notFound === true ? (<p>この問題は存在しないか、公開されていないため、解答を見ることができません。</p>) : null}
             {passwordRequired === true ? (
                 <p>
                     パスワードが必要な問題です。<br/>
                     問題を表示してからやり直してください。
                 </p>
-            ) : <></>}
-            {privateAnswerMode === true ? (<p>この問題は、他の人の解答を参考にできない設定です。ズルはいけませんよ。</p>) : <></>}
+            ) : null}
+            {privateAnswerMode === true ? (<p>この問題は、他の人の解答を参考にできない設定です。ズルはいけませんよ。</p>) : null}
             {notFound === false && passwordRequired === false && privateAnswerMode === false ? (
                 <>
                     <AnswerModal
@@ -111,7 +111,7 @@ function SingleQuestionRanking() {
                         </tbody>
                     </table>
                 </>
-            ) : <></>}
+            ) : null}
         </>
     );
 }
@@ -161,7 +161,7 @@ function AnswerModal(props: { display: boolean, setDisplay: React.Dispatch<React
     }, [props.user_id, props.question_id, answers, navigate]);
     if (answer === undefined) {
         return (
-            <></>
+            null
         );
     }
     return (

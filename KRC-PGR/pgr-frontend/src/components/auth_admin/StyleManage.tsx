@@ -57,7 +57,7 @@ function StyleManage() {
                         <tr>
                             {
                                 styles.length === 0 ? (
-                                    <></>
+                                    null
                                 ) : (
                                     <>
                                         <th>style-id(変更不可)</th>

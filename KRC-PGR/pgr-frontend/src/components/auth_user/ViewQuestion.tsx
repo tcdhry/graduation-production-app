@@ -175,7 +175,7 @@ function QuestionConfirmForm(props: { question: QuestionBean }) {
 
                 {
                     execList.length === 0 ? (
-                        <></>
+                        null
                     ) : (
                         <div id="exec-confirm-result">
                             <h3>実行確認結果</h3>

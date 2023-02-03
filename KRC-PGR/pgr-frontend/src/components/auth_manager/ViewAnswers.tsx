@@ -93,7 +93,7 @@ function ViewAnswers() {
 
     if (answers === undefined) {
         return (
-            <></>
+            null
         );
     }
 
@@ -103,7 +103,7 @@ function ViewAnswers() {
             {errorFlag === true ? (
                 <p>存在しない問題か、あなたが投稿した問題ではありません。</p>
             ) : (
-                <></>
+                null
             )}
             <p>
 
@@ -111,7 +111,7 @@ function ViewAnswers() {
                 タイトル：{question_title}<br />
             </p>
             {answers === null ? (
-                <></>
+                null
             ) : (
                 <>
                     <form onSubmit={function (event: AnyFormEvent) {
@@ -283,7 +283,7 @@ function ViewAnswers() {
                                                         'sample.java',
                                                     )
                                                 ) : (
-                                                    <></>
+                                                    null
                                                 )
                                             }</p>
                                         </Col>
@@ -501,7 +501,7 @@ function AnswerModal(props: { display: boolean, setDisplay: React.Dispatch<React
     }, [props.user_id, answers, navigate, props.question_id]);
     if (answer === undefined) {
         return (
-            <></>
+            null
         );
     }
     return (

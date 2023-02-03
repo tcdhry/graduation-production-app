@@ -20,7 +20,7 @@ function SearchStatusView(props: { searchStatus: SearchStatus, hitCount: number,
                         case SearchStatus.INPUT_VALUE_ERROR:
                             return (<>不正な入力値が検知されました。検索フォームから再検索してください。</>);
                         default:
-                            return (<></>);
+                            return (null);
                     }
                 }()
             }

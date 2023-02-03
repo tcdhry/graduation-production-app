@@ -41,9 +41,9 @@ function QuestionView(props: { question: QuestionBean, editorRef: undefined | Re
                 <Col>
                     {props.question.answered === true ? (
                         <Link to={generateURL(URL.User._, URL.User.viewAnswer) + '/' + props.question.question_id} className="text-link">提出済みの解答を確認</Link>
-                    ) : (<></>)}
+                    ) : (null)}
                     <br />
-                    {props.question.private_answer_mode === true ? (<></>) : (
+                    {props.question.private_answer_mode === true ? (null) : (
                         <Link to={generateURL(URL.User._, URL.User.ranking) + '/' + props.question.question_id} className="text-link">他の人の解答を参考にする</Link>
                     )}
                 </Col>
@@ -166,7 +166,7 @@ function QuestionView(props: { question: QuestionBean, editorRef: undefined | Re
 
             {
                 props.question.inputs[0] === null && props.question.outputs[0] === null && props.question.io_explain[0] === null ? (
-                    <></>
+                    null
                 ) : (
                     <Row>
                         <Col>

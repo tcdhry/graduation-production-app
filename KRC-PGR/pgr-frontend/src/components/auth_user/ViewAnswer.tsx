@@ -58,7 +58,7 @@ function AnswerView(props: { question_id: string | undefined, answerData: undefi
 
     if (answer === undefined) {
         return (
-            <></>
+            null
         );
     }
 
@@ -76,7 +76,7 @@ function AnswerView(props: { question_id: string | undefined, answerData: undefi
 
             {
                 answer.executions === null ? (
-                    <></>
+                    null
                 ) : (
                     <table className="table">
                         <thead>

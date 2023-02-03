@@ -45,7 +45,7 @@ function EditQuestion() {
 
     if (viewFlag === undefined) {
         return (
-            <></>
+            null
         );
     }
 

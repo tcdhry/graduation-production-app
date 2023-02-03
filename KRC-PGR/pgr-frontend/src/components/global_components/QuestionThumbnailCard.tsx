@@ -63,7 +63,7 @@ function QuestionThumbnailCard(props: { question: QuestionThumbnail, toURL: stri
                     </div>
                 </div>
                 {
-                    props.myQuestion === true ? (<MyQuestionLinks question={props.question} />) : (<></>)
+                    props.myQuestion === true ? (<MyQuestionLinks question={props.question} />) : (null)
                 }
             </section>
         </>
