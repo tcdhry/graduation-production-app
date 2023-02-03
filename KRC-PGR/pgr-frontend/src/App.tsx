@@ -44,7 +44,7 @@ const ViewAnswers = lazy(() => import("./components/auth_manager/ViewAnswers"));
 const UserIndex = lazy(() => import("./components/auth_user/_UserIndex"));
 const UserUniform = lazy(() => import("./components/auth_user/_UserUniform"));
 const Profile = lazy(() => import("./components/auth_user/Profile"));
-const Ranking = lazy(() => import("./components/auth_user/Ranking"));
+// const Ranking = lazy(() => import("./components/auth_user/Ranking"));
 const ReferAnswer = lazy(() => import("./components/auth_user/ReferAnswer"));
 const SelectStyle = lazy(() => import("./components/auth_user/SelectStyle"));
 const SingleQuestionRanking = lazy(() => import("./components/auth_user/SingleQuestionRanking"));
@@ -170,8 +170,8 @@ function App() {
                                                     <Route element={<UserUniform />}>
                                                         <Route path={URL.User.index} element={<UserIndex />} />
                                                         <Route path={URL.User.profile} element={<Profile />} />
-                                                        <Route path={URL.User.ranking} element={<Ranking />} />{/* TODO */}
-                                                        <Route path={URL.User.ranking + '/:question_id'} element={<SingleQuestionRanking />} />{/* TODO */}
+                                                        {/* <Route path={URL.User.ranking} element={<Ranking />} />TODO */}
+                                                        <Route path={URL.User.ranking + '/:question_id'} element={<SingleQuestionRanking />} />{/* TODO input password */}
                                                         <Route path={URL.User.selectStyle} element={<SelectStyle />} />
                                                         <Route path={URL.User.viewQuestions} element={<ViewQuestions />} />
                                                         <Route path={URL.User.viewQuestion + '/:question_id'} element={<ViewQuestion />} />

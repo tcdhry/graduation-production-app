@@ -498,7 +498,7 @@ function AnswerModal(props: { display: boolean, setDisplay: React.Dispatch<React
         } else {
             setAnswer(search[0]);
         }
-    }, [props.user_id]);
+    }, [props.user_id, answers, navigate, props.question_id]);
     if (answer === undefined) {
         return (
             <></>
@@ -518,7 +518,7 @@ function AnswerModal(props: { display: boolean, setDisplay: React.Dispatch<React
                     文字数　：{answer.chars_count}
                 </p>
                 <CodeEditor language={answer.select_language} defaultValue={answer.source_code} />
-                <p>
+                <div>
                     {answer.executions.map((exec, i) => {
                         const status = ExecStatuses[exec.exec_status_id];
 
@@ -561,7 +561,7 @@ function AnswerModal(props: { display: boolean, setDisplay: React.Dispatch<React
                             </Fragment>
                         );
                     })}
-                </p>
+                </div>
             </div>
         </div >
     );

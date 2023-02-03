@@ -8,7 +8,7 @@ rows = output.stdout.replace(' ', '').split('\n')
 
 ipv4 = 'localhost'
 
-for i in rows:
+for i in rows[::-1]:
     if i.startswith('IPv4アドレス'):
         ipv4 = i.split(':')[1]
         break

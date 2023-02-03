@@ -150,12 +150,22 @@ public class UserController {
     }
 
     @GetMapping("/ranking/{question_id}")
-    public ResponseBase ranking(@PathVariable String question_id) {
+    public ResponseBase ranking(@PathVariable String question_id, @RequestParam Map<String, Object> getParams) {
         /**
          * @return RankingResponse extends ResponseBase
          * 
          * @param @PathVariable question_id: String
          */
-        return userRankingAction.ranking(question_id);
+        return userRankingAction.ranking(question_id, getParams);
+    }
+
+//    @PostMapping("/ranking/{question_id}")
+//    public ResponseBase rankingWithPassword(@PathVariable String question_id, @RequestBody Map<String, Object> postParams) {
+//        return userRankingAction.rankingWithPassword(question_id, postParams);
+//    }
+
+    @GetMapping("/viewAnswer/{question_id}/{user_id}")
+    public ResponseBase viewAnswer(@PathVariable String question_id, @PathVariable String user_id) throws IOException, SQLException {
+        return userRankingAction.viewAnswer(question_id, user_id);
     }
 }
