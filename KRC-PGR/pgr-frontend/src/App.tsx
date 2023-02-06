@@ -184,7 +184,6 @@ function App() {
                                             </Suspense>
                                         } />
 
-
                                         <Route path={'*'} element={
                                             <Suspense fallback={<Loading />}>
                                                 <Routes>

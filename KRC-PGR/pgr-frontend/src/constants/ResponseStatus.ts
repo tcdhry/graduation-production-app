@@ -1,6 +1,5 @@
 import { NavigateFunction } from "react-router-dom"
 import { generateURL, URL } from "./URL"
-import { AxiosResponse } from "axios";
 
 export enum Status {
     Success = 0,

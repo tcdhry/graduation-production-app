@@ -94,7 +94,7 @@ public abstract class RuntimeManage {
             runProcess.exitValue();
         } catch (IllegalThreadStateException e) {
             // Time Limit Exceeded when runProcess.exitValue = "not exit"
-            return new ExecStatus(ExecStatusCode.TIME_LIMIT_EXCEEDED, (long) LIMIT_TIME);
+            return new ExecStatus(ExecStatusCode.TIME_LIMIT_EXCEEDED, (long) LIMIT_TIME * 1000);
         }
 
         InputStream inputStream;
@@ -146,6 +146,6 @@ public abstract class RuntimeManage {
     }
 
     public void writeOutputToFile(int outputIndex, String output) throws IOException {
-        FileManage.createFile(directory + "\\output" + outputIndex + ".txt", output);
+        FileManage.createFile(directory + "\\output" + outputIndex + ".txt", output == null ? "" : output);
     }
 }
