@@ -15,7 +15,7 @@ import com.krc.pgr.util.FileManage;
 public abstract class RuntimeManage {
 //    final static private String CODES_PATH = "\\pgr-codes\\tests\\";
     private String encoding;
-    public final static int LIMIT_TIME = 5;
+    public final static int LIMIT_TIME = 5000;
 
     // "q{question_id}\\u{user_id}\\"
     protected String directory;
@@ -82,7 +82,7 @@ public abstract class RuntimeManage {
 
         long startTime = System.currentTimeMillis();
         try {
-            runProcess.waitFor(LIMIT_TIME, TimeUnit.SECONDS);
+            runProcess.waitFor(LIMIT_TIME, TimeUnit.MILLISECONDS);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -94,7 +94,7 @@ public abstract class RuntimeManage {
             runProcess.exitValue();
         } catch (IllegalThreadStateException e) {
             // Time Limit Exceeded when runProcess.exitValue = "not exit"
-            return new ExecStatus(ExecStatusCode.TIME_LIMIT_EXCEEDED, (long) LIMIT_TIME * 1000);
+            return new ExecStatus(ExecStatusCode.TIME_LIMIT_EXCEEDED, LIMIT_TIME);
         }
 
         InputStream inputStream;

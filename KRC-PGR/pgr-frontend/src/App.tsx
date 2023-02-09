@@ -25,7 +25,9 @@ import Develop from "./Develop";
 const AdminUniform = lazy(() => import('./components/auth_admin/_AdminUniform'));
 const AdminIndex = lazy(() => import("./components/auth_admin/_AdminIndex"));
 const AccountManage = lazy(() => import("./components/auth_admin/AccountManage"));
-const ClassManage = lazy(() => import("./components/auth_admin/ClassManage"));
+const ClassManageIndex = lazy(() => import("./components/auth_admin/ClassManageIndex"));
+const NewClass = lazy(() => import("./components/auth_admin/NewClass"));
+const UpdateClass = lazy(() => import("./components/auth_admin/UpdateClass"));
 const StyleManage = lazy(() => import("./components/auth_admin/StyleManage"));
 const BulkRegUser = lazy(() => import("./components/auth_admin/BulkRegUser"));
 
@@ -137,7 +139,12 @@ function App() {
                                                         <Route path={URL.Admin.bulkRegUser} element={<BulkRegUser />} />{/* TODO */}
                                                         <Route path={URL.Admin.accountManage} element={<AccountManage />} />{/* TODO */}
                                                         <Route path={URL.Admin.styleManage} element={<StyleManage />} />{/* TODO */}
-                                                        <Route path={URL.Admin.classManage} element={<ClassManage />} />{/* TODO */}
+                                                        <Route path={URL.Admin.classManage}>
+                                                            <Route path={URL.Admin.index} element={<ClassManageIndex />} />
+                                                            <Route path={URL.Admin.newClass} element={<NewClass />} />
+                                                            <Route path={URL.Admin.updateClass} element={<UpdateClass />} />
+                                                        </Route>
+                                                        {/* <Route path={URL.Admin.classManage} element={<ClassManage />} />TODO */}
                                                         <Route path={'/*'} element={<NotFoundError />} />
                                                     </Route>
                                                 </Routes>

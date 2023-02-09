@@ -13,23 +13,16 @@ import org.springframework.stereotype.Component;
 import com.krc.pgr.bean.ClassBean;
 import com.krc.pgr.constant.Authority;
 import com.krc.pgr.response.BulkRegUserResponse;
+import com.krc.pgr.response.GetClassesCompositionResponse;
 import com.krc.pgr.response.GetClassesResponse;
+import com.krc.pgr.response.SuccessFlagResponse;
+import com.krc.pgr.response.NewDepartmentResponse;
 import com.krc.pgr.util.PasswordManage;
 
 @Component
 public class AdminUserAction {
     @Autowired
     JdbcTemplate jdbc;
-
-    public GetClassesResponse getClasses() {
-        String sql = "select * from v_classes";
-        List<Map<String, Object>> list = jdbc.queryForList(sql);
-        ArrayList<ClassBean> classes = new ArrayList<>();
-        for (Map<String, Object> map : list) {
-            classes.add(new ClassBean(map));
-        }
-        return new GetClassesResponse(classes);
-    }
 
     public BulkRegUserResponse bulkRegUser(Map<String, Object> postParams) throws NoSuchAlgorithmException, UnsupportedEncodingException {
         @SuppressWarnings("unchecked")

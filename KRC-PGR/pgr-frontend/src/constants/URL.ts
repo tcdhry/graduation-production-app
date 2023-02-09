@@ -5,6 +5,8 @@ enum AdminURL {
     accountManage = 'AccountManage',
     styleManage = 'styleManage',
     classManage = 'classManage',
+    newClass = 'newClass',
+    updateClass = 'updateClass',
 }
 
 enum ManagerURL {
@@ -59,7 +61,12 @@ enum AdminAPI {
     updateStyle = 'updateStyle',
     getClasses = 'getClasses',
     bulkRegUser = 'bulkRegUser',
-
+    getClassesComposition = 'getClassesComposition',
+    newDepartment = 'newDepartment',
+    newClass = 'newClass',
+    updateFaculties = 'updateFaculties',
+    updateDepartments = 'updateDepartments',
+    updateClasses = 'updateClasses',
 }
 
 enum ManagerAPI {
