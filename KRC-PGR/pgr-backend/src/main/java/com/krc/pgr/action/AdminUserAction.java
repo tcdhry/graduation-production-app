@@ -10,13 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
-import com.krc.pgr.bean.ClassBean;
 import com.krc.pgr.constant.Authority;
 import com.krc.pgr.response.BulkRegUserResponse;
-import com.krc.pgr.response.GetClassesCompositionResponse;
-import com.krc.pgr.response.GetClassesResponse;
-import com.krc.pgr.response.SuccessFlagResponse;
-import com.krc.pgr.response.NewDepartmentResponse;
 import com.krc.pgr.util.PasswordManage;
 
 @Component

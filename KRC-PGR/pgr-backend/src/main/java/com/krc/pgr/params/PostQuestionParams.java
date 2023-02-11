@@ -37,6 +37,7 @@ public class PostQuestionParams {
     }
 
     private String[] toArray(Object o) {
+        @SuppressWarnings("unchecked")
         ArrayList<Object> objArr = (ArrayList<Object>) o;
         return new String[] { (String) objArr.get(0), (String) objArr.get(1), (String) objArr.get(2) };
     }

@@ -8,19 +8,12 @@ import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.TransactionDefinition;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.support.DefaultTransactionDefinition;
-import org.springframework.transaction.support.TransactionCallbackWithoutResult;
-import org.springframework.transaction.support.TransactionTemplate;
 
 import com.krc.pgr.bean.ClassBean;
 import com.krc.pgr.response.GetClassesCompositionResponse;
 import com.krc.pgr.response.GetClassesResponse;
 import com.krc.pgr.response.SuccessFlagResponse;
-import com.krc.pgr.response.NewDepartmentResponse;
 
 @Component
 public class AdminClassAction {

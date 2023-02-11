@@ -28,11 +28,11 @@ import com.krc.pgr.params.PostQuestionParams;
 import com.krc.pgr.params.SearchQuestionsParams;
 import com.krc.pgr.response.EditQuestionIOResponse;
 import com.krc.pgr.response.EditQuestionResponse;
+import com.krc.pgr.response.GetMyAllQuestionsResponse;
 import com.krc.pgr.response.PostQuestionResponse;
 import com.krc.pgr.response.QuestionIOResponse;
 import com.krc.pgr.response.QuestionResponse;
 import com.krc.pgr.response.QuestionsResponse;
-import com.krc.pgr.response.ResponseBase;
 import com.krc.pgr.response.TitleCheckResponse;
 import com.krc.pgr.util.Converter;
 import com.krc.pgr.util.LimitQuery;
@@ -549,5 +549,12 @@ public class ManagerQuestionAction {
         jdbc.update(sql, input_judge, output_judge, question_id);
 
         return new EditQuestionIOResponse(false);
+    }
+
+    public GetMyAllQuestionsResponse getMyAllQuestions() {
+        String sql = "select question_id, question_title, language_designation, view_password_hash is not null as password_required, private_answer_mode, release_flag, to_char(insert_timestamp, 'YYYY/MM/DD HH24:MI:SS') as insert_datetime, input_judge is not null as scoring from t_questions where user_id = ? order by question_id desc;";
+        List<Map<String, Object>> list = jdbc.queryForList(sql, session.getLoginUser().getUser_id());
+
+        return new GetMyAllQuestionsResponse(list);
     }
 }

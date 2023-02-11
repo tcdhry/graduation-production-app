@@ -3,8 +3,6 @@ package com.krc.pgr.bean;
 import java.sql.SQLException;
 import java.util.Map;
 
-import org.postgresql.jdbc.PgArray;
-
 import com.krc.pgr.util.Converter;
 
 public class Question {

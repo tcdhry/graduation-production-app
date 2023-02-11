@@ -8,8 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
-import com.krc.pgr.aspect.Permit;
-import com.krc.pgr.constant.Authority;
 import com.krc.pgr.constant.ChangePasswordStatus;
 import com.krc.pgr.constant.ChangeViewNameStatus;
 import com.krc.pgr.response.ChangePasswordResponse;

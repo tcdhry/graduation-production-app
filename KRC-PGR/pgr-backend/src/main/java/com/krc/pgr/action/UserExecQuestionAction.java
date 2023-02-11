@@ -3,18 +3,15 @@ package com.krc.pgr.action;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.postgresql.jdbc.PgArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Component;
 
 import com.krc.pgr.bean.ExecStatus;
-import com.krc.pgr.bean.ExecStatusHideOutput;
 import com.krc.pgr.constant.AnswerConfirmStatus;
 import com.krc.pgr.constant.ExecConfirmStatus;
 import com.krc.pgr.constant.ExecStatusCode;
@@ -22,14 +19,8 @@ import com.krc.pgr.constant.Language;
 import com.krc.pgr.constant.LanguageRuntimeMap;
 import com.krc.pgr.response.AnswerConfirmResponse;
 import com.krc.pgr.response.ExecConfirmResponse;
-import com.krc.pgr.runtime.CPlusPlusRuntime;
-import com.krc.pgr.runtime.CSharpRuntime;
-import com.krc.pgr.runtime.JavaRuntime;
-import com.krc.pgr.runtime.PythonRuntime;
-import com.krc.pgr.runtime.RubyRuntime;
 import com.krc.pgr.runtime.RuntimeManage;
 import com.krc.pgr.util.Converter;
-import com.krc.pgr.util.FileManage;
 import com.krc.pgr.util.SessionManage;
 
 @Component

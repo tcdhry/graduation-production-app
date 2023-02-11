@@ -79,6 +79,10 @@ enum ManagerAPI {
     viewAnswers = 'viewAnswers',
     downloadAnswers = 'downloadAnswers',
     viewAnswer = 'viewAnswer',
+    getMyAllQuestions = 'getMyAllQuestions',
+    postExam = 'postExam',
+    getMyExam = 'getMyExam',
+    editExam = 'editExam',
 }
 
 enum UserAPI {

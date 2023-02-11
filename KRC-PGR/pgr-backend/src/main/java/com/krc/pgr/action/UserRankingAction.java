@@ -11,16 +11,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
-import com.krc.pgr.bean.Question;
 import com.krc.pgr.constant.Language;
 import com.krc.pgr.constant.SourceFileName;
-import com.krc.pgr.response.QuestionWithPasswordResponse;
 import com.krc.pgr.response.RankingResponse;
 import com.krc.pgr.response.ViewOtherUserAnswerResponse;
-import com.krc.pgr.response.ViewAnswerResponse;
 import com.krc.pgr.util.Converter;
 import com.krc.pgr.util.FileManage;
-import com.krc.pgr.util.PasswordManage;
 import com.krc.pgr.util.SessionManage;
 
 @Component

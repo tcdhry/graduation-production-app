@@ -3,6 +3,7 @@ package com.krc.pgr.controller;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.krc.pgr.action.ManagerAnswerAction;
+import com.krc.pgr.action.ManagerExamAction;
 import com.krc.pgr.action.ManagerQuestionAction;
 import com.krc.pgr.aspect.Permit;
 import com.krc.pgr.constant.Authority;
@@ -31,6 +32,9 @@ public class ManagerController {
 
     @Autowired
     ManagerAnswerAction managerAnswerAction;
+
+    @Autowired
+    ManagerExamAction managerExamAction;
 
     @PostMapping("/titleCheck")
     public ResponseBase titleCheck(@RequestBody Map<String, Object> postParams) {
@@ -178,5 +182,55 @@ public class ManagerController {
          * @param user_id:     String
          */
         return managerAnswerAction.viewAnswer(question_id, user_id);
+    }
+
+    @GetMapping("/getMyAllQuestions")
+    public ResponseBase getMyAllQuestions() {
+        /**
+         * @return GetMyAllQuestionsResponse extends ResponseBase
+         */
+        return managerQuestionAction.getMyAllQuestions();
+    }
+
+    @PostMapping("/postExam")
+    public ResponseBase postExam(@RequestBody Map<String, Object> postParams) throws NoSuchAlgorithmException, UnsupportedEncodingException {
+        /**
+         * @return PostExamResponse extends ResponseBase
+         * 
+         * @params postParams: @RequestBody Map<String, Object>
+         *         exam_title:String
+         *         description: String
+         *         password: String
+         *         password_check: String
+         *         release_flag: boolean
+         *         question_ids: List<Integer>
+         *         allocate_scores: List<Integer>
+         */
+        return managerExamAction.postExam(postParams);
+    }
+
+    @GetMapping("/getMyExam/{exam_id}")
+    public ResponseBase getMyExam(@PathVariable String exam_id) throws SQLException {
+        /**
+         * @return GetMyExamResponse extends ResponseBase
+         */
+        return managerExamAction.getMyExam(exam_id);
+    }
+
+    @PostMapping("/editExam/{exam_id}")
+    public ResponseBase editExam(@RequestBody Map<String, Object> postParams, @PathVariable String exam_id) throws NoSuchAlgorithmException, UnsupportedEncodingException {
+        /**
+         * @return PostExamResponse extends ResponseBase
+         * 
+         * @params postParams: @RequestBody Map<String, Object>
+         *         exam_title:String
+         *         description: String
+         *         password: String
+         *         password_check: String
+         *         release_flag: boolean
+         *         question_ids: List<Integer>
+         *         allocate_scores: List<Integer>
+         */
+        return managerExamAction.editExam(postParams, exam_id);
     }
 }

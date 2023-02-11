@@ -1,3 +1,4 @@
+import { LanguageCode } from "../constants/Language";
 import { getUserViewName, UserBean } from "./UserBean";
 
 /**
@@ -103,3 +104,14 @@ export type QuestionThumbnail = {
 }
 
 export type Questions = Array<QuestionThumbnail>;
+
+export type SimpleMyQuestionBean = {
+    question_id: number,
+    question_title: string,
+    language_designation: LanguageCode | null,
+    password_required: boolean,
+    private_answer_mode: boolean,
+    release_flag: boolean,
+    insert_datetime: string,
+    scoring: boolean,
+};

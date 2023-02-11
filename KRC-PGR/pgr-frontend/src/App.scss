@@ -476,7 +476,7 @@ nav.pager {
     }
 }
 
-.io-block {
+.io-block, pre:has(code) {
     padding: 10px;
     border-left: 5px gray solid;
     background: rgba(128, 128, 128, 0.5);
