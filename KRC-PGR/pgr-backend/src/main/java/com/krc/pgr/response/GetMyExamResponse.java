@@ -2,19 +2,19 @@ package com.krc.pgr.response;
 
 import java.sql.SQLException;
 
-import com.krc.pgr.bean.ExamBean;
+import com.krc.pgr.bean.ExamDetailBean;
 
 public class GetMyExamResponse extends ResponseBase {
-    private ExamBean exam;
+    private ExamDetailBean exam;
 
     public GetMyExamResponse() {
     }
 
-    public GetMyExamResponse(ExamBean exam) throws SQLException {
+    public GetMyExamResponse(ExamDetailBean exam) throws SQLException {
         this.exam = exam;
     }
 
-    public ExamBean getExam() {
+    public ExamDetailBean getExam() {
         return exam;
     }
 }

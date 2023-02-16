@@ -1,12 +1,10 @@
 import axios from "axios";
-import { useCallback, useEffect, useState } from "react";
-import { FaArrowDown, FaArrowUp, FaTrashAlt } from "react-icons/fa";
-import { ImCross } from "react-icons/im";
+import { useEffect, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import { useNavigate } from "react-router-dom";
 import { SimpleMyQuestionBean } from "../../beans/QuestionBean";
 import { AnyFormEvent } from "../../constants/AnyFormEvent";
-import { getLanguageName, LanguageCode } from "../../constants/Language";
+import { getLanguageName } from "../../constants/Language";
 import { catchError, receiveResponse, ResponseBase } from "../../constants/ResponseStatus";
 import { API, generateAPI, generateURL, URL } from "../../constants/URL";
 import Loading from "../errors/Loading";
@@ -44,7 +42,7 @@ function PostExam() {
     }
 
     return (
-        <>
+        <div id="post-exam">
             <h2>試験を投稿する</h2>
             <LabelInput
                 label={<>試験とは...</>}
@@ -207,39 +205,42 @@ function PostExam() {
                 <hr />
                 <Row>
                     <Col>
-                        <table className="table">
-                            <thead>
-                                <tr>
-                                    <th style={{ width: '5em' }}>問題番号</th>
-                                    <th>問題タイトル</th>
-                                    <th style={{ width: '10em' }}>投稿日時</th>
-                                    <th style={{ width: '5em' }}>公開設定</th>
-                                    <th style={{ width: '5em' }}>言語指定</th>
-                                    <th style={{ width: '6em' }}>パスワード</th>
-                                    <th style={{ width: '5em' }}>解答参考</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {questions.map((question, i) => (
-                                    <tr key={i}>
-                                        <th>{question.question_id}</th>
-                                        <td>{question.question_title}</td>
-                                        <td>{question.insert_datetime}</td>
-                                        <td>{question.release_flag === true ? '公開' : '非公開'}</td>
-                                        <td>{question.language_designation === null ? '指定なし' : getLanguageName(question.language_designation)}</td>
-                                        <td>{question.password_required === true ? '必須' : '不要'}</td>
-                                        <td>{question.private_answer_mode === true ? '不可' : '可'}</td>
+                        <h3>登録可能な自分の問題一覧</h3>
+                        <div id="limit-y-table">
+                            <table className="table">
+                                <thead>
+                                    <tr>
+                                        <th style={{ width: '5em' }}>問題番号</th>
+                                        <th>問題タイトル</th>
+                                        <th style={{ width: '10em' }}>投稿日時</th>
+                                        <th style={{ width: '5em' }}>公開設定</th>
+                                        <th style={{ width: '5em' }}>言語指定</th>
+                                        <th style={{ width: '6em' }}>パスワード</th>
+                                        <th style={{ width: '5em' }}>解答参考</th>
                                     </tr>
-                                ))}
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                    {questions.map((question, i) => (
+                                        <tr key={i}>
+                                            <th>{question.question_id}</th>
+                                            <td>{question.question_title}</td>
+                                            <td>{question.insert_datetime}</td>
+                                            <td>{question.release_flag === true ? '公開' : '非公開'}</td>
+                                            <td>{question.language_designation === null ? '指定なし' : getLanguageName(question.language_designation)}</td>
+                                            <td>{question.password_required === true ? '必須' : '不要'}</td>
+                                            <td>{question.private_answer_mode === true ? '不可' : '可'}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
                     </Col>
                 </Row>
 
                 <hr />
-                <h3>試験に追加する問題を選択</h3>
                 <Row>
                     <Col>
+                        <h3>試験に追加する問題を選択</h3>
                         <InputTable questions={questions} />
                     </Col>
                 </Row>
@@ -252,7 +253,7 @@ function PostExam() {
                     </Col>
                 </Row>
             </form>
-        </>
+        </div>
     );
 }
 

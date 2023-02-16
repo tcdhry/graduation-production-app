@@ -83,7 +83,7 @@ function InputViewPasswordForm(props: { thumbnail: QuestionThumbnail, setQuestio
 }
 
 
-function QuestionConfirmForm(props: { question: QuestionBean }) {
+export function QuestionConfirmForm(props: { question: QuestionBean, exam_id?: string }) {
     const editorRef = useRef<AceEditor>(null);
     const navigate = useNavigate();
     const params = useParams();
@@ -120,7 +120,7 @@ function QuestionConfirmForm(props: { question: QuestionBean }) {
                                 execList: Array<ExecStatus>
                             }
                         };
-                        axios.post(generateAPI(API.User._, API.User.execConfirm) + '/' + params.question_id, { source_code: source_code, select_language: select_language })
+                        axios.post(generateAPI(API.User._, API.User.execConfirm) + '/' + (props.exam_id === undefined ? '' : props.exam_id + '/') + params.question_id, { source_code: source_code, select_language: select_language })
                             .then((res: ExecConfirmResponse) => {
                                 receiveResponse(res, navigate, function () {
                                     if (res.data.execConfirmStatus === ExecConfirmStatus.SUCCESS) {
@@ -157,11 +157,11 @@ function QuestionConfirmForm(props: { question: QuestionBean }) {
                                 answerConfirmStatus: AnswerConfirmStatus,
                             }
                         }
-                        axios.post(generateAPI(API.User._, API.User.answerConfirm) + '/' + params.question_id, { source_code: source_code, select_language: select_language })
+                        axios.post(generateAPI(API.User._, API.User.answerConfirm) + '/' + (props.exam_id === undefined ? '' : props.exam_id + '/') + params.question_id, { source_code: source_code, select_language: select_language })
                             .then((res: AnswerConfirmResponse) => {
                                 receiveResponse(res, navigate, function () {
                                     if (res.data.answerConfirmStatus === AnswerConfirmStatus.SUCCESS) {
-                                        navigate(generateURL(URL.User._, URL.User.viewAnswer) + '/' + props.question.question_id);
+                                        navigate(generateURL(URL.User._, URL.User.viewAnswer) + '/' + (props.exam_id === undefined ? '' : props.exam_id + '/') + props.question.question_id);
                                     } else {
                                         alert('提出中にエラーが発生しました。');
                                         setAnswerConfirmMessage('　');
@@ -171,7 +171,7 @@ function QuestionConfirmForm(props: { question: QuestionBean }) {
                         break;
                 }
             }}>
-                <QuestionView question={props.question} editorRef={editorRef} />
+                <QuestionView question={props.question} editorRef={editorRef} exam_id={props.exam_id} />
 
                 {
                     execList.length === 0 ? (

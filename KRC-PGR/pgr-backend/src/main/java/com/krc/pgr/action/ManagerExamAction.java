@@ -17,10 +17,14 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Service;
 
-import com.krc.pgr.bean.ExamBean;
+import com.krc.pgr.bean.ExamDetailBean;
+import com.krc.pgr.response.DownloadExamAnswersResponse;
 import com.krc.pgr.response.GetMyExamResponse;
+import com.krc.pgr.response.MyExamsResponse;
 import com.krc.pgr.response.PostExamResponse;
+import com.krc.pgr.response.ScoringExamResponse;
 import com.krc.pgr.response.SuccessFlagResponse;
+import com.krc.pgr.util.Converter;
 import com.krc.pgr.util.PasswordManage;
 import com.krc.pgr.util.SessionManage;
 
@@ -142,7 +146,7 @@ public class ManagerExamAction {
             return new GetMyExamResponse();
         }
 
-        return new GetMyExamResponse(new ExamBean(list.get(0)));
+        return new GetMyExamResponse(new ExamDetailBean(list.get(0)));
     }
 
     public SuccessFlagResponse editExam(Map<String, Object> postParams, String exam_id_str) throws NoSuchAlgorithmException, UnsupportedEncodingException {
@@ -237,5 +241,70 @@ public class ManagerExamAction {
             jdbc.execute("rollback;");
             return SuccessFlagResponse.error();
         }
+    }
+
+    public MyExamsResponse getMyExams() {
+        String sql = "select exam_id, uuid, exam_title, insert_timestamp, release_flag, array_length(question_ids, 1) as question_count from v_exams where user_id = ?";
+        List<Map<String, Object>> list = jdbc.queryForList(sql, session.getLoginUser().getUser_id());
+
+        return new MyExamsResponse(list);
+    }
+
+    public ScoringExamResponse scoringExam(String exam_id_str) throws SQLException {
+        int exam_id;
+        try {
+            exam_id = Integer.parseInt(exam_id_str);
+        } catch (Exception e) {
+            return new ScoringExamResponse();
+        }
+
+//        String sql = "select * from t_exams where exam_id = ? and user_id = ?;";
+//        List<Map<String, Object>> list = jdbc.queryForList(sql, exam_id, session.getLoginUser().getUser_id());
+//
+//        if (list.size() == 0) {
+//            return new ScoringExamResponse();
+//        }
+        String sql = "select e.exam_id, e.uuid, e.exam_title, array_agg(eq.allocate_score order by eq.sort_index) as allocate_scores from t_exams as e inner join c_exams_questions as eq on e.exam_id = eq.exam_id where e.exam_id = ? and e.user_id = ? group by e.exam_id;";
+        List<Map<String, Object>> list = jdbc.queryForList(sql, exam_id, session.getLoginUser().getUser_id());
+
+        if (list.size() == 0) {
+            return new ScoringExamResponse();
+        }
+
+        String uuid = (String) list.get(0).get("uuid");
+        String exam_title = (String) list.get(0).get("exam_title");
+        Integer[] allocate_scores = Converter.castPgArray_int(list.get(0).get("allocate_scores"));
+
+        sql = "select * from v_exam_scoring where exam_id = ? order by faculty_id, department_id, class_id, student_number;";
+        list = jdbc.queryForList(sql, exam_id);
+
+        return new ScoringExamResponse(exam_title, uuid, allocate_scores, list);
+    }
+
+    public DownloadExamAnswersResponse downloadExamAnswers(String exam_id_str, Map<String, Object> postParams) {
+        int exam_id;
+        try {
+            exam_id = Integer.parseInt(exam_id_str);
+        } catch (Exception e) {
+            return new DownloadExamAnswersResponse();
+        }
+
+        @SuppressWarnings("unchecked")
+        List<Integer> user_ids = (List<Integer>) postParams.get("user_ids");
+
+        String sql = "select * from t_exams where user_id = ? and exam_id = ?;";
+        List<Map<String, Object>> list = jdbc.queryForList(sql, session.getLoginUser().getUser_id(), exam_id);
+        if (list.size() == 0) {
+            return new DownloadExamAnswersResponse();
+        }
+
+        sql = "select a.user_id, a.user_name, a.student_number, a.faculty_id, a.faculty_name, a.department_id, a.department_name, a.class_id, a.class_name, a.question_id, a.select_language, eq.sort_index, a.exec_count from v_answers as a inner join c_exams_questions as eq on a.question_id = eq.question_id where eq.exam_id = :exam_id and a.user_id in (:user_ids);";
+        MapSqlParameterSource sqlParams = new MapSqlParameterSource();
+        sqlParams.addValue("exam_id", exam_id);
+        sqlParams.addValue("user_ids", user_ids);
+
+        list = npjdbc.queryForList(sql, sqlParams);
+
+        return new DownloadExamAnswersResponse(list);
     }
 }

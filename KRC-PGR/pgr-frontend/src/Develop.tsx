@@ -1,5 +1,6 @@
 // import { Fragment } from "react";
-import AceEditor from "react-ace";
+// import AceEditor from "react-ace";
+import ReactMarkdown from "react-markdown";
 
 // import "ace-builds/src-noconflict/theme-ambiance";
 // import "ace-builds/src-noconflict/theme-chaos";
@@ -132,13 +133,14 @@ import AceEditor from "react-ace";
 // export default Develop;
 
 function Develop() {
+    const a = `  
+| a | b |
+|:---|:---|
+| A | B |
+`;
     return (
         <>
-            <div style={{ display: 'block' }}>
-                <div style={{ position: 'fixed', width: '90vw', height: '90vh', top: '5vh', left: '5vw' }}>
-                    <AceEditor width="100%" />
-                </div>
-            </div>
+            <ReactMarkdown className="markdown" children={a}/>
         </>
     );
 }

@@ -51,6 +51,26 @@ public class UserExecQuestionAction {
             return new ExecConfirmResponse(ExecConfirmStatus.NOT_VIEWING_SESSION);
         }
 
+        return execConfirm(postParams, question_id, false);
+    }
+
+    public ExecConfirmResponse examExecConfirm(String exam_id, String question_id_str, Map<String, Object> postParams) throws SQLException, IOException {
+        int question_id;
+        try {
+            question_id = Integer.parseInt(question_id_str);
+        } catch (Exception e) {
+            // question not found
+            return new ExecConfirmResponse(ExecConfirmStatus.NOT_FOUND);
+        }
+
+        if (session.isViewingExam(exam_id) == false) {
+            return new ExecConfirmResponse(ExecConfirmStatus.NOT_VIEWING_SESSION);
+        }
+
+        return execConfirm(postParams, question_id, true);
+    }
+
+    private ExecConfirmResponse execConfirm(Map<String, Object> postParams, int question_id, boolean isExam) throws SQLException, IOException {
         String source_code = (String) postParams.get("source_code");
         if ("".equals(source_code)) {
             // source code not input
@@ -65,8 +85,8 @@ public class UserExecQuestionAction {
             return new ExecConfirmResponse(ExecConfirmStatus.LANGUAGE_ERROR);
         }
 
-        String sql = "select inputs, outputs, io_explain, language_designation from t_questions where release_flag = true and question_id = ?;";
-        List<Map<String, Object>> list = jdbc.queryForList(sql, question_id);
+        String sql = "select inputs, outputs, io_explain, language_designation from t_questions where (release_flag = true or ?) and question_id = ?;";
+        List<Map<String, Object>> list = jdbc.queryForList(sql, isExam, question_id);
 
         if (list.size() == 0) {
             // question not found
@@ -116,6 +136,27 @@ public class UserExecQuestionAction {
             return new AnswerConfirmResponse(AnswerConfirmStatus.NOT_VIEWING_SESSION);
         }
 
+        return answerConfirm(question_id, postParams, false);
+    }
+
+    public AnswerConfirmResponse examAnswerConfirm(String exam_id, String question_id_str, Map<String, Object> postParams) throws IOException, SQLException {
+        int question_id;
+        try {
+            question_id = Integer.parseInt(question_id_str);
+        } catch (Exception e) {
+            // question not found
+            return new AnswerConfirmResponse(AnswerConfirmStatus.NOT_FOUND);
+        }
+
+        if (!session.isViewingExam(exam_id)) {
+            // not viewing session
+            return new AnswerConfirmResponse(AnswerConfirmStatus.NOT_VIEWING_SESSION);
+        }
+
+        return answerConfirm(question_id, postParams, true);
+    }
+
+    private AnswerConfirmResponse answerConfirm(int question_id, Map<String, Object> postParams, boolean isExam) throws IOException, SQLException {
         String source_code = (String) postParams.get("source_code");
 
         Language select_language;
@@ -126,8 +167,8 @@ public class UserExecQuestionAction {
             return new AnswerConfirmResponse(AnswerConfirmStatus.LANGUAGE_ERROR);
         }
 
-        String sql = "select (input_judge is not null and output_judge is not null) as scoring, input_judge, output_judge, language_designation from t_questions where release_flag = true and question_id = ?;";
-        List<Map<String, Object>> list = jdbc.queryForList(sql, question_id);
+        String sql = "select (input_judge is not null and output_judge is not null) as scoring, input_judge, output_judge, language_designation from t_questions where (release_flag = true or ?) and question_id = ?;";
+        List<Map<String, Object>> list = jdbc.queryForList(sql, isExam, question_id);
 
         if (list.size() == 0) {
             // question not found

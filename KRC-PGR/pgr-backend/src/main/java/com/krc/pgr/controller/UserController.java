@@ -6,6 +6,7 @@ import com.krc.pgr.action.UserProfileAction;
 import com.krc.pgr.action.UserRankingAction;
 import com.krc.pgr.action.UserStyleAction;
 import com.krc.pgr.action.UserViewAnswerAction;
+import com.krc.pgr.action.UserExamAction;
 import com.krc.pgr.action.UserExecQuestionAction;
 import com.krc.pgr.action.UserGetQuestionAction;
 import com.krc.pgr.aspect.Permit;
@@ -48,6 +49,9 @@ public class UserController {
 
     @Autowired
     UserStyleAction userStyleAction;
+
+    @Autowired
+    UserExamAction userExamAction;
 
     @PutMapping("/changeViewName")
     public ResponseBase changeViewName(@RequestBody Map<String, Object> putParams) {
@@ -168,4 +172,46 @@ public class UserController {
     public ResponseBase viewAnswer(@PathVariable String question_id, @PathVariable String user_id) throws IOException, SQLException {
         return userRankingAction.viewAnswer(question_id, user_id);
     }
+
+    @PostMapping("/viewExam/{exam_id}")
+    public ResponseBase viewExam(@PathVariable String exam_id, @RequestBody Map<String, Object> postParams) throws NoSuchAlgorithmException, UnsupportedEncodingException {
+        return userExamAction.viewExam(exam_id, postParams);
+    }
+
+    @GetMapping("/viewExam/{exam_id}")
+    public ResponseBase viewExam(@PathVariable String exam_id) {
+        return userExamAction.viewExam(exam_id);
+    }
+
+    @GetMapping("/viewExamQuestion/{exam_id}/{question_id}")
+    public ResponseBase viewExamQuestion(@PathVariable String exam_id, @PathVariable String question_id) throws SQLException {
+        return userExamAction.viewExamQuestion(exam_id, question_id);
+    }
+    
+    @PostMapping("/execConfirm/{exam_id}/{question_id}")
+    public ResponseBase examExecConfirm(@PathVariable String exam_id, @PathVariable String question_id, @RequestBody Map<String, Object> postParams) throws SQLException, IOException {
+        /**
+         * @return ExecConfirmResponse extends ResponseBase
+         * 
+         * @param @PathVariable question_id: String
+         * @param @RequestBody  postParams: Map<String, Object>
+         *                      ."source_code": String
+         *                      ."select_language": Integer
+         */
+        return userExecQuestionAction.examExecConfirm(exam_id, question_id, postParams);
+    }
+
+    @PostMapping("/answerConfirm/{exam_id}/{question_id}")
+    public ResponseBase examAnswerConfirm(@PathVariable String exam_id, @PathVariable String question_id, @RequestBody Map<String, Object> postParams) throws SQLException, IOException {
+        /**
+         * @return AnswerConfirmResponse extends ResponseBase
+         * 
+         * @param @PathVariable question_id: String
+         * @param @RequestBody  postParams: Map<String, Object>
+         *                      ."source_code": String
+         *                      ."select_language": Integer
+         */
+        return userExecQuestionAction.examAnswerConfirm(exam_id, question_id, postParams);
+    }
+    
 }

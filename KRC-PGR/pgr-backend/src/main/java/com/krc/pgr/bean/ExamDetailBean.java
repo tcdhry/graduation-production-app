@@ -5,16 +5,17 @@ import java.util.Map;
 
 import com.krc.pgr.util.Converter;
 
-public class ExamBean {
+public class ExamDetailBean {
     private int exam_id;
     private String exam_title;
     private String description;
     private String uuid;
     private String insert_timestamp;
-    Integer[] question_ids;
-    Integer[] allocate_scores;
+    private Integer[] question_ids;
+    private Integer[] allocate_scores;
+    private boolean release_flag;
 
-    public ExamBean(Map<String, Object> exam) throws SQLException {
+    public ExamDetailBean(Map<String, Object> exam) throws SQLException {
         this.exam_id = (int) exam.get("exam_id");
         this.exam_title = (String) exam.get("exam_title");
         this.description = (String) exam.get("description");
@@ -22,6 +23,7 @@ public class ExamBean {
         this.insert_timestamp = (String) exam.get("insert_timestamp");
         this.question_ids = Converter.castPgArray_int(exam.get("question_ids"));
         this.allocate_scores = Converter.castPgArray_int(exam.get("allocate_scores"));
+        this.release_flag = (boolean) exam.get("release_flag");
     }
 
     public int getExam_id() {
@@ -50,5 +52,9 @@ public class ExamBean {
 
     public Integer[] getAllocate_scores() {
         return allocate_scores;
+    }
+
+    public boolean getRelease_flag() {
+        return release_flag;
     }
 }

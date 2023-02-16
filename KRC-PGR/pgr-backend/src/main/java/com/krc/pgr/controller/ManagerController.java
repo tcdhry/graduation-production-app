@@ -233,4 +233,19 @@ public class ManagerController {
          */
         return managerExamAction.editExam(postParams, exam_id);
     }
+
+    @GetMapping("/getMyExams")
+    public ResponseBase getMyExams() {
+        return managerExamAction.getMyExams();
+    }
+
+    @GetMapping("/scoringExam/{exam_id}")
+    public ResponseBase scoringExam(@PathVariable String exam_id) throws SQLException {
+        return managerExamAction.scoringExam(exam_id);
+    }
+
+    @PostMapping("/downloadExamAnswers/{exam_id}")
+    public ResponseBase downloadExamAnswers(@PathVariable String exam_id, @RequestBody Map<String, Object> postParams) {
+        return managerExamAction.downloadExamAnswers(exam_id, postParams);
+    }
 }

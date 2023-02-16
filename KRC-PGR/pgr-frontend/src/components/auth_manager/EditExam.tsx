@@ -1,9 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { FaArrowUp, FaArrowDown } from "react-icons/fa";
-import { ImCross } from "react-icons/im";
 import ReactMarkdown from "react-markdown";
-import { useParams, useNavigate, useLocation, Link } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import { SimpleMyQuestionBean } from "../../beans/QuestionBean";
 import { AnyFormEvent } from "../../constants/AnyFormEvent";
 import { getLanguageName } from "../../constants/Language";
@@ -24,6 +22,7 @@ type ExamBean = {
     insert_timestamp: string,
     question_ids: number[],
     allocate_scores: number[],
+    release_flag: boolean
 }
 
 function EditExam() {
@@ -84,7 +83,7 @@ function EditExam() {
 
     const label_width = 5;
     return (
-        <>
+        <div id="edit-exam">
             <h2>試験の編集</h2>
             <form onSubmit={function (event: AnyFormEvent) {
                 event.preventDefault();
@@ -129,11 +128,11 @@ function EditExam() {
                 const allocate_scores = (Array.from(table.querySelectorAll('input[name="allocate_score"]')) as Array<HTMLInputElement>).map((input) => input.value);
 
                 if (table.querySelector('td[data-warning-flag="true"]') !== null) {
-                    if (window.confirm('試験に登録するには推奨されない設定の問題が含まれています。\nこのまま登録しますか？') === false) {
+                    if (window.confirm('試験に登録するには推奨されない設定の問題が含まれています。\nこのまま更新しますか？') === false) {
                         return;
                     }
                 } else {
-                    if (window.confirm('登録しますか？') === false) {
+                    if (window.confirm('更新しますか？') === false) {
                         return;
                     }
                 }
@@ -235,7 +234,7 @@ function EditExam() {
 
                 <LabelInput
                     label={<label htmlFor="release_flag">試験を公開する</label>}
-                    input={<p><input type="checkbox" id="release_flag" />&nbsp;チェックすると試験のURLを知っている人がアクセスできるようになります。</p>}
+                    input={<p><input type="checkbox" id="release_flag" defaultChecked={exam.release_flag} />&nbsp;チェックすると試験のURLを知っている人がアクセスできるようになります。</p>}
                     label_width={label_width}
                 />
 
@@ -243,39 +242,42 @@ function EditExam() {
 
                 <Row>
                     <Col>
-                        <table className="table">
-                            <thead>
-                                <tr>
-                                    <th style={{ width: '5em' }}>問題番号</th>
-                                    <th>問題タイトル</th>
-                                    <th style={{ width: '10em' }}>投稿日時</th>
-                                    <th style={{ width: '5em' }}>公開設定</th>
-                                    <th style={{ width: '5em' }}>言語指定</th>
-                                    <th style={{ width: '6em' }}>パスワード</th>
-                                    <th style={{ width: '5em' }}>解答参考</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {questions.map((question, i) => (
-                                    <tr key={i}>
-                                        <th>{question.question_id}</th>
-                                        <td>{question.question_title}</td>
-                                        <td>{question.insert_datetime}</td>
-                                        <td>{question.release_flag === true ? '公開' : '非公開'}</td>
-                                        <td>{question.language_designation === null ? '指定なし' : getLanguageName(question.language_designation)}</td>
-                                        <td>{question.password_required === true ? '必須' : '不要'}</td>
-                                        <td>{question.private_answer_mode === true ? '不可' : '可'}</td>
+                        <h3>登録可能な自分の問題一覧</h3>
+                        <div id="limit-y-table">
+                            <table className="table">
+                                <thead>
+                                    <tr>
+                                        <th style={{ width: '5em' }}>問題番号</th>
+                                        <th>問題タイトル</th>
+                                        <th style={{ width: '10em' }}>投稿日時</th>
+                                        <th style={{ width: '5em' }}>公開設定</th>
+                                        <th style={{ width: '5em' }}>言語指定</th>
+                                        <th style={{ width: '6em' }}>パスワード</th>
+                                        <th style={{ width: '5em' }}>解答参考</th>
                                     </tr>
-                                ))}
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                    {questions.map((question, i) => (
+                                        <tr key={i}>
+                                            <th>{question.question_id}</th>
+                                            <td>{question.question_title}</td>
+                                            <td>{question.insert_datetime}</td>
+                                            <td>{question.release_flag === true ? '公開' : '非公開'}</td>
+                                            <td>{question.language_designation === null ? '指定なし' : getLanguageName(question.language_designation)}</td>
+                                            <td>{question.password_required === true ? '必須' : '不要'}</td>
+                                            <td>{question.private_answer_mode === true ? '不可' : '可'}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
                     </Col>
                 </Row>
 
                 <hr />
-                <h3>試験に追加する問題を選択</h3>
                 <Row>
                     <Col>
+                        <h3>試験に追加する問題を選択</h3>
                         <InputTable questions={questions} defaultValues={defaultValues} />
                     </Col>
                 </Row>
@@ -288,7 +290,7 @@ function EditExam() {
                     </Col>
                 </Row>
             </form>
-        </>
+        </div>
     );
 }
 

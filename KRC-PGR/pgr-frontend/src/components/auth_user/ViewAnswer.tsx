@@ -11,7 +11,7 @@ import CodeEditor from "../global_components/CodeEditor";
 
 const label_width = 4;
 
-type AnswerData = {
+export type AnswerData = {
     success: boolean,
     question_title: string,
     select_language: LanguageCode | null,
@@ -53,7 +53,7 @@ function ViewAnswer() {
 export default ViewAnswer;
 
 
-function AnswerView(props: { question_id: string | undefined, answerData: undefined | AnswerData | null }) {
+export function AnswerView(props: { question_id: string | undefined, answerData: undefined | AnswerData | null }) {
     const answer = props.answerData;
 
     if (answer === undefined) {

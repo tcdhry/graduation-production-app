@@ -1,16 +1,16 @@
 import axios from "axios";
 import { Fragment, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { ClassBean } from "../../beans/ClassBean";
 import { AnyFormEvent } from "../../constants/AnyFormEvent";
 import { ExecStatusCode, ExecStatuses } from "../../constants/ExecStatus";
 import { catchError, receiveResponse, ResponseBase } from "../../constants/ResponseStatus";
 import { API, generateAPI } from "../../constants/URL";
 import { Row, Col } from "../global_components/24ColLayout";
-import LabelInput, { LabelCheckbox, LabelRadio } from "../global_components/LabelInput";
+import LabelInput, { LabelRadio } from "../global_components/LabelInput";
 import JSZip from 'jszip';
 import { getLanguageName } from "../../constants/Language";
 import CodeEditor from "../global_components/CodeEditor";
+import ClassesCheckboxControl from "./manager_components/ClassesCheckboxControl";
 
 type AnswerBean = {
     user_id: number,
@@ -40,9 +40,6 @@ function ViewAnswers() {
     const [question_title, setQuestion_title] = useState<string>();
     const [input_judge, setInput_judge] = useState<Array<string> | null>(null);
     const [output_judge, setOutput_judge] = useState<Array<string> | null>(null);
-    const [classes, setClasses] = useState<Array<ClassBean>>([]);
-    const [departments, setDepartments] = useState<Array<ClassBean>>([]);
-    const [faculties, setFaculties] = useState<Array<ClassBean>>([]);
 
     useEffect(() => {
         type ViewAnswersResponse = ResponseBase & {
@@ -64,32 +61,6 @@ function ViewAnswers() {
             });
         }).catch(catchError);
     }, [navigate, question_id]);
-
-    useEffect(() => {
-        /**
-         * ここの処理はやろうと思えば
-         * AnswersTableのループ内で同時進行で処理することもできるが、
-         * 引数が6つ増え、コンポーネント単体での独立性が薄れるためここに切り出す。
-         */
-        const new_classes: Array<ClassBean> = [];
-        const new_departments: Array<ClassBean> = [];
-        const new_faculties: Array<ClassBean> = [];
-        answers.forEach((answer) => {
-            if (!new_classes.map((cls) => cls.class_id).includes(answer.class_id)) {
-                const new_class = { class_id: answer.class_id, class_name: answer.class_name, department_id: answer.department_id, department_name: answer.department_name, faculty_id: answer.faculty_id, faculty_name: answer.faculty_name };
-                new_classes.push(new_class);
-                if (!new_departments.map((dep) => dep.department_id).includes(answer.department_id)) {
-                    new_departments.push(new_class);
-                    if (!new_faculties.map((fac) => fac.faculty_id).includes(answer.faculty_id)) {
-                        new_faculties.push(new_class);
-                    }
-                }
-            }
-        });
-        setClasses(new_classes);
-        setDepartments(new_departments);
-        setFaculties(new_faculties);
-    }, [answers]);
 
     if (answers === undefined) {
         return (
@@ -175,83 +146,7 @@ function ViewAnswers() {
                         <SpreadSheet answers={answers} />
                         <hr />
                         <h3>ダウンロード対象の絞り込み</h3>
-                        <Row>
-                            <Col width={11}>
-                                <h4>学科</h4>
-                                <table>
-                                    <tbody>
-                                        {departments.sort((a, b) => String(a.class_name).localeCompare(String(b.class_name))).map((cls, i) =>
-                                            <tr key={i}>
-                                                <td>
-                                                    <LabelCheckbox
-                                                        value={String(cls.department_id)}
-                                                        id={'department-' + String(cls.department_id)}
-                                                        name="select-department"
-                                                        labelText={cls.class_id === null ? 'その他' : `${cls.faculty_name} ${cls.department_name}`}
-                                                        defaultChecked={true}
-                                                        onChange={function (event) {
-                                                            Array.from(document.querySelectorAll(`input[data-d="${cls.department_id}"]`)).forEach((checkbox) => { (checkbox as HTMLInputElement).checked = event.target.checked; })
-                                                        }}
-                                                    />
-                                                </td>
-                                            </tr>
-                                        )}
-                                    </tbody>
-                                </table>
-                                <h4>分類</h4>
-                                <table>
-                                    <tbody>
-                                        {faculties.sort((a, b) => String(a.class_name).localeCompare(String(b.class_name))).map((cls, i) =>
-                                            <tr key={i}>
-                                                <td>
-                                                    <LabelCheckbox
-                                                        value={String(cls.department_id)}
-                                                        id={'faculty-' + String(cls.department_id)}
-                                                        name="select-faculty"
-                                                        labelText={cls.class_id === null ? 'その他' : `${cls.faculty_name}`}
-                                                        defaultChecked={true}
-                                                        onChange={function (event) {
-                                                            Array.from(document.querySelectorAll(`input[data-f="${cls.faculty_id}"]`)).forEach((checkbox) => { (checkbox as HTMLInputElement).checked = event.target.checked; })
-                                                        }}
-                                                    />
-                                                </td>
-                                            </tr>
-                                        )}
-                                    </tbody>
-                                </table>
-                            </Col>
-                            <Col offset={2} width={11}>
-                                <h4>クラス</h4>
-                                <table>
-                                    <tbody>
-                                        {classes.sort((a, b) => String(a.class_name).localeCompare(String(b.class_name))).map((cls, i) =>
-                                            <tr key={i}>
-                                                <td>
-                                                    <LabelCheckbox
-                                                        value={String(cls.class_id)}
-                                                        id={'class-' + String(cls.class_id)}
-                                                        name="select-class"
-                                                        labelText={cls.class_id === null ? 'その他' : `${cls.faculty_name} ${cls.department_name} ${cls.class_name}`}
-                                                        defaultChecked={true}
-                                                        onChange={function (event) {
-                                                            Array.from(document.querySelectorAll(`input[data-c="${cls.class_id}"]`)).forEach((checkbox) => { (checkbox as HTMLInputElement).checked = event.target.checked; })
-                                                        }}
-                                                    />
-                                                </td>
-                                            </tr>
-                                        )}
-                                    </tbody>
-                                </table>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col width={12}>
-                                <button type="button" className="btn btn-full" onClick={function () { Array.from(document.querySelectorAll('input[type="checkbox"]')).forEach((checkbox) => { (checkbox as HTMLInputElement).checked = false; }) }}>全て外す</button>
-                            </Col>
-                            <Col width={12}>
-                                <button type="button" className="btn btn-full" onClick={function () { Array.from(document.querySelectorAll('input[type="checkbox"]')).forEach((checkbox) => { (checkbox as HTMLInputElement).checked = true; }) }}>全てチェック</button>
-                            </Col>
-                        </Row>
+                        <ClassesCheckboxControl classes={answers} />
                         <hr />
                         <h4><label>zipファイルのフォルダ構成</label></h4>
                         {

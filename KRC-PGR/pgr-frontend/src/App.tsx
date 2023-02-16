@@ -36,6 +36,7 @@ const ManagerUniform = lazy(() => import("./components/auth_manager/_ManagerUnif
 const EditExam = lazy(() => import("./components/auth_manager/EditExam"));
 const EditQuestion = lazy(() => import("./components/auth_manager/EditQuestion"));
 const PostExam = lazy(() => import("./components/auth_manager/PostExam"));
+const ScoringExam = lazy(() => import("./components/auth_manager/ScoringExam"));
 const PostQuestion = lazy(() => import("./components/auth_manager/PostQuestion"));
 const PostQuestionSuccess = lazy(() => import("./components/auth_manager/PostQuestionSuccess"));
 const ViewMyExams = lazy(() => import("./components/auth_manager/ViewMyExams"));
@@ -51,8 +52,11 @@ const ReferAnswer = lazy(() => import("./components/auth_user/ReferAnswer"));
 const SelectStyle = lazy(() => import("./components/auth_user/SelectStyle"));
 const SingleQuestionRanking = lazy(() => import("./components/auth_user/SingleQuestionRanking"));
 const ViewExam = lazy(() => import("./components/auth_user/ViewExam"));
+const ViewExamQuestion = lazy(() => import("./components/auth_user/ViewExamQuestion"));
+const ViewExamSearch = lazy(() => import("./components/auth_user/ViewExamSearch"));
 const ViewQuestion = lazy(() => import("./components/auth_user/ViewQuestion"));
 const ViewAnswer = lazy(() => import("./components/auth_user/ViewAnswer"));
+const ViewExamAnswer = lazy(() => import("./components/auth_user/ViewExamAnswer"));
 const ViewQuestions = lazy(() => import("./components/auth_user/ViewQuestions"));
 
 const GuestUniform = lazy(() => import("./components/auth_guest/_GuestUniform"));
@@ -165,6 +169,7 @@ function App() {
                                                         <Route path={URL.Manager.postExam} element={<PostExam />} />{/* TODO */}
                                                         <Route path={URL.Manager.viewMyExams} element={<ViewMyExams />} />{/* TODO */}
                                                         <Route path={URL.Manager.editExam + '/:exam_id'} element={<EditExam />} />{/* TODO */}
+                                                        <Route path={URL.Manager.scoringExam + '/:exam_id'} element={<ScoringExam />} />{/* TODO */}
                                                         <Route path={'/*'} element={<NotFoundError />} />
                                                     </Route>
                                                 </Routes>
@@ -183,8 +188,14 @@ function App() {
                                                         <Route path={URL.User.viewQuestions} element={<ViewQuestions />} />
                                                         <Route path={URL.User.viewQuestion + '/:question_id'} element={<ViewQuestion />} />
                                                         <Route path={URL.User.viewAnswer + '/:question_id'} element={<ViewAnswer />} />
+                                                        <Route path={URL.User.viewAnswer + '/:exam_id/:question_id'} element={<ViewExamAnswer />} />
                                                         <Route path={URL.User.referAnswer + '/:question_id'} element={<ReferAnswer />} />{/* TODO */}
-                                                        <Route path={URL.User.viewExam + '/:exam_id'} element={<ViewExam />} />{/* TODO */}
+                                                        <Route path={URL.User.viewExam + '/*'}>
+                                                            <Route path={URL.User.index} element={<ViewExamSearch />} />{/* TODO */}
+                                                            <Route path={':exam_id'} element={<ViewExam />} />{/* TODO */}
+                                                            <Route path={':exam_id/:question_id'} element={<ViewExamQuestion />} />{/* TODO */}
+                                                            <Route path={'*'} element={<NotFoundError />} />
+                                                        </Route>
                                                         <Route path={'/*'} element={<NotFoundError />} />
                                                     </Route>
                                                 </Routes>

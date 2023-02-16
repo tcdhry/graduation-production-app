@@ -89,7 +89,7 @@ function InputTableRow(props: { questions: Array<SimpleMyQuestionBean>, index: n
         } else {
             setQuestion(props.questions.find(q => q.question_id === Number(question_id)));
         }
-    }, [question_id]);
+    }, [question_id, props.questions]);
 
     return (
         <tr data-error-flag={question === undefined}>
@@ -107,8 +107,8 @@ function InputTableRow(props: { questions: Array<SimpleMyQuestionBean>, index: n
                     <td>{question.question_title}</td>
                     <td>{question.insert_datetime}</td>
                     <td data-warning-flag={question.password_required === false}>{question.password_required === true ? '必須' : <p className="error-message">不要</p>}</td>
-                    <td data-warning-flag={question.password_required === false}>{question.private_answer_mode === true ? '参考不可' : <p className="error-message">参考可</p>}</td>
-                    <td data-warning-flag={question.password_required === true}>{question.release_flag === true ? <p className="error-message">公開</p> : '非公開'}</td>
+                    <td data-warning-flag={question.private_answer_mode === false}>{question.private_answer_mode === true ? '参考不可' : <p className="error-message">参考可</p>}</td>
+                    <td data-warning-flag={question.release_flag === true}>{question.release_flag === true ? <p className="error-message">公開</p> : '非公開'}</td>
                     <td>{question.scoring === true ? '採点あり' : '採点なし'}</td>
                     <td>{question.language_designation === null ? '指定なし' : getLanguageName(question.language_designation)}</td>
                 </>

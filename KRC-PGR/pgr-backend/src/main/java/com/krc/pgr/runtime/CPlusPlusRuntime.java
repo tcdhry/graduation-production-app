@@ -7,7 +7,8 @@ import com.krc.pgr.constant.SourceFileName;
 public class CPlusPlusRuntime extends RuntimeManage {
     private static String sourceFileName = SourceFileName.CPlusPlus.getFileName();
     private static String execFileName = "Program.exe";
-    final static private String ENCODING = "Shift_JIS";
+//    final static private String ENCODING = "Shift_JIS";
+    final static private String ENCODING = "UTF-8";
 
     private CPlusPlusRuntime(int question_id, int user_id, String sourceCode, boolean execConfirm) throws IOException {
         super(question_id, user_id, sourceFileName, sourceCode, ENCODING, execConfirm);

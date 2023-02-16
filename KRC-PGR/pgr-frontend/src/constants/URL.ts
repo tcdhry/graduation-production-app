@@ -21,6 +21,7 @@ enum ManagerURL {
     postExam = 'postExam',
     viewMyExams = 'viewMyExams',
     editExam = 'editExam',
+    scoringExam = 'scoringExam'
 }
 
 enum UserURL {
@@ -82,7 +83,10 @@ enum ManagerAPI {
     getMyAllQuestions = 'getMyAllQuestions',
     postExam = 'postExam',
     getMyExam = 'getMyExam',
+    getMyExams = 'getMyExams',
     editExam = 'editExam',
+    scoringExam = 'scoringExam',
+    downloadExamAnswers = 'downloadExamAnswers',
 }
 
 enum UserAPI {
@@ -97,6 +101,8 @@ enum UserAPI {
     selectStyle = 'selectStyle',
     viewAnswer = 'viewAnswer',
     ranking = 'ranking',
+    viewExam = 'viewExam',
+    viewExamQuestion = 'viewExamQuestion',
 }
 
 enum GuestAPI {

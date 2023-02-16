@@ -14,7 +14,7 @@ public class RankingRowBean {
     private int chars_count;
     private int rows_count;
     private BigDecimal score;
-    private int min_time;
+    private Integer min_time;
 
     public RankingRowBean(Map<String, Object> row) {
         this.user_id = (int) row.get("user_id");
@@ -27,7 +27,7 @@ public class RankingRowBean {
         this.chars_count = (int) row.get("chars_count");
         this.rows_count = (int) row.get("rows_count");
         this.score = (BigDecimal) row.get("score");
-        this.min_time = (int) row.get("min_time");
+        this.min_time = (Integer) row.get("min_time");
     }
 
     public int getUser_id() {
@@ -70,7 +70,7 @@ public class RankingRowBean {
         return score;
     }
 
-    public int getMin_time() {
+    public Integer getMin_time() {
         return min_time;
     }
 }

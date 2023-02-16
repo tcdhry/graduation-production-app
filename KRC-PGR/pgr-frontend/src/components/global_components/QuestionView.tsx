@@ -10,7 +10,7 @@ import { generateURL, URL } from "../../constants/URL";
 
 export const ExecConfirmButtonName = 'exec-confirm-button';
 
-function QuestionView(props: { question: QuestionBean, editorRef: undefined | React.RefObject<AceEditor> }) {
+function QuestionView(props: { question: QuestionBean, editorRef: undefined | React.RefObject<AceEditor>, exam_id?: string }) {
     const [selectLang, setSelectLang] = useState<LanguageCode | null>(props.question.language_designation);
     useEffect(() => {
         /**
@@ -40,7 +40,7 @@ function QuestionView(props: { question: QuestionBean, editorRef: undefined | Re
             <Row>
                 <Col>
                     {props.question.answered === true ? (
-                        <Link to={generateURL(URL.User._, URL.User.viewAnswer) + '/' + props.question.question_id} className="text-link">提出済みの解答を確認</Link>
+                        <Link to={generateURL(URL.User._, URL.User.viewAnswer) + '/' + (props.exam_id === undefined ? '' : props.exam_id + '/') + props.question.question_id} className="text-link">提出済みの解答を確認</Link>
                     ) : (null)}
                     <br />
                     {props.question.private_answer_mode === true ? (null) : (

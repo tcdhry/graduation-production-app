@@ -14,6 +14,7 @@ public class SessionManage {
 
     final private String LOGIN_USER_KEY = "user";
     final private String VIEWING_QUESTION_KEY = "viewing_question";
+    final private String VIEWING_EXAM_KEY = "viewing_exam";
 
     public UserBean getLoginUser() {
         return (UserBean) session.getAttribute(LOGIN_USER_KEY);
@@ -43,5 +44,16 @@ public class SessionManage {
         }
 
         return viewing.intValue() == question_id;
+    }
+
+    public void setViewingExam_id(String exam_id) {
+        /**
+         * uuid込み
+         */
+        session.setAttribute(VIEWING_EXAM_KEY, exam_id);
+    }
+
+    public boolean isViewingExam(String exam_id) {
+        return exam_id.equals((String) session.getAttribute(VIEWING_EXAM_KEY));
     }
 }

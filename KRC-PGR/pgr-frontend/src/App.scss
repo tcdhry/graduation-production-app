@@ -168,6 +168,18 @@ body {
 
             }
 
+            #view-exam {
+                #exam-status {
+                    font-size: 0.5em;
+                    color: var(--low-font-color);
+
+                    span {
+                        display: inline-block;
+                        margin-right: 2em;
+                    }
+                }
+            }
+
             #question-inputs {
                 ul#check-list {
                     li.warning {
@@ -284,6 +296,56 @@ body {
                 }
             }
 
+            #view-my-exams {
+                div#exams-list {
+                    section {
+                        border: var(--border);
+                        border-radius: 10px;
+                        margin-bottom: 20px;
+                        padding: 20px;
+
+                        h3 {
+                            span:first-child {
+                                display: inline-block;
+                                width: calc(100% - 6.3rem);
+                            }
+
+                            span:last-child {
+                                display: inline-block;
+                                color: var(--low-font-color);
+                                font-size: 0.5em;
+                                width: 6.3rem;
+                            }
+                        }
+
+                        div.exam-foot {
+                            margin-top: 1em;
+                            display: flex;
+
+                            &>div {
+                                display: table;
+                                width: calc((100% - 2em) / 3);
+                                border: var(--border);
+                                border-radius: 10px;
+                                margin-right: 1em;
+                                height: 3em;
+
+                                &:last-child {
+                                    margin-right: 0;
+                                }
+
+                                span, a {
+                                    display: table-cell;
+                                    vertical-align: middle;
+                                    text-align: center;
+                                }
+
+                            }
+                        }
+                    }
+                }
+            }
+
             #style-manage {
                 table#styles-table {
                     border: var(--border);
@@ -309,6 +371,13 @@ body {
                             }
                         }
                     }
+                }
+            }
+
+            #post-exam, #edit-exam {
+                div#limit-y-table {
+                    max-height: 15em;
+                    overflow-y: scroll;
                 }
             }
         }
@@ -476,7 +545,7 @@ nav.pager {
     }
 }
 
-.io-block, pre:has(code) {
+.io-block {
     padding: 10px;
     border-left: 5px gray solid;
     background: rgba(128, 128, 128, 0.5);
@@ -525,7 +594,6 @@ nav.pager {
             }
         }
     }
-
 }
 
 span.exec-status {
@@ -637,4 +705,29 @@ span[data-no="3"] {
     background: repeating-linear-gradient(0deg, #C62828 0.1em, #EF5350 0.2em, #FFEBEE 0.3em, #EF5350 0.4em, #C62828 0.5em);
     -webkit-background-clip: text;
     color: transparent;
+}
+
+.markdown {
+    pre:has(code), blockquote {
+        padding: 10px;
+        border-left: 5px gray solid;
+        background: rgba(128, 128, 128, 0.5);
+        white-space: pre-wrap;
+    }
+
+    p {
+        code {
+            background: rgba(128, 128, 128, 0.5);
+            padding-right: 5px;
+            margin-right: 2px;
+            padding-left: 5px;
+            margin-left: 2px;
+            color: var(--warning-font-color);
+            border-radius: 5px;
+        }
+    }
+
+    em {
+        color: var(--attention-font-color);
+    }
 }

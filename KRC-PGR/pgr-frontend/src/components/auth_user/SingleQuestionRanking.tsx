@@ -1,5 +1,5 @@
 import axios from "axios";
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { ExecStatusCode, ExecStatuses } from "../../constants/ExecStatus";
 import { getLanguageName } from "../../constants/Language";
@@ -7,6 +7,7 @@ import { catchError, receiveResponse, ResponseBase } from "../../constants/Respo
 import { API, generateAPI } from "../../constants/URL";
 import { Row, Col } from "../global_components/24ColLayout";
 import CodeEditor from "../global_components/CodeEditor";
+import AceEditor from "react-ace";
 
 type RankingRow = {
     user_id: number,
@@ -19,7 +20,7 @@ type RankingRow = {
     chars_count: number,
     rows_count: number,
     score: number,
-    min_time: number
+    min_time: number | null
 };
 
 function SingleQuestionRanking() {
@@ -64,7 +65,7 @@ function SingleQuestionRanking() {
             {notFound === true ? (<p>この問題は存在しないか、公開されていないため、解答を見ることができません。</p>) : null}
             {passwordRequired === true ? (
                 <p>
-                    パスワードが必要な問題です。<br/>
+                    パスワードが必要な問題です。<br />
                     問題を表示してからやり直してください。
                 </p>
             ) : null}
@@ -85,6 +86,7 @@ function SingleQuestionRanking() {
                                 <th>ユーザ</th>
                                 <th>所属</th>
                                 <th>ユーザID</th>
+                                <th style={{ width: '5em' }}>最短時間</th>
                                 <th style={{ width: '4em' }}>文字数</th>
                                 <th style={{ width: '3em' }}>行数</th>
                                 <th style={{ width: '3em' }}>点数</th>
@@ -100,6 +102,7 @@ function SingleQuestionRanking() {
                                             <td className="hidden-wrapper">{row.user_view_name}</td>
                                             <td>{row.faculty_name} {row.department_name} {row.class_name} {row.student_number}</td>
                                             <td>{row.user_id}</td>
+                                            <td>{row.min_time === null ? 'なし' : row.min_time + 'ms'}</td>
                                             <td>{row.chars_count}</td>
                                             <td>{row.rows_count}</td>
                                             <td>{row.score}</td>
@@ -138,6 +141,7 @@ function AnswerModal(props: { display: boolean, setDisplay: React.Dispatch<React
     };
     const [answers, setAnswers] = useState<Array<AnswerDetail>>([]);
     const [answer, setAnswer] = useState<AnswerDetail>();
+    const editorRef: React.RefObject<AceEditor> = useRef(null);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -164,6 +168,7 @@ function AnswerModal(props: { display: boolean, setDisplay: React.Dispatch<React
             null
         );
     }
+
     return (
         <div id="answer-modal" style={{ display: props.display === true ? 'block' : 'none' }}>
             <div id="modal-back" onClick={function () { props.setDisplay(false); }}></div>
@@ -177,7 +182,7 @@ function AnswerModal(props: { display: boolean, setDisplay: React.Dispatch<React
                     行数　　：{answer.rows_count}<br />
                     文字数　：{answer.chars_count}
                 </p>
-                <CodeEditor language={answer.select_language} defaultValue={answer.source_code} />
+                <CodeEditor language={answer.select_language} defaultValue={answer.source_code} editorRef={editorRef} />
                 <div>
                     {answer.executions.map((exec, i) => {
                         const status = ExecStatuses[exec.exec_status_id];

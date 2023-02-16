@@ -127,6 +127,13 @@ public class AdminClassAction {
         }
 
         String sql = "update m_faculties set faculty_name = case faculty_id " + when + " else faculty_name end;";
+
+        String tmp = sql;
+        for (Object o : sqlParams) {
+            tmp = tmp.replaceFirst("\\?", o.toString());
+        }
+        System.out.println(tmp);
+
         jdbc.update(sql, sqlParams.toArray());
 
         return SuccessFlagResponse.success();
